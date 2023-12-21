@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spin System (Sys) &mdash; TEACUPS 2023 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=a4664895"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=f281be69"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Experimental (Exp)" href="experimental.html" />
+    <link rel="prev" title="Tutorial" href="tutorial.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            TEACUPS
+          </a>
+              <div class="version">
+                1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Spin System (Sys)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#polarisation">Polarisation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sys-spin-system">Sys.spin_system</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-precursor">Sys.precursor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-population">Sys.population</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#g-tensors">g-tensors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sys-g">Sys.g</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-g-tri">Sys.g_tri</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-g1">Sys.g1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-g2">Sys.g2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-g-frame">Sys.g_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-g-tri-frame">Sys.g_tri_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-g1-frame">Sys.g1_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-g2-frame">Sys.g2_frame</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#spin-spin-interactions">Spin-spin interactions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sys-d">Sys.D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-e">Sys.E</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-d-frame">Sys.D_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-j-ex">Sys.J_ex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-d-tri">Sys.D_tri</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-e-tri">Sys.E_tri</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-d-tri-frame">Sys.D_tri_frame</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#hyperfine-interaction">Hyperfine interaction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sys-ai">Sys.Ai</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-ai-frame">Sys.Ai_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-ii">Sys.Ii</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-ni">Sys.ni</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#relaxation">Relaxation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sys-decay">Sys.decay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-t-relax-1">Sys.T_relax_1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-t-relax-2">Sys.T_relax_2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-dynamics">Sys.dynamics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#line-width">Line width</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sys-width-gauss">Sys.width_gauss</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="experimental.html">Experimental (Exp)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulation_options.html">Simulation Options (SimOpt)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TEACUPS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Spin System (Sys)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/spinsystem.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="tutorial.html" class="btn btn-neutral float-left" title="Tutorial" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="experimental.html" class="btn btn-neutral float-right" title="Experimental (Exp)" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="spin-system-sys">
+<h1>Spin System (Sys)<a class="headerlink" href="#spin-system-sys" title="Link to this heading"></a></h1>
+<p>In the class <code class="docutils literal notranslate"><span class="pre">Sys</span></code> all parameters that describe the fundamental spin system are set as attributes. This can be done in the script by typing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">Attribute</span> <span class="o">=</span> <span class="n">Value</span>
+</pre></div>
+</div>
+<p>In the following all possible attributes are named. For each attribute an explanation, cases where it is needed and an example are given. You can get a quick reference file with all attributes <a class="reference download internal" download="" href="_downloads/8b97ebca44dddf331527d968b829fed2/quickreference.pdf"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a>.</p>
+<section id="polarisation">
+<h2>Polarisation<a class="headerlink" href="#polarisation" title="Link to this heading"></a></h2>
+<section id="sys-spin-system">
+<h3>Sys.spin_system<a class="headerlink" href="#sys-spin-system" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Defines the type of the spin system, set it to</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'doub'</span></code> for simulating a doublet.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'trip'</span></code> for simulating a triplet.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'rp'</span></code> for simulating a radical pair.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'tdp'</span></code> for simulating a triplet-doublet pair.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Obligatory for all simulations</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">=</span> <span class="s1">&#39;doub&#39;</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-precursor">
+<h3>Sys.precursor<a class="headerlink" href="#sys-precursor" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Defines the initial polarisation of the spin system. Dependent on the chosen system different initial polarisations are available. The precursor attribute defines the basis chosen for the initial polarisation. Set Sys.precursor to</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'basis'</span></code> to give the polarisation vector in the basis of the hamiltonian. → possible for all spin systems</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'eigen'</span></code> to give the polarisation vector in the eigenbasis of the system. → possible for all spin systems</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'zf'</span></code> to give the poalrisation vector in the basis of the zero field states. → possible for triplet spin systems</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'singlet'</span></code> to initialize a pure singlet polarisation. → possible for radical pair spin systems</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'triplet-zf'</span></code> to give the polarisation vector as a trplet precursor in the zero field basis → possible for radical pairs (with triplet precursor) and triplet doublet pairs (consisting of the triplet precursor and a radical precursor</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'triplet-eigen'</span></code> to give the polarisation vector as a trplet precursor in the eigenbasis → possible for radical pairs (with triplet precursor) and triplet doublet pairs (consisting of the triplet precursor and a radical precursor</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'coupled'</span></code> to give the polarisation vector in the basis of doublet and quartet states. → possible for triplet doublet pair spin systems</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Obligatory for all simulations</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">precursor</span> <span class="o">=</span> <span class="s1">&#39;eigen&#39;</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-population">
+<h3>Sys.population<a class="headerlink" href="#sys-population" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Set the initial population vector in the basis that is defined in Sys.precursor.</dt><dd><ul class="simple">
+<li><p>Given as a list of floats</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Obligatory for all simulations</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># doublet, basis: populate the alpha and beta spinstates</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.505</span><span class="p">]</span>
+
+<span class="c1"># triplet, zf: populate the three zerofield states of a triplet Tx, Ty and Tz</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># radical pair, triplet-zf: populate the three zerofield states of the triplet-precursor</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># radical pair, singlet</span>
+<span class="c1"># no Sys.population is needed</span>
+
+<span class="c1"># triplet doublet pair, eigen: populate the six eigenstates of the triplet doublet pair</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+
+<span class="c1"># triplet doublet pair, triplet-zf:</span>
+<span class="c1"># populate the two doublet precursor levels alpha and beta and the three triplet precursor zero field levels</span>
+<span class="c1"># [alpha, beta, Tx, Ty, Tz]</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+</section>
+<section id="g-tensors">
+<h2>g-tensors<a class="headerlink" href="#g-tensors" title="Link to this heading"></a></h2>
+<section id="sys-g">
+<h3>Sys.g<a class="headerlink" href="#sys-g" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Diagonal elements of the g-tensor of a radical</dt><dd><ul class="simple">
+<li><p>Given as a list of float with three members (gx, gy and gz)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Obligatory for doublet systems and triplet doublet pairs</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.001</span><span class="p">,</span> <span class="mf">2.005</span><span class="p">,</span> <span class="mf">2.003</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-g-tri">
+<h3>Sys.g_tri<a class="headerlink" href="#sys-g-tri" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Diagonal elements of the g_tri-tensor of a triplet</dt><dd><ul class="simple">
+<li><p>Given as a list of float with three members (gx, gy and gz)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Obligatory for triplet systems, triplet doublet pairs and radical pairs with triplet precursor</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">g_tri</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.01</span><span class="p">,</span> <span class="mf">2.05</span><span class="p">,</span> <span class="mf">1.99</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-g1">
+<h3>Sys.g1<a class="headerlink" href="#sys-g1" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Diagonal elements of the g1-tensor of a radical pair</dt><dd><ul class="simple">
+<li><p>Given as a list of float with three members (gx, gy and gz)</p></li>
+<li><p>Acceptor</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Obligatory for radical pair simulation</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">g1</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.001</span><span class="p">,</span> <span class="mf">2.005</span><span class="p">,</span> <span class="mf">2.003</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-g2">
+<h3>Sys.g2<a class="headerlink" href="#sys-g2" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Diagonal elements of the g2-tensor of a radical pair</dt><dd><ul class="simple">
+<li><p>Given as a list of floats with three members (gx, gy and gz)</p></li>
+<li><p>Donor</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Obligatory for radical pair simulation</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">g2</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.001</span><span class="p">,</span> <span class="mf">2.005</span><span class="p">,</span> <span class="mf">2.003</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-g-frame">
+<h3>Sys.g_frame<a class="headerlink" href="#sys-g-frame" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Three euler angles to rotate the g-tensor from molecular to laboratory frame</dt><dd><ul class="simple">
+<li><p>Given as a list of floats with three members (phi, theta, psi)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Optional for doublet systems and triplet doublet pairs</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">g_frame</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># rad</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-g-tri-frame">
+<h3>Sys.g_tri_frame<a class="headerlink" href="#sys-g-tri-frame" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Three euler angles to rotate the g_tri-tensor from molecular to laboratory frame</dt><dd><ul class="simple">
+<li><p>Given as a list of floats with three members (phi, theta, psi)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Optional for triplet systems, triplet doublet pairs and radical pairs with triplet precursor</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">g_tri_frame</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># rad</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-g1-frame">
+<h3>Sys.g1_frame<a class="headerlink" href="#sys-g1-frame" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Three euler angles to rotate the g1-tensor from molecular to laboratory frame</dt><dd><ul class="simple">
+<li><p>Given as a list of floats with three members (phi, theta, psi)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Optional for radical pair simulation</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">g_1_frame</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># rad</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-g2-frame">
+<h3>Sys.g2_frame<a class="headerlink" href="#sys-g2-frame" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Three euler angles to rotate the g2-tensor from molecular to laboratory frame</dt><dd><ul class="simple">
+<li><p>Given as a list of floats with three members (phi, theta, psi)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Optional for radical pair simulation</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">g_2_frame</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># rad</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+</section>
+<section id="spin-spin-interactions">
+<h2>Spin-spin interactions<a class="headerlink" href="#spin-spin-interactions" title="Link to this heading"></a></h2>
+<section id="sys-d">
+<h3>Sys.D<a class="headerlink" href="#sys-d" title="Link to this heading"></a></h3>
+<ul>
+<li><dl>
+<dt>Dipolar coupling constant <em>D</em> for two interacting spin species</dt><dd><ul class="simple">
+<li><p>Float in MHz</p></li>
+<li><p>The dipolar coupling Hamiltonian is defined as:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\hat{H}_{\mathrm{dip}} &amp;= \mathbf{S}_1 \mathbf{D} \mathbf{S}_2  \\
+&amp;\text{ }\\
+\mathbf{D} &amp;= \begin{pmatrix} -1/3 D+E &amp; 0 &amp; 0\\ 0 &amp; -1/3 D-E &amp; 0 \\ 0 &amp; 0 &amp; 2/3 D \end{pmatrix}\end{split}\]</div>
+</dd>
+</dl>
+</li>
+<li><p>Optional for radical pairs and triplet doublet pairs</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">D</span> <span class="o">=</span> <span class="mi">300</span>  <span class="c1"># MHz</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-e">
+<h3>Sys.E<a class="headerlink" href="#sys-e" title="Link to this heading"></a></h3>
+<ul>
+<li><dl>
+<dt>Dipolar coupling constant <em>E</em> for two interacting spin species</dt><dd><ul class="simple">
+<li><p>Float in MHz</p></li>
+<li><p>The dipolar coupling Hamiltonian is defined as:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\hat{H}_{\mathrm{dip}} &amp;= \mathbf{S}_1 \mathbf{D} \mathbf{S}_2  \\
+&amp;\text{ }\\
+\mathbf{D} &amp;= \begin{pmatrix} -1/3 D+E &amp; 0 &amp; 0\\ 0 &amp; -1/3 D-E &amp; 0 \\ 0 &amp; 0 &amp; 2/3 D \end{pmatrix}\end{split}\]</div>
+</dd>
+</dl>
+</li>
+<li><p>Optional for radical pairs and triplet doublet pairs</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">E</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span>  <span class="c1"># MHz</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-d-frame">
+<h3>Sys.D_frame<a class="headerlink" href="#sys-d-frame" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Three euler angles to rotate the D-tensor for dipolar couplings from molecular to laboratory frame</dt><dd><ul class="simple">
+<li><p>Given as a list of floats with three members (phi, theta, psi)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Optional for radical pair and tripled douplet pair simulations if a dipolar coupling is given</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">D_frame</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># rad</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-j-ex">
+<h3>Sys.J_ex<a class="headerlink" href="#sys-j-ex" title="Link to this heading"></a></h3>
+<ul>
+<li><dl>
+<dt>Exchange coupling constant <em>J</em> for two interacting spin species</dt><dd><ul class="simple">
+<li><p>Float in MHz</p></li>
+<li><p>For radical pairs the exchange coupling Hamiltonian is set up as:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\hat{H}_{\mathrm{ex}} = -J\left(1/2+2\mathbf{S}_1\mathbf{S}_2\right)\]</div>
+<ul class="simple">
+<li><p>For triplet doublet pairs the exchange coupling Hamiltonian is set up as:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\hat{H}_{\mathrm{ex}} = J\mathbf{S}_1\mathbf{S}_2\]</div>
+</dd>
+</dl>
+</li>
+<li><p>Optional for radical pairs and triplet doublet pairs</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">J</span> <span class="o">=</span> <span class="o">-</span><span class="mi">20000</span>  <span class="c1"># MHz</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-d-tri">
+<h3>Sys.D_tri<a class="headerlink" href="#sys-d-tri" title="Link to this heading"></a></h3>
+<ul>
+<li><dl>
+<dt>Zero field splitting constant <em>D</em> for triplets</dt><dd><ul class="simple">
+<li><p>Float in MHz</p></li>
+<li><p>The ZFS Hamiltonian is defined as:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\hat{H}_{\mathrm{ZFS}} &amp;= \mathbf{S} \mathbf{D} \mathbf{S} \\
+&amp;\text{ }\\
+\mathbf{D} &amp;= \begin{pmatrix} -1/3 D+E &amp; 0 &amp; 0\\ 0 &amp; -1/3 D-E &amp; 0 \\ 0 &amp; 0 &amp; 2/3 D \end{pmatrix}\end{split}\]</div>
+</dd>
+</dl>
+</li>
+<li><p>Optional for triplets, radical pairs with triplet precursor and triplet doublet pairs</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">D_tri</span> <span class="o">=</span> <span class="mi">700</span>  <span class="c1"># MHz</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-e-tri">
+<h3>Sys.E_tri<a class="headerlink" href="#sys-e-tri" title="Link to this heading"></a></h3>
+<ul>
+<li><dl>
+<dt>Zero field splitting constant <em>E</em> for triplets</dt><dd><ul class="simple">
+<li><p>Float in MHz</p></li>
+<li><p>The ZFS Hamiltonian is defined as:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\hat{H}_{\mathrm{ZFS}} &amp;= \mathbf{S} \mathbf{D} \mathbf{S}  \\
+&amp;\text{ }\\
+\mathbf{D} &amp;= \begin{pmatrix} -1/3 D+E &amp; 0 &amp; 0\\ 0 &amp; -1/3 D-E &amp; 0 \\ 0 &amp; 0 &amp; 2/3 D \end{pmatrix}\end{split}\]</div>
+</dd>
+</dl>
+</li>
+<li><p>Optional for triplets, radical pairs with triplet precursor and triplet doublet pairs</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">E_tri</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span>  <span class="c1"># MHz</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-d-tri-frame">
+<h3>Sys.D_tri_frame<a class="headerlink" href="#sys-d-tri-frame" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Three euler angles to rotate the ZFS tensor of triplets from molecular to laboratory frame</dt><dd><ul class="simple">
+<li><p>Given as a list of floats with three members (phi, theta, psi)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Optional for triplets, radical pairs with triplet precursor and triplet doublet pairs if a ZFS is defined</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">D_tri_frame</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># rad</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+</section>
+<section id="hyperfine-interaction">
+<h2>Hyperfine interaction<a class="headerlink" href="#hyperfine-interaction" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Hyperfine interactions for coupled systems do not work properly until now.</p>
+</div>
+<section id="sys-ai">
+<h3>Sys.Ai<a class="headerlink" href="#sys-ai" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Diagonal elements of a hyperfine tensor of nucleus i</dt><dd><ul class="simple">
+<li><p>i ranges from 1-5</p></li>
+<li><p>Given as a list of floats with three members (Ax, Ay and Az)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Optional for doublet and triplet simulations</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">A1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-ai-frame">
+<h3>Sys.Ai_frame<a class="headerlink" href="#sys-ai-frame" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Three euler angles to rotate the hyperfine tensor of nucleus i from molecular to laboratory frame</dt><dd><ul class="simple">
+<li><p>i ranges from 1-5</p></li>
+<li><p>Given as a list of floats with three members (phi, theta, psi)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Optional for doublets and triplets where a hyperfine tensor A is given</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">A_1_frame</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># rad</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-ii">
+<h3>Sys.Ii<a class="headerlink" href="#sys-ii" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Spin quantum number of nucleus (-group) i</dt><dd><ul class="simple">
+<li><p>integer or half</p></li>
+<li><p>i ranges from 1-5</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Optional for doublets and triplets where a hyperfine tensor A is given</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">I1</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-ni">
+<h3>Sys.ni<a class="headerlink" href="#sys-ni" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Number of nuclei in core group i</dt><dd><ul class="simple">
+<li><p>integer</p></li>
+<li><p>i ranges from 1-5</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Optional for doublets and triplets where a hyperfine tensor A is given</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">n1</span> <span class="o">=</span> <span class="mi">3</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+</section>
+<section id="relaxation">
+<h2>Relaxation<a class="headerlink" href="#relaxation" title="Link to this heading"></a></h2>
+<section id="sys-decay">
+<h3>Sys.decay<a class="headerlink" href="#sys-decay" title="Link to this heading"></a></h3>
+<ul>
+<li><dl>
+<dt>After a simulation in Hilbert space the resulting spectrum is convoluted with an exponential function to simulate an exponential decay of the signal. The exponential decay constant tau (which has no physical meaning) can be set in <code class="docutils literal notranslate"><span class="pre">Sys.decay</span></code>.</dt><dd><ul class="simple">
+<li><p>Given as a float in s</p></li>
+<li><p>The convolution is done by:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[S_{\mathrm{decay}} = S * \exp\left[-\tau t\right]\]</div>
+</dd>
+</dl>
+</li>
+<li><p>Obligatory for all simulations in Hilbert space</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">decay</span> <span class="o">=</span> <span class="mf">1e-6</span>  <span class="c1"># s</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-t-relax-1">
+<h3>Sys.T_relax_1<a class="headerlink" href="#sys-t-relax-1" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>This is the longitudinal relaxation time for the simulation of a phenomenological relaxation.</dt><dd><ul class="simple">
+<li><p>Given as a float in s</p></li>
+<li><p>Describes the relaxation time that drives the populations to equilibrium</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Optional for all simulations in Liouville space (choose <code class="docutils literal notranslate"><span class="pre">Sys.dynamics</span> <span class="pre">=</span> <span class="pre">None</span></code> if you want to use <code class="docutils literal notranslate"><span class="pre">Sys.T_relax_1</span></code> and <code class="docutils literal notranslate"><span class="pre">Sys.T_relax_2</span></code>)</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">dynamics</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">T_relax_1</span> <span class="o">=</span> <span class="mf">1e-6</span>  <span class="c1"># s</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">T_relax_2</span> <span class="o">=</span> <span class="mf">1e-7</span>  <span class="c1"># s</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-t-relax-2">
+<h3>Sys.T_relax_2<a class="headerlink" href="#sys-t-relax-2" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>This is the transversal relaxation time for the simulation of a phenomenological relaxation.</dt><dd><ul class="simple">
+<li><p>Given as a float in s</p></li>
+<li><p>Describes the relaxation time that describes the decay of the coherences</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Optional for all simulations in Liouville space (choose <code class="docutils literal notranslate"><span class="pre">Sys.dynamics</span> <span class="pre">=</span> <span class="pre">None</span></code> if you want to use <code class="docutils literal notranslate"><span class="pre">Sys.T_relax_1</span></code> and <code class="docutils literal notranslate"><span class="pre">Sys.T_relax_2</span></code>)</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">dynamics</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">T_relax_1</span> <span class="o">=</span> <span class="mf">1e-6</span>  <span class="c1"># s</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">T_relax_2</span> <span class="o">=</span> <span class="mf">1e-7</span>  <span class="c1"># s</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-dynamics">
+<h3>Sys.dynamics<a class="headerlink" href="#sys-dynamics" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Set your own relaxation matrix for transitions between the systems eigenstates</dt><dd><ul class="simple">
+<li><p>The rateconstants are given in 1/s</p></li>
+<li><p>The matrix has the dimension of the spin system (if the spin system e.g. has 4 eigenfunctions, its dimension is 4x4)</p></li>
+<li><p>The diagonal elements describe the decay of populations to states “outside” of the spin system</p></li>
+<li><p>The off-diagonal elements describe transitions between the eigenstates</p></li>
+<li><p>The order of the eigenstates is ascending</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Optional for all simulations in Liouville space</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># System with three eigenstates</span>
+<span class="c1"># Population of eigenstate 1 (lowest energy) decays with -1/5s^-1</span>
+<span class="c1"># Transition between state 1 &lt;-&gt; 3 with a rate of 1/2s^-1</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">dynamics</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span>
+                         <span class="p">[</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">],</span>
+                         <span class="p">[</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">]])</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+</section>
+<section id="line-width">
+<h2>Line width<a class="headerlink" href="#line-width" title="Link to this heading"></a></h2>
+<section id="sys-width-gauss">
+<h3>Sys.width_gauss<a class="headerlink" href="#sys-width-gauss" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>After the spectrum is built it is convoluted with a gaussian function. The width of this function can be set in Sys.width_gauss.</dt><dd><ul class="simple">
+<li><p>Float in mT</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Obligatory for all simulations</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">width_gauss</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># mT</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tutorial.html" class="btn btn-neutral float-left" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="experimental.html" class="btn btn-neutral float-right" title="Experimental (Exp)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023 M. Sc. Theresia Quintes.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

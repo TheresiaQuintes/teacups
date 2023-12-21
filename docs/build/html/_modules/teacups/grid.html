@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>teacups.grid &mdash; TEACUPS 2023 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=a4664895"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            TEACUPS
+          </a>
+              <div class="version">
+                1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spinsystem.html">Spin System (Sys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../experimental.html">Experimental (Exp)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulation_options.html">Simulation Options (SimOpt)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer.html">Developer</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">TEACUPS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">teacups.grid</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for teacups.grid</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">Delaunay</span>
+
+
+<div class="viewcode-block" id="sphere_fibonacci_grid_points">
+<a class="viewcode-back" href="../../developer.html#teacups.grid.sphere_fibonacci_grid_points">[docs]</a>
+<span class="k">def</span> <span class="nf">sphere_fibonacci_grid_points</span><span class="p">(</span><span class="n">ng</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate Fibonacci spiral gridpoints on a hemisphere.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ng : int</span>
+<span class="sd">        Number of points that shall be calculated.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    xg : np.ndarray</span>
+<span class="sd">        Coordinates of the desired number of grid points. The three cartesian</span>
+<span class="sd">        coordinates are given. The shape of the array is 3xng.</span>
+
+<span class="sd">    Licensing</span>
+<span class="sd">    ---------</span>
+
+<span class="sd">      This code is distributed under the GNU LGPL license.</span>
+<span class="sd">      https://people.sc.fsu.edu/~jburkardt/py_src/sphere_fibonacci_grid/sphere_fibonacci_grid.py</span>
+
+<span class="sd">    Modified</span>
+<span class="sd">    --------</span>
+
+<span class="sd">      15 May 2015</span>
+
+<span class="sd">    Author</span>
+<span class="sd">    ------</span>
+
+<span class="sd">      John Burkardt</span>
+
+<span class="sd">    Reference</span>
+<span class="sd">    ---------</span>
+
+<span class="sd">      Richard Swinbank, James Purser,</span>
+<span class="sd">      Fibonacci grids: A novel approach to global modelling,</span>
+<span class="sd">      Quarterly Journal of the Royal Meteorological Society,</span>
+<span class="sd">      Volume 132, Number 619, July 2006 Part B, pages 1769-1793.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ng</span> <span class="o">*=</span> <span class="mi">2</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">5.0</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.0</span>
+
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ng</span><span class="p">)</span>
+    <span class="n">sphi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ng</span><span class="p">)</span>
+    <span class="n">cphi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ng</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">ng</span><span class="p">):</span>
+        <span class="n">i2</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">-</span> <span class="p">(</span><span class="n">ng</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">theta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">i2</span><span class="p">)</span> <span class="o">/</span> <span class="n">phi</span>
+        <span class="n">sphi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">i2</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">ng</span><span class="p">)</span>
+        <span class="n">cphi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">ng</span> <span class="o">+</span> <span class="n">i2</span><span class="p">)</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">ng</span> <span class="o">-</span> <span class="n">i2</span><span class="p">))</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">ng</span><span class="p">)</span>
+
+    <span class="n">xg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">ng</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">ng</span><span class="p">):</span>
+        <span class="n">xg</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">cphi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">xg</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cphi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">xg</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">sphi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="n">hemisphere</span> <span class="o">=</span> <span class="n">xg</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nb">int</span><span class="p">(</span><span class="n">ng</span><span class="o">/</span><span class="mi">2</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">hemisphere</span></div>
+
+
+
+<div class="viewcode-block" id="cartesian2sphereical">
+<a class="viewcode-back" href="../../developer.html#teacups.grid.cartesian2sphereical">[docs]</a>
+<span class="k">def</span> <span class="nf">cartesian2sphereical</span><span class="p">(</span><span class="n">xyz</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a set of three cartesian coordinates (x, y and z) to a set of</span>
+<span class="sd">    three spherical coordinates (r, theta and phi).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xyz : np.ndarray</span>
+<span class="sd">        This array contains n sets of cartesian coordinates x, y and z.</span>
+<span class="sd">        Therefore, it describes n Points and its shape is 3xn.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    rtp : np.ndarray</span>
+<span class="sd">        This array contains the transformed sets of xyz. First argument is</span>
+<span class="sd">        the radius r, second and third are the angles theta and phi.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">xyz</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">xyz</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">xyz</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">xyz</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">xyz</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">xyz</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">xyz</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">xyz</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">rtp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">rtp</span></div>
+
+
+
+<div class="viewcode-block" id="spherical2cartesian">
+<a class="viewcode-back" href="../../developer.html#teacups.grid.spherical2cartesian">[docs]</a>
+<span class="k">def</span> <span class="nf">spherical2cartesian</span><span class="p">(</span><span class="n">rtp</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a set of three spherical coordinates (r, theta and phi) to a set of</span>
+<span class="sd">    three cartesian coordinates (x, y and z).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    rtp : np.ndarray</span>
+<span class="sd">        This array contains the transformed sets of xyz. First argument is</span>
+<span class="sd">        the radius r, second and third are the angles theta and phi.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    xyz : np.ndarray</span>
+<span class="sd">        This array contains n sets of cartesian coordinates x, y and z.</span>
+<span class="sd">        Therefore, it describes n Points and its shape is 3xn.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">rtp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">rtp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">rtp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">r</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">r</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">r</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">xyz</span></div>
+
+
+
+<div class="viewcode-block" id="get_theta_phi">
+<a class="viewcode-back" href="../../developer.html#teacups.grid.get_theta_phi">[docs]</a>
+<span class="k">def</span> <span class="nf">get_theta_phi</span><span class="p">(</span><span class="n">grid_points</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a number (grid_points) of angle pairs theta-phi describing points</span>
+<span class="sd">    equally distributet on a fibonacci sphere. The radius is 1.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    grid_points : int</span>
+<span class="sd">        Number of points on the sphere.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    theta : np.ndarray</span>
+<span class="sd">        1D-Array with grid_points theta angles. Each angle is the theta-part</span>
+<span class="sd">        of the spherical coordinate of each point.</span>
+<span class="sd">    phi : np.ndarray</span>
+<span class="sd">        1D-Array with grid_points phi angles. Each angle is the phi-part of the</span>
+<span class="sd">        spherical coordinate of each point.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">sphere_fibonacci_grid_points</span><span class="p">(</span><span class="n">grid_points</span><span class="p">)</span>
+    <span class="n">rtp</span> <span class="o">=</span> <span class="n">cartesian2sphereical</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">rtp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">rtp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span></div>
+
+
+
+<div class="viewcode-block" id="sophe_grid">
+<a class="viewcode-back" href="../../developer.html#teacups.grid.sophe_grid">[docs]</a>
+<span class="k">def</span> <span class="nf">sophe_grid</span><span class="p">(</span><span class="n">grid_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span>
+                                        <span class="s1">&#39;np.ndarray&#39;</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the angles phi and theta of a set of unique orientations on a</span>
+<span class="sd">    (half-)sphere. The grid used is called SOPHE grid (see: D. Wang,</span>
+<span class="sd">    G. R. Hanson J.Magn.Reson. A, 117, 1-8 (1995)</span>
+<span class="sd">    https://doi.org/10.1006/jmra.1995.9978) or Y. Kurihara, Monthly Weather</span>
+<span class="sd">    Review 93(7), 399-415 (July 1965)</span>
+<span class="sd">    https://doi.org/10.1175/1520-0493(1965)093&lt;0399:NIOTPE&gt;2.3.CO;2).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    grid_size : int</span>
+<span class="sd">        Number of points between theta=0 and theta=pi/2.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    phi : np.ndarray</span>
+<span class="sd">        Set of spherical angles phi for all orientations.</span>
+<span class="sd">    theta : np.ndarray</span>
+<span class="sd">        Set of spherical angles theta for all orientations.</span>
+<span class="sd">    weights : np.ndarray</span>
+<span class="sd">        Associated weights for each orientation. Sum is 4*pi.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dtheta</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">grid_size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">sindth2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">dtheta</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">w1</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+    <span class="n">nOct</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">maxphi</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+    <span class="n">nOrientations</span> <span class="o">=</span> <span class="n">grid_size</span> <span class="o">+</span> <span class="n">nOct</span><span class="o">*</span><span class="n">grid_size</span><span class="o">*</span><span class="p">(</span><span class="n">grid_size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">nOrientations</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nOrientations</span><span class="p">)</span>
+
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nOrientations</span><span class="p">)</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nOrientations</span><span class="p">)</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nOrientations</span><span class="p">)</span>
+
+    <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">theta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">maxphi</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">dtheta</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="n">start</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">for</span> <span class="n">iSlice</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">):</span>
+        <span class="n">nphi</span> <span class="o">=</span> <span class="n">nOct</span><span class="o">*</span><span class="p">(</span><span class="n">iSlice</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">dphi</span> <span class="o">=</span> <span class="n">maxphi</span><span class="o">/</span><span class="p">(</span><span class="n">nphi</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">start</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nphi</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">on</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">nphi</span><span class="p">)</span>
+        <span class="n">on</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">w1</span>
+        <span class="n">on</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="n">weights</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">((</span><span class="n">iSlice</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">dtheta</span><span class="p">)</span><span class="o">*</span><span class="n">sindth2</span><span class="o">*</span><span class="n">dphi</span><span class="o">*</span><span class="n">on</span>
+        <span class="n">phi</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxphi</span><span class="p">,</span> <span class="n">nphi</span><span class="p">)</span>
+        <span class="n">theta</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">iSlice</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">dtheta</span>
+        <span class="n">start</span> <span class="o">+=</span> <span class="n">nphi</span>
+
+    <span class="n">nphi</span> <span class="o">=</span> <span class="n">nOct</span><span class="o">*</span><span class="p">(</span><span class="n">grid_size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">dphi</span> <span class="o">=</span> <span class="n">maxphi</span><span class="o">/</span><span class="p">(</span><span class="n">nphi</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nphi</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">phi</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxphi</span><span class="p">,</span> <span class="n">nphi</span><span class="p">)</span>
+    <span class="n">theta</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">on</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">nphi</span><span class="p">)</span>
+    <span class="n">on</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">w1</span>
+    <span class="n">on</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="n">weights</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">sindth2</span><span class="o">*</span><span class="n">dphi</span><span class="o">*</span><span class="n">on</span>
+
+    <span class="k">return</span> <span class="n">phi</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">weights</span></div>
+
+
+
+<div class="viewcode-block" id="triangles">
+<a class="viewcode-back" href="../../developer.html#teacups.grid.triangles">[docs]</a>
+<span class="k">def</span> <span class="nf">triangles</span><span class="p">(</span><span class="n">phi</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span>
+                                                               <span class="s1">&#39;np.ndarray&#39;</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate a Delaunay-triangulation over a given grid on a sphere. Indices</span>
+<span class="sd">    of the three angle points and areas for each triangle are calculated.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    phi : np.ndarray</span>
+<span class="sd">        Set of spherical angles phi for all orientations on sphere.</span>
+<span class="sd">    theta : np.ndarray</span>
+<span class="sd">        Set of spherical angles theta for all orientations on sphere.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    idx : TYPE</span>
+<span class="sd">        Indices of the points of each Delaunay triangle. By using the index on</span>
+<span class="sd">        the phi/theta array the coordinates of the points can be calculated.</span>
+<span class="sd">    area : TYPE</span>
+<span class="sd">        Area of each Delaunay triangle.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">((</span><span class="n">theta</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">),</span> <span class="n">theta</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)))</span>
+    <span class="n">tri</span> <span class="o">=</span> <span class="n">Delaunay</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">tri</span><span class="o">.</span><span class="n">simplices</span>
+
+    <span class="n">rtp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">phi</span><span class="p">)),</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">))</span>
+    <span class="n">rtp</span> <span class="o">=</span> <span class="n">rtp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">spherical2cartesian</span><span class="p">(</span><span class="n">rtp</span><span class="p">)</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">xyz</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">idx_a</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">idx_b</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">idx_c</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="n">idx_a</span><span class="p">]</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="n">idx_b</span><span class="p">]</span>
+    <span class="n">x3</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="n">idx_c</span><span class="p">]</span>
+
+    <span class="n">a1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x2</span><span class="o">*</span><span class="n">x3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">a2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x3</span><span class="o">*</span><span class="n">x1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">a3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x1</span><span class="o">*</span><span class="n">x2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="n">a1</span><span class="o">+</span><span class="n">a2</span><span class="o">+</span><span class="n">a3</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">s</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">((</span><span class="n">s</span><span class="o">-</span><span class="n">a1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">((</span><span class="n">s</span><span class="o">-</span><span class="n">a2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">((</span><span class="n">s</span><span class="o">-</span><span class="n">a3</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">area</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">area</span> <span class="o">=</span> <span class="n">area</span><span class="o">*</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">area</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">idx</span><span class="p">,</span> <span class="n">area</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023 M. Sc. Theresia Quintes.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>teacups.hyperfine &mdash; TEACUPS 2023 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=a4664895"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            TEACUPS
+          </a>
+              <div class="version">
+                1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spinsystem.html">Spin System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulation_options.html">Simulation Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer.html">Developer</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">TEACUPS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">teacups.hyperfine</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for teacups.hyperfine</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">teacups.creators</span> <span class="k">as</span> <span class="nn">cr</span>
+<span class="kn">import</span> <span class="nn">teacups.multioperator_tools</span> <span class="k">as</span> <span class="nn">mut</span>
+<span class="kn">import</span> <span class="nn">teacups.matrix_tools</span> <span class="k">as</span> <span class="nn">mt</span>
+<span class="kn">import</span> <span class="nn">teacups.signals_and_processing</span> <span class="k">as</span> <span class="nn">sap</span>
+<span class="kn">import</span> <span class="nn">teacups.hamiltonians</span> <span class="k">as</span> <span class="nn">ham</span>
+
+<span class="kn">import</span> <span class="nn">scipy.constants</span> <span class="k">as</span> <span class="nn">const</span>
+<span class="n">MU_B</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">physical_constants</span><span class="p">[</span><span class="s1">&#39;Bohr magneton in Hz/T&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="set_up_hyperfine_tensors">
+<a class="viewcode-back" href="../../developer.html#teacups.hyperfine.set_up_hyperfine_tensors">[docs]</a>
+<span class="k">def</span> <span class="nf">set_up_hyperfine_tensors</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set up a set of hyperfine tensors, optionally rotate them to an initial</span>
+<span class="sd">    frame and rotate them to a set of angles theta and phi. The function</span>
+<span class="sd">    cr.create_tensor is used.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sys : object</span>
+<span class="sd">        Contains parameters concerning the spin system. This function takes</span>
+<span class="sd">        use of the attribute sys.A which contains a list of lists with the</span>
+<span class="sd">        three diagonal elements af a hyperfine-tensor each. If sys.A_frame</span>
+<span class="sd">        is given (list of same dimension as sys.A) the tensors are rotated</span>
+<span class="sd">        to the given initial frame.</span>
+<span class="sd">    cal : object</span>
+<span class="sd">        Contains calculated results during the simulation. Cal.phi and cal.</span>
+<span class="sd">        theta are needed, which contain all angle points.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cal.A_tensor : list</span>
+<span class="sd">        List of tensor objects one for each hyperfine tensor given in sys.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cal</span><span class="o">.</span><span class="n">A_tensor</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s1">&#39;A_frame&#39;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">spin_count</span><span class="p">,</span> <span class="n">spin</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">A</span><span class="p">):</span>
+            <span class="n">A_s</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">nuc_count</span><span class="p">,</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spin</span><span class="p">):</span>
+                <span class="n">A_tensor</span> <span class="o">=</span> <span class="n">cr</span><span class="o">.</span><span class="n">create_tensor</span><span class="p">(</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">A</span><span class="p">[</span><span class="n">spin_count</span><span class="p">][</span><span class="n">nuc_count</span><span class="p">],</span> <span class="n">cal</span><span class="o">.</span><span class="n">phi</span><span class="p">,</span> <span class="n">cal</span><span class="o">.</span><span class="n">theta</span><span class="p">,</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">A_frame</span><span class="p">[</span><span class="n">spin_count</span><span class="p">][</span><span class="n">nuc_count</span><span class="p">])</span>
+                <span class="n">A_s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">A_tensor</span><span class="p">)</span>
+            <span class="n">cal</span><span class="o">.</span><span class="n">A_tensor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">A_s</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">spin_count</span><span class="p">,</span> <span class="n">spin</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">A</span><span class="p">):</span>
+            <span class="n">A_s</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">nuc_count</span><span class="p">,</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spin</span><span class="p">):</span>
+                <span class="n">A_tensor</span> <span class="o">=</span> <span class="n">cr</span><span class="o">.</span><span class="n">create_tensor</span><span class="p">(</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">A</span><span class="p">[</span><span class="n">spin_count</span><span class="p">][</span><span class="n">nuc_count</span><span class="p">],</span> <span class="n">cal</span><span class="o">.</span><span class="n">phi</span><span class="p">,</span> <span class="n">cal</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span>
+                <span class="n">A_s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">A_tensor</span><span class="p">)</span>
+            <span class="n">cal</span><span class="o">.</span><span class="n">A_tensor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">A_s</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="create_hf_hamiltonian">
+<a class="viewcode-back" href="../../developer.html#teacups.hyperfine.create_hf_hamiltonian">[docs]</a>
+<span class="k">def</span> <span class="nf">create_hf_hamiltonian</span><span class="p">(</span><span class="n">spins</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">coupling_nucs</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">hf_tensors</span><span class="p">:</span> <span class="nb">list</span>
+                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the diagonal elements of a hyperfine interaction hamiltonian</span>
+<span class="sd">    of any number of spins with any number of nuclei. Input parameters are</span>
+<span class="sd">    given as lists, their dimensions are described below. The interaction</span>
+<span class="sd">    hamiltonian is calculated for all grid_points and for all combinations</span>
+<span class="sd">    of spin and nuceus. The hamiltonian is set up for each spin with the</span>
+<span class="sd">    given coupling nuclei and returned in a list with the length of the number</span>
+<span class="sd">    of spins. The spin-hamiltonians lengths are given as the product of the</span>
+<span class="sd">    multiplicities of the spin and the coupling nuclei.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spins : list</span>
+<span class="sd">        List containing the spin quantum numbers of the spins in the system as</span>
+<span class="sd">        floats.</span>
+<span class="sd">    coupling_nucs : list</span>
+<span class="sd">        List containing lists of the spin quantum numbers of the coupling</span>
+<span class="sd">        nuclei. In the coupling_nucs list has to be a list of floats for</span>
+<span class="sd">        each spin. The quantum numbers of the nuclei are placed into the</span>
+<span class="sd">        lists, which are refered to their spin. E.g. if a nucleus couples</span>
+<span class="sd">        to the second spin in the spins-list its quantum number is set into</span>
+<span class="sd">        the second list in coupling_nucs-list.</span>
+<span class="sd">    hf_tensors : list</span>
+<span class="sd">        List containing lists of the hyperfine tensors. The list is set up</span>
+<span class="sd">        analogously to the coupling_nucs list. For each nucleus a tensor is</span>
+<span class="sd">        placed at the same position of the hf_tensors-list. The tensors in</span>
+<span class="sd">        the list are objects of class Tensor and have the multirot attribute</span>
+<span class="sd">        initialized.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        For each spin an array is returned in this list. The array contains</span>
+<span class="sd">        the diagonal elements of the hyperfine interaction in the product</span>
+<span class="sd">        basis. The shape of the arrays is</span>
+<span class="sd">        gridpoints x (multiplicity_spin*product of</span>
+<span class="sd">                      multiplicity_of_all_coupling_nucs).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; A = mt.Tensor([1, 1, 1])</span>
+<span class="sd">    &gt;&gt;&gt; A.multirotation(1)</span>
+<span class="sd">    &gt;&gt;&gt; create_hf_hamiltonian([1/2], [[1/2]], [[A]])</span>
+<span class="sd">    [array([[ 0.25+0.j, -0.25+0.j, -0.25+0.j,  0.25+0.j]])]</span>
+
+<span class="sd">    &gt;&gt;&gt; create_hf_hamiltonian([1/2, 1/2], [[1/2],[1]], [[A],[A]])</span>
+<span class="sd">    [array([[ 0.25+0.j, -0.25+0.j, -0.25+0.j,  0.25+0.j]]),</span>
+<span class="sd">     array([[ 0.5+0.j,  0. +0.j, -0.5+0.j, -0.5+0.j,  0. +0.j,  0.5+0.j]])]</span>
+
+<span class="sd">    &gt;&gt;&gt; h = create_hf_hamiltonian([1/2, 1], [[1/2, 1/2],[]], [[A, A],[]])</span>
+<span class="sd">    &gt;&gt;&gt; h</span>
+<span class="sd">    [array([[ 0.5+0.j,  0. +0.j,  0. +0.j, -0.5+0.j, -0.5+0.j,  0. +0.j,</span>
+<span class="sd">              0. +0.j,  0.5+0.j]]),</span>
+<span class="sd">     array([[0.+0.j, 0.+0.j, 0.+0.j]])]</span>
+<span class="sd">    &gt;&gt;&gt; h[0].shape</span>
+<span class="sd">    (1, 8)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ham_hf</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spins</span><span class="p">):</span>
+        <span class="n">spin_matrices</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">Spinoperator</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">coupling_nucs</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+        <span class="n">ham_hf_for_each_spin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span>
+            <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">hf_tensors</span><span class="p">)</span><span class="o">.</span><span class="n">flat</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">multirot</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">spin_matrices</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="n">spin_matrices</span><span class="o">.</span><span class="n">dimension</span><span class="p">),</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">spin_matrices</span><span class="o">.</span><span class="n">matrix_coupling_spins</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">ham_hf_tmp</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span>
+                <span class="n">spin_matrices</span><span class="p">,</span> <span class="n">hf_tensors</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="n">nuc</span><span class="p">]</span><span class="o">.</span><span class="n">multirot</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ham_hf_tmp</span><span class="o">.</span><span class="n">create_bilinear_operator</span><span class="p">(</span>
+                    <span class="n">hf_tensors</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="n">nuc</span><span class="p">],</span>
+                    <span class="n">spin_matrices</span><span class="o">.</span><span class="n">matrix_coupling_spins</span><span class="p">[</span><span class="n">nuc</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="n">ham_hf_for_each_spin</span> <span class="o">+=</span> <span class="n">ham_hf_tmp</span><span class="o">.</span><span class="n">angle_matrix</span>
+
+        <span class="n">ham_hf_for_each_spin</span> <span class="o">=</span> <span class="n">ham_hf_for_each_spin</span><span class="p">[</span>
+            <span class="p">:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">spin_matrices</span><span class="o">.</span><span class="n">dimension</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">spin_matrices</span><span class="o">.</span><span class="n">dimension</span><span class="p">)]</span>
+        <span class="n">ham_hf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ham_hf_for_each_spin</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ham_hf</span></div>
+
+
+
+<div class="viewcode-block" id="make_signal_with_hyperfine">
+<a class="viewcode-back" href="../../developer.html#teacups.hyperfine.make_signal_with_hyperfine">[docs]</a>
+<span class="k">def</span> <span class="nf">make_signal_with_hyperfine</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span>
+                               <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the timeresolved signal of a trEPR-experiment a system consisting</span>
+<span class="sd">    of one or two spins including hyperfine interactions. The Hamiltonian</span>
+<span class="sd">    is set up for all combinations of magnetic quantum numbers of the spins</span>
+<span class="sd">    and the coupling nucs. The propagaion and the signal are calculated for</span>
+<span class="sd">    each orientation. Therefore, all attributes needed in sap.propagation and</span>
+<span class="sd">    sap.make_signal are needed in this function. Further attributes are listed</span>
+<span class="sd">    below.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sys : object</span>
+<span class="sd">        Object of class spinsystem. This function uses sys.s (list of spin</span>
+<span class="sd">        quantum numbers of the spins) and sys.spin_system (string with the</span>
+<span class="sd">        name of the spin system).</span>
+<span class="sd">    exp : object</span>
+<span class="sd">        Experimental parameters object.</span>
+<span class="sd">    opt : object</span>
+<span class="sd">        Simulation options object.</span>
+<span class="sd">    cal : object</span>
+<span class="sd">        Object of class Calculations. Results during the simulation are saved</span>
+<span class="sd">        here. This function uses from previous functions the following</span>
+<span class="sd">        attributes: cal.ham (hamiltonian of the system excluding the</span>
+<span class="sd">        hyperfines) cal.ham_hf (hyperfine hamiltonian, e.g. built by</span>
+<span class="sd">        create_hf_hamiltonian)</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cal.spec_sim : np.ndarray</span>
+<span class="sd">        This matrix contains the intensities in abitrary units of a transient</span>
+<span class="sd">        epr spectrum for all time points t in cal.t and all magnetic field</span>
+<span class="sd">        points in exp.B_z. So the shape is len(t)xlen(B).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dims</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">s</span><span class="p">))</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span>
+
+    <span class="n">ham_total</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">ham</span>
+    <span class="n">dim_total</span> <span class="o">=</span> <span class="n">ham_total</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># system consisting of 2 spins</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">dimensions</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">dim_total</span><span class="o">/</span><span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">dim_total</span><span class="o">/</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+        <span class="n">combinations</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham_hf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                        <span class="nb">int</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham_hf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+
+        <span class="n">ham_hf</span> <span class="o">=</span> <span class="n">hyperfine_of_coupled_system</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham_hf</span><span class="p">,</span> <span class="n">combinations</span><span class="p">,</span>
+                                             <span class="n">dimensions</span><span class="p">,</span> <span class="n">dim_total</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">m_a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">combinations</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">m_b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">combinations</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">cal</span><span class="o">.</span><span class="n">ham</span> <span class="o">=</span> <span class="n">ham_total</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">ham_hf_tmp</span> <span class="o">=</span> <span class="n">ham_hf</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">m_a</span><span class="p">]</span> <span class="o">+</span> <span class="n">ham_hf</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">m_b</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s1">&#39;rp&#39;</span><span class="p">:</span>
+                    <span class="n">ham_hf_tmp</span> <span class="o">*=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+                    <span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="n">ham_hf_tmp</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+                    <span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-=</span> <span class="n">ham_hf_tmp</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+                    <span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="n">ham_hf_tmp</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+                    <span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">-=</span> <span class="o">-</span><span class="n">ham_hf_tmp</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="p">[:,</span> <span class="p">:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_total</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_total</span><span class="p">)]</span>\
+                        <span class="o">+=</span> <span class="n">ham_hf_tmp</span>
+
+                <span class="n">ham</span><span class="o">.</span><span class="n">set_up_commutator_superoperator</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
+                
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;start propagation for combination &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">m_a</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">combinations</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">m_b</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>  <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">combinations</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                <span class="n">sap</span><span class="o">.</span><span class="n">propagation</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
+                
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;start making the signal...&#39;</span><span class="p">)</span>
+                <span class="n">sap</span><span class="o">.</span><span class="n">make_signal</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
+                
+                <span class="n">sap</span><span class="o">.</span><span class="n">powder_average</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
+
+    <span class="c1"># system consisting of 1 spin</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">dim_hf</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">ham_hf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">combinations</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dim_hf</span><span class="o">/</span><span class="n">dim_total</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">m_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">combinations</span><span class="p">):</span>
+            <span class="n">cal</span><span class="o">.</span><span class="n">ham</span> <span class="o">=</span> <span class="n">ham_total</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="p">[:,</span> <span class="p">:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_total</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_total</span><span class="p">)]</span>\
+                <span class="o">+=</span> <span class="n">cal</span><span class="o">.</span><span class="n">ham_hf</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,</span> <span class="n">m_i</span><span class="p">::</span><span class="n">combinations</span><span class="p">]</span>
+
+            <span class="n">ham</span><span class="o">.</span><span class="n">set_up_commutator_superoperator</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;start propagation for combination &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">m_i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">combinations</span><span class="p">))</span>
+            <span class="n">sap</span><span class="o">.</span><span class="n">propagation</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
+            
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;start making the signal...&#39;</span><span class="p">)</span>
+            <span class="n">sap</span><span class="o">.</span><span class="n">make_signal</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
+            
+            <span class="n">sap</span><span class="o">.</span><span class="n">powder_average</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="hyperfine_of_coupled_system">
+<a class="viewcode-back" href="../../developer.html#teacups.hyperfine.hyperfine_of_coupled_system">[docs]</a>
+<span class="k">def</span> <span class="nf">hyperfine_of_coupled_system</span><span class="p">(</span><span class="n">hams_hf</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">combinations</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+                                <span class="n">dimensions</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">dim_total</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the hyperfine hamiltonian of a spin system of two coupled spins.</span>
+<span class="sd">    For each spin M_i hamiltonians are calculated, where M_i is the the total</span>
+<span class="sd">    number of magnetic quantum numbers. E.g. if one nucleus with spin 1/2 is</span>
+<span class="sd">    coupled M_i is 2, if one nucleus with spin 1/2 and one nucleus with spin 1</span>
+<span class="sd">    are coupled to the spin M_i is 2*3 = 6. A list with the diagonal elements</span>
+<span class="sd">    of the two hamiltonians is returned. The shape of each element of the list</span>
+<span class="sd">    is M_i x grid_points x total_dimension_of_spinsystem.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    hams_hf : list</span>
+<span class="sd">        List with two hyperfine hamiltonians (one for each spin). The</span>
+<span class="sd">        hamiltonians are B_angle_matrices as returned by the function</span>
+<span class="sd">        create_hf_hamiltonian.</span>
+<span class="sd">    combinations : list</span>
+<span class="sd">        List of two integers, one for each spin. This is the number of</span>
+<span class="sd">        combinations of the magnetic quantum numbers of spin and coupling</span>
+<span class="sd">        nuclei. The number can be calculated by:</span>
+<span class="sd">        hf_hamiltonian_shape/multiplicity_of_spin</span>
+<span class="sd">    dimensions : list</span>
+<span class="sd">        List of integers, one for each spin. They give the multiplicity of</span>
+<span class="sd">        each spin. E.g. if S = 1, dimension = 2*1+2 = 3.</span>
+<span class="sd">    dim_total : float</span>
+<span class="sd">        Total dimension of the spinsystem. E.g if s_1 = 1/2, s_2 = 1 the</span>
+<span class="sd">        total dimension is 2*3=6.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        List with two hyperfine interaction hamiltonians. Their shape is</span>
+<span class="sd">        M_i x grid_points x total_dimension_of_spinsystem each.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; A = mt.Tensor([1, 1, 1])</span>
+<span class="sd">    &gt;&gt;&gt; A.multirotation(1)</span>
+<span class="sd">    &gt;&gt;&gt; h = create_hf_hamiltonian([1/2, 1], [[1/2, 1/2],[]], [[A, A],[]])</span>
+<span class="sd">    &gt;&gt;&gt; h</span>
+<span class="sd">    [array([[ 0.5+0.j,  0. +0.j,  0. +0.j, -0.5+0.j, -0.5+0.j,  0. +0.j,</span>
+<span class="sd">              0. +0.j,  0.5+0.j]]),</span>
+<span class="sd">     array([[0.+0.j, 0.+0.j, 0.+0.j]])]</span>
+<span class="sd">    &gt;&gt;&gt;  hyperfine_of_coupled_system(h, [4, 1], [2, 3], 6)</span>
+<span class="sd">    [array([[[ 0.5+0.j,  0.5+0.j,  0.5+0.j, -0.5+0.j, -0.5+0.j, -0.5+0.j]],</span>
+<span class="sd">            [[ 0. +0.j,  0. +0.j,  0. +0.j,  0. +0.j,  0. +0.j,  0. +0.j]],</span>
+<span class="sd">            [[ 0. +0.j,  0. +0.j,  0. +0.j,  0. +0.j,  0. +0.j,  0. +0.j]],</span>
+<span class="sd">            [[-0.5+0.j, -0.5+0.j, -0.5+0.j,  0.5+0.j,  0.5+0.j,  0.5+0.j]]]),</span>
+<span class="sd">     array([[[0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j]]])]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">grid_points</span> <span class="o">=</span> <span class="n">hams_hf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ham_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">combinations</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">grid_points</span><span class="p">,</span> <span class="n">dim_total</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+    <span class="n">ham_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">combinations</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">grid_points</span><span class="p">,</span> <span class="n">dim_total</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">combinations</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">ham_tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                           <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+        <span class="n">ham_tmp</span><span class="p">[:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">range</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">=</span>\
+            <span class="n">hams_hf</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,</span> <span class="n">a</span><span class="p">::</span><span class="n">combinations</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">ham_tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">ham_tmp</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">ham_a</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">ham_tmp</span><span class="p">[:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_total</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_total</span><span class="p">)]</span>
+
+    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">combinations</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">ham_tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                           <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+        <span class="n">ham_tmp</span><span class="p">[:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">range</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">=</span>\
+            <span class="n">hams_hf</span><span class="p">[</span><span class="mi">1</span><span class="p">][:,</span> <span class="n">b</span><span class="p">::</span><span class="n">combinations</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">ham_tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">ham_tmp</span><span class="p">)</span>
+        <span class="n">ham_b</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">ham_tmp</span><span class="p">[:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_total</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_total</span><span class="p">)]</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">ham_a</span><span class="p">,</span> <span class="n">ham_b</span><span class="p">]</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023 M. Sc. Theresia Quintes.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

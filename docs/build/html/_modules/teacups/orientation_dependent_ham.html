@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>teacups.orientation_dependent_ham &mdash; TEACUPS 2023 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=a4664895"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            TEACUPS
+          </a>
+              <div class="version">
+                1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spinsystem.html">Spin System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulation_options.html">Simulation Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer.html">Developer</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">TEACUPS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">teacups.orientation_dependent_ham</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for teacups.orientation_dependent_ham</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="tensor_rotation">
+<a class="viewcode-back" href="../../developer.html#teacups.orientation_dependent_ham.tensor_rotation">[docs]</a>
+<span class="k">def</span> <span class="nf">tensor_rotation</span><span class="p">(</span><span class="n">tensor</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                    <span class="n">psi</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Euler transformation of a given tensor using y-convention.</span>
+
+<span class="sd">    Euler matrix is set up with the given angles in the multiplicated form.</span>
+<span class="sd">    Unitytransformation is carried out.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tensor : np.ndarray</span>
+<span class="sd">        Tensor in main axes system which will be rotated by euler</span>
+<span class="sd">        transformation. The shape has to be 3x3.</span>
+<span class="sd">    phi : float</span>
+<span class="sd">        First euler angle given in rad.</span>
+<span class="sd">    theta : float</span>
+<span class="sd">        Second euler angle given in rad.</span>
+<span class="sd">    psi : float, optional</span>
+<span class="sd">        Third euler angle given in rad. The default is 0.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    rotated_tensor : np.ndarray</span>
+<span class="sd">        Tensor after euler transformation.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; tensor_rotation(np.array(([1, 2, 3], [0, 0, 0], [0, 0, 0])), 1, 2)</span>
+<span class="sd">    array([[ 0.821379  , -0.05376802, -0.17383894],</span>
+<span class="sd">           [ 3.07396785, -0.20122401, -0.65058311],</span>
+<span class="sd">           [-1.79474586,  0.11748527,  0.37984501]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Allocations</span>
+    <span class="n">cosphi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+    <span class="n">sinphi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+    <span class="n">costhet</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">sinthet</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">cospsi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
+    <span class="n">sinpsi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
+    <span class="n">eulermatrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+    <span class="c1"># Set up the full 3-dimensional Euler matrix</span>
+    <span class="n">eulermatrix</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">cosphi</span><span class="o">*</span><span class="n">costhet</span><span class="o">*</span><span class="n">cospsi</span> <span class="o">-</span> <span class="n">sinphi</span><span class="o">*</span><span class="n">sinpsi</span>
+    <span class="n">eulermatrix</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">cosphi</span><span class="o">*</span><span class="n">costhet</span><span class="o">*</span><span class="n">sinpsi</span> <span class="o">-</span> <span class="n">sinphi</span><span class="o">*</span><span class="n">cospsi</span>
+    <span class="n">eulermatrix</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">cosphi</span><span class="o">*</span><span class="n">sinthet</span>
+    <span class="n">eulermatrix</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sinphi</span><span class="o">*</span><span class="n">costhet</span><span class="o">*</span><span class="n">cospsi</span> <span class="o">+</span> <span class="n">cosphi</span><span class="o">*</span><span class="n">sinpsi</span>
+    <span class="n">eulermatrix</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span> <span class="n">sinphi</span><span class="o">*</span><span class="n">costhet</span><span class="o">*</span><span class="n">sinpsi</span> <span class="o">+</span> <span class="n">cosphi</span><span class="o">*</span><span class="n">cospsi</span>
+    <span class="n">eulermatrix</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">sinphi</span><span class="o">*</span><span class="n">sinthet</span>
+    <span class="n">eulermatrix</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">sinthet</span><span class="o">*</span><span class="n">cospsi</span>
+    <span class="n">eulermatrix</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sinthet</span><span class="o">*</span><span class="n">sinpsi</span>
+    <span class="n">eulermatrix</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">costhet</span>
+
+    <span class="c1"># Final two sided matrix multiplication (similarity transformation)</span>
+    <span class="n">eulermatrix_transpose</span> <span class="o">=</span> <span class="n">eulermatrix</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">rotated_tensor</span> <span class="o">=</span> <span class="n">eulermatrix_transpose</span><span class="o">@</span><span class="p">(</span><span class="n">tensor</span><span class="nd">@eulermatrix</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rotated_tensor</span></div>
+
+
+
+<div class="viewcode-block" id="create_linear_hamiltonian">
+<a class="viewcode-back" href="../../developer.html#teacups.orientation_dependent_ham.create_linear_hamiltonian">[docs]</a>
+<span class="k">def</span> <span class="nf">create_linear_hamiltonian</span><span class="p">(</span><span class="n">tensor</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">spinop</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span>
+                              <span class="n">z</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a linear interaction Hamiltonian (e.g. Zeeman interaction) between</span>
+<span class="sd">    a spin vector S and an interaction matrix tensor.</span>
+
+<span class="sd">    Choose between either the x- and y- components of a third vector beeing</span>
+<span class="sd">    multiplied (e.g. static magnetic field vector) set to zero (perpendicular</span>
+<span class="sd">    magnetic field) or the y- and z- components set to zero (parallel</span>
+<span class="sd">    magnetic field).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tensor : np.ndarray</span>
+<span class="sd">        Interaction matrix between spin vector and magnetic field.</span>
+<span class="sd">        The shape is 3x3.</span>
+<span class="sd">    spinop : np.ndarray</span>
+<span class="sd">        Spin vector operator. Contains nxn spin-operator-matrices:</span>
+<span class="sd">        [S_x, S_y, S_z].</span>
+<span class="sd">    z : bool, optional</span>
+<span class="sd">        Gives choice which component of the third vector is not set to zero.</span>
+<span class="sd">        The default is True.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ham : np.ndarray</span>
+<span class="sd">        Linear interaction Hamiltonian. The shape is nxn</span>
+<span class="sd">        H = S*tensor*magnetic-field-vector.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; sigma_x = np.array([[0, 0.5], [0.5, 0]])</span>
+<span class="sd">    &gt;&gt;&gt; sigma_y = np.array([[0, -1j/2], [1j/2, 0]])</span>
+<span class="sd">    &gt;&gt;&gt; sigma_z = np.array([[0.5, 0], [0, -0.5]])</span>
+<span class="sd">    &gt;&gt;&gt; unit = np.eye(2)</span>
+<span class="sd">    &gt;&gt;&gt; S_x = np.kron(sigma_x, unit)</span>
+<span class="sd">    &gt;&gt;&gt; S_y = np.kron(sigma_y, unit)</span>
+<span class="sd">    &gt;&gt;&gt; S_z = np.kron(sigma_z, unit)</span>
+<span class="sd">    &gt;&gt;&gt; S = np.array([S_x, S_y, S_z])</span>
+<span class="sd">    &gt;&gt;&gt; g = np.array([[2.0, 0, 0], [0, 2.01, 0], [0, 0, 2.02]])</span>
+<span class="sd">    &gt;&gt;&gt; create_linear_hamiltonian(g, S)</span>
+<span class="sd">    array([[ 1.01+0.j,  0.  +0.j,  0.  +0.j,  0.  +0.j],</span>
+<span class="sd">           [ 0.  +0.j,  1.01+0.j,  0.  +0.j,  0.  +0.j],</span>
+<span class="sd">           [ 0.  +0.j,  0.  +0.j, -1.01+0.j,  0.  +0.j],</span>
+<span class="sd">           [ 0.  +0.j,  0.  +0.j,  0.  +0.j, -1.01+0.j]])</span>
+<span class="sd">    &gt;&gt;&gt; create_linear_hamiltonian(g, S, z=False)</span>
+<span class="sd">    array([[0.+0.j, 0.+0.j, 1.+0.j, 0.+0.j],</span>
+<span class="sd">           [0.+0.j, 0.+0.j, 0.+0.j, 1.+0.j],</span>
+<span class="sd">           [1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j],</span>
+<span class="sd">           [0.+0.j, 1.+0.j, 0.+0.j, 0.+0.j]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">z</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># Set up the Hamiltonian for perpendicular magnetic field</span>
+        <span class="n">ham</span> <span class="o">=</span> <span class="n">spinop</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">spinop</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>\
+            <span class="o">+</span> <span class="n">spinop</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Set up the Hamiltonian for parallel magnetic field</span>
+        <span class="n">ham</span> <span class="o">=</span> <span class="n">spinop</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">spinop</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>\
+            <span class="o">+</span> <span class="n">spinop</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">ham</span></div>
+
+
+
+<div class="viewcode-block" id="create_bilinear_hamiltonian">
+<a class="viewcode-back" href="../../developer.html#teacups.orientation_dependent_ham.create_bilinear_hamiltonian">[docs]</a>
+<span class="k">def</span> <span class="nf">create_bilinear_hamiltonian</span><span class="p">(</span><span class="n">spinop1</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">tensor</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span>
+                                <span class="n">spinop2</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a bilinear interaction Hamiltonian between two spin vectors,</span>
+<span class="sd">    spinop1 and spinop2, and an interaction matrix tensor.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spinop1 : np.ndarray</span>
+<span class="sd">        Spin vector operator of the first interacting Spin.</span>
+<span class="sd">        Contains nxn spin-operator-matrices: [S_x, S_y, S_z].</span>
+<span class="sd">    tensor : np.ndarray</span>
+<span class="sd">        3x3 - Interaction matrix between the two spin vectors.</span>
+<span class="sd">    spinop2 : np.ndarray</span>
+<span class="sd">        Spin vector operator of the second interacting spin.</span>
+<span class="sd">        Contains nxn spin-operator-matrices: [S_x, S_y, S_z].</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ham : np.ndarray</span>
+<span class="sd">        Bilinear interaction Hamiltonian. H = spinop1*tensor*spinop2.</span>
+<span class="sd">        The shape will be nxn.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; sigma_x = np.array([[0, 0.5], [0.5, 0]])</span>
+<span class="sd">    &gt;&gt;&gt; sigma_y = np.array([[0, -1j/2], [1j/2, 0]])</span>
+<span class="sd">    &gt;&gt;&gt; sigma_z = np.array([[0.5, 0], [0, -0.5]])</span>
+<span class="sd">    &gt;&gt;&gt; unit = np.eye(2)</span>
+<span class="sd">    &gt;&gt;&gt; S_x = np.kron(sigma_x, unit)</span>
+<span class="sd">    &gt;&gt;&gt; S_y = np.kron(sigma_y, unit)</span>
+<span class="sd">    &gt;&gt;&gt; S_z = np.kron(sigma_z, unit)</span>
+<span class="sd">    &gt;&gt;&gt; S = np.array([S_x, S_y, S_z])</span>
+<span class="sd">    &gt;&gt;&gt; D = np.array([[0.5, 0, 0], [0, 1.5, 0], [0, 0, -2]])</span>
+<span class="sd">    &gt;&gt;&gt; create_bilinear_hamiltonian(S, D, S)</span>
+<span class="sd">    array([[0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j],</span>
+<span class="sd">           [0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j],</span>
+<span class="sd">           [0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j],</span>
+<span class="sd">           [0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ham</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="n">ham</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ham</span><span class="p">,</span> <span class="n">spinop1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">@</span> <span class="p">(</span><span class="n">tensor</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">spinop2</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">ham</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023 M. Sc. Theresia Quintes.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

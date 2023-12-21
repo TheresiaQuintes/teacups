@@ -1,0 +1,110 @@
+\documentclass[a4paper,12pt]{scrartcl}
+
+\usepackage[utf8]{inputenc}    % Zeichenkodierung für das Dokument
+\usepackage[T1]{fontenc}       % Schriftkodierung
+\usepackage[english]{babel}		% Deutsche Sprache
+\KOMAoptions{parskip=half}     % Abstand statt Einrückung für Absätze
+\usepackage{graphicx}			% Grafiken
+\usepackage{amsmath}			% Mathematik
+\usepackage{microtype}			% Mikrotypographie
+\usepackage{booktabs}			% Korrekte Tabellen
+\usepackage{tabularx}
+\usepackage{xltabular}
+\KOMAoptions{captions=tableheading}
+
+\usepackage{siunitx}			% Einheiten
+\usepackage[autostyle]{csquotes}% Anführungszeichen
+\pagestyle{empty}
+\usepackage{hyperref}			% Referenzierungen
+
+\begin{document}
+\begin{xltabular}{\linewidth}{lXl}
+\toprule
+attribute & content & type \\
+\midrule
+\endhead
+Sys.spin\_system & define spin system: \enquote{rp} (radical pair), \enquote{doub} (doublet), \enquote{trip} (triplet), \enquote{tdp} (triplet doublet pair) & string \\
+Sys.precursor & define precursor state: \enquote{zf}, \enquote{eigen}, \enquote{singlet}, \enquote{triplet-zf}, \enquote{triplet-eigen}, \enquote{coupled}, \enquote{basis} & string\\
+Sys.population & populations of the initial density matrix diagonals & list of floats\\
+
+\midrule
+
+Sys.g1 & diagonal elements of the g1-tensor (acceptor) & list of floats \\
+Sys.g1\_frame & euler angles, rotate g1-tensor to the lab. frame & list of floats\\
+Sys.g2 & diagonal elements of the g2-tensor (donor) & list of floats \\
+Sys.g2\_frame & euler angles, rotate g2-tensor to the lab. frame & list of floats\\
+Sys.g\_tri & diagonal elements of the g-tensor of a triplet & list of floats\\
+Sys.g\_tri\_frame & euler angles, rotate g\_tri to the lab. frame & list of floats\\
+Sys.g & diagonal elements of the g-tensor of a doublet & list of floats\\
+Sys.g\_frame & euler angles, rotate g to the lab. frame & list of floats\\
+Sys.width\_gauss & gaussian line width in mT & float\\
+\midrule
+
+Sys.donor\_list & index of cores assigned to the donor & list of str/int\\
+Sys.acceptor\_list & index of cores assigned to the acceptor & list of str/int\\
+Sys.A1 & diagonal elements of A1-tensor  & list of floats\\
+Sys.A2 & diagonal elements of A2-tensor & list of floats\\
+Sys.A3 & diagonal elements of A3-tensor & list of floats\\
+Sys.A4 & diagonal elements of A4-tensor & list of floats\\
+Sys.A5 & diagonal elements of A5-tensor & list of floats\\
+Sys.A1\_frame & euler angles, rotate A1-tensor to the lab. frame & list of floats\\
+Sys.A2\_frame & euler angles, rotate A2-tensor to the lab. frame & list of floats\\
+Sys.A3\_frame & euler angles, rotate A3-tensor to the lab. frame & list of floats\\
+Sys.A4\_frame & euler angles, rotate A4-tensor to the lab. frame & list of floats\\
+Sys.A5\_frame & euler angles, rotate A5-tensor to the lab. frame & list of floats\\
+Sys.I1 & spin quantum number of core group 1 (integer or half) & float  \\
+Sys.I2 & spin quantum number of core group 2 (integer or half)& float  \\
+Sys.I3 & spin quantum number of core group 3 (integer or half)& float  \\
+Sys.I4 & spin quantum number of core group 4 (integer or half)& float  \\
+Sys.I5 & spin quantum number of core group 5 (integer or half)& float  \\
+Sys.n1 & number of cores in core group 1 & integer \\
+Sys.n2 & number of cores in core group 2 & integer \\
+Sys.n3 & number of cores in core group 3 & integer \\
+Sys.n4 & number of cores in core group 4 & integer \\
+Sys.n5 & number of cores in core group 5 & integer \\
+		&								& 			\\
+Sys.A & diagonal elements of all A-tensors (assigned to spins $i$ and optionally $j$) & list [[$A_i$], [$A_j$]]\\
+Sys.A\_frame & euler angles, rotate all A-tensors to the lab. frame & list [[$Fr_i$], [$Fr_j$]]\\
+Sys.I & spin quantum numbers of all cores & list [[$A_i$], [$A_j$]] \\
+
+\midrule
+
+Sys.D & zero-field-splitting constant of two interacting electronic species $D$ in MHz & float\\
+Sys.E & zero field-splitting constant of two interacting electronic species $E$ in MHz & float\\
+Sys.J\_ex & exchange-coupling constant $J$ of two interacting electronic species $J$ in MHz & float\\
+Sys.D\_tri & zero-field-splitting constant of a triplet in MHz & float\\
+Sys.E\_tri & zero-field-splitting constant of a triplet in MHz & float\\
+Sys.D\_frame & euler angles, rotate D-tensor to lab. frame & list of floats\\
+Sys.D\_tri\_frame & euler angles, rotate triplet D-tensor to lab. frame & list of floats\\
+
+\midrule
+
+Sys.T\_relax\_1 & longitudinal relaxation time & float\\
+Sys.T\_relax\_2 & transversal relaxation time  & float\\
+Sys.decay & decay time (exponential) for hilbert space calculations in s & float\\
+Sys.dynamics & Matrix with rateconstants of relaxation process in 1/s & np.ndarray\\
+
+\midrule
+
+Exp.B\_z & magnetic field array in mT & np.ndarray \\
+Exp.t\_scale & borders of the time variation in s & list of floats\\
+Exp.t\_points & number of time field points & integer\\
+Exp.B\_mw & amplitude of the microwave field in mT & float\\
+Exp.freq\_mw & microwave frequency in Hz & float\\
+
+\midrule
+
+SimOpt.grid\_points & number of points between $\vartheta=0$ and $\vartheta=\pi/2$ on the orientational sphere& integer\\
+SimOpt.grid & Type of grid on the sphere for powder averaging. Can be either "fibonacci" or "sophe" & string \\
+SimOpt.width\_intp & Width for the interpolation in case of sophe-grid in mT & float\\
+SimOpt.space & define in which space the time evolution will be calculated, either \enquote{hilbert} or \enquote{liouville} & string\\
+SimOpt.pop\_evolution & Decides wether the population evolution is calculated (and saved in cal) or not & boolean\\
+SimOpt.eigval\_mode & Decides wether only the eigenvalues shall be calculated & boolean\\
+SimOpt.cpu\_cores & Number of CPU cores used for time evolution, 0 uses all available cores & integer \\
+
+
+
+\bottomrule
+
+\end{xltabular}
+\end{document}
