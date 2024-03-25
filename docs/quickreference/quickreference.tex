@@ -95,7 +95,9 @@ Exp.freq\_mw & microwave frequency in Hz & float\\
 \midrule
 
 SimOpt.grid\_points & number of points between $\vartheta=0$ and $\vartheta=\pi/2$ on the orientational sphere& integer\\
-SimOpt.grid & Type of grid on the sphere for powder averaging. Can be either "fibonacci" or "sophe" & string \\
+SimOpt.grid & Type of grid on the sphere for powder averaging. Can be either "fibonacci" or "sophe" or "single" & string \\
+SimOpt.theta & User-chosen orientation-angles for theta if SimOpt.grid = "single" & list \\
+SimOpt.phi & User-chosen orientation-angles for phi if SimOpt.grid = "single" & list \\
 SimOpt.width\_intp & Width for the interpolation in case of sophe-grid in mT & float\\
 SimOpt.space & define in which space the time evolution will be calculated, either \enquote{hilbert} or \enquote{liouville} & string\\
 SimOpt.pop\_evolution & Decides wether the population evolution is calculated (and saved in cal) or not & boolean\\
