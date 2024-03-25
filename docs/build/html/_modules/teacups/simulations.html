@@ -51,9 +51,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../spinsystem.html">Spin System</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../experimental.html">Experimental</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../simulation_options.html">Simulation Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spinsystem.html">Spin System (Sys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../experimental.html">Experimental (Exp)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulation_options.html">Simulation Options (SimOpt)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../developer.html">Developer</a></li>
 </ul>
 
@@ -93,6 +93,8 @@
 <span class="kn">import</span> <span class="nn">teacups.creators</span> <span class="k">as</span> <span class="nn">cr</span>
 <span class="kn">import</span> <span class="nn">teacups.hamiltonians</span> <span class="k">as</span> <span class="nn">ham</span>
 <span class="kn">import</span> <span class="nn">teacups.density_matrices</span> <span class="k">as</span> <span class="nn">dm</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 
 <div class="viewcode-block" id="teacups">
@@ -186,8 +188,8 @@
 
     <span class="c1"># Stop simulation routine if only the eigenvalues are desired</span>
     <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">eigval_mode</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">eigval</span><span class="p">,</span> <span class="n">eigvec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham_sys</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">eigval</span>
+        <span class="n">eigval</span><span class="p">,</span> <span class="n">eigvec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham_sys</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">eigval</span>
 
     <span class="c1"># set up initial density matrix</span>
     <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">precursor</span> <span class="o">==</span> <span class="s1">&#39;triplet-zf&#39;</span> <span class="ow">or</span> <span class="n">sys</span><span class="o">.</span><span class="n">precursor</span> <span class="o">==</span> <span class="s1">&#39;triplet-eigen&#39;</span><span class="p">:</span>
@@ -225,7 +227,7 @@
     <span class="c1"># build signal if no coupling nuclei are given</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ham</span><span class="o">.</span><span class="n">set_up_commutator_superoperator</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
-        
+
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;starting the propagation...&#39;</span><span class="p">)</span>
         <span class="n">sap</span><span class="o">.</span><span class="n">propagation</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
 
@@ -234,10 +236,10 @@
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;ham&#39;</span><span class="p">):</span>
                 <span class="nb">delattr</span><span class="p">(</span><span class="n">cal</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
-        
+
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;start making the signal...&#39;</span><span class="p">)</span>
         <span class="n">sap</span><span class="o">.</span><span class="n">make_signal</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
-        
+
         <span class="n">sap</span><span class="o">.</span><span class="n">powder_average</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
 
     <span class="c1"># do Voigt convolution</span>

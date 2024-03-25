@@ -5,14 +5,15 @@ Created on Thu Apr 13 13:30:11 2023
 
 @author: quintes
 """
-import easypairspin.epr_setup as epr
-import easypairspin.plotting as plotting
-from easypairspin.easypairspin import easypairspin
+import teacups.classes as cl
+import teacups.simulations as sim
 import numpy as np
 import matplotlib.pyplot as plt
 
 
-Sys = epr.Spinsystem()
+Sys = cl.Sys()
+Exp = cl.Exp()
+SimOpt = cl.SimOpt()
 
 # choose a triplet doublet pair spin system
 Sys.spin_system = "tdp"
@@ -23,42 +24,60 @@ Sys.g_tri = [2.003, 2.003, 2.003]
 
 # define triplet ZFS
 Sys.D_tri = 700
+Sys.E_tri = -100
 
 # define couplings of the radical and the triplet
-Sys.J_ex = -20000
+Sys.J_ex = -400000
 
 # define initial state
-#Sys.precursor = "eigen"
-#Sys.population = [0.3, 0.2, 0.2, 0.3, 0.5, 0.5]
+Sys.precursor = "eigen"
+Sys.population = [0.3, 0.1, 0.1, 0.3, 0.5, 0.55]
 
 Sys.precursor = "triplet-zf"
-Sys.population = [0.1, 0.2, 0.3, 0.2, 0.1]
+Sys.population = [0.21, 0.2, 0.1, 0.1, 0.2]
 
 # define decay time and line width
 Sys.decay = 1e-6
 Sys.width_gauss = 1
 
 # experimental setup
-exp_mag_field = np.linspace(320, 380, 700)
-Exp = epr.Experimental(exp_mag_field)
+Exp.B_z = np.linspace(320, 380, 700)
 Exp.t_scale = [0, 2e-6]
 Exp.t_points = 2
-Exp.B_mw = 0.001
 Exp.freq_mw = 9.75e9
 
 # simulation options
-SimOpt = epr.SimulationOptions()
-SimOpt.routine = 'teacups'
-SimOpt.grid_points = 10
-SimOpt.grid = "fibonacci"
-SimOpt.space = "hilbert"
+SimOpt.grid_points = 20
+
 
 # do the simulation
-easypairspin(Sys, Exp, SimOpt)
-#fig_1 = plotting.plot_2D(Exp.B_z, Exp.spec_sim.real[1], xlabel='$B_0$/mT',
-#                         ylabel='', labels='static spectrum')
+cal = sim.teacups(Sys, Exp, SimOpt, development=True)
 
+spec_sim = cal.spec_sim
+
+# %%
 M = np.loadtxt("M.txt")
+n = 1
 plt.figure()
-plt.plot(Exp.B_z, Exp.spec_sim.real[1])
+plt.plot(Exp.B_z, spec_sim.real[n]/max(abs(spec_sim.real[n])))
 plt.plot(M[0], M[1])
+
+# # %%
+# for J_ex in [0, -10, -50, -100, -200, -500, -1000, -2000, -3000, -4000, -5000, -5500, -5800, -6000, -6300, -6500, -7000, -7500, -8000, -10000, -15000, -20000]:
+#     print(J_ex)
+#     Sys.J_ex = J_ex
+#     spec_sim = sim.teacups(Sys, Exp, SimOpt)
+#     spec = spec_sim[1].real
+#     spec /= max(abs(spec))
+#     np.savetxt("sim_zf_tea_"+str(J_ex)+".txt", spec)
+# # %%
+
+# for J_ex in [0, -10, -50, -100, -200, -500, -1000, -2000, -3000, -4000, -5000, -5500, -5800, -6000, -6300, -6500, -7000, -7500, -8000, -10000, -15000, -20000]:
+#     tea = np.loadtxt("sim_zf_tea_"+str(J_ex)+".txt")
+#     easy = np.loadtxt("sim_zf_"+str(J_ex)+".txt")
+#     plt.figure()
+#     plt.plot(Exp.B_z, tea, label="teacups")
+#     plt.plot(Exp.B_z, easy[1], label="easyspin")
+#     plt.xlabel("$B_z$ / mT")
+#     plt.legend()
+#     plt.savefig("sim_zf_J"+str(J_ex)+".png", dpi=200)

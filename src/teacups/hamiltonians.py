@@ -194,21 +194,20 @@ def set_up_triplet_high_field_hamiltonian(exp: object, opt: object,
 
     """
     s_tri = mt.Spinoperator(1)
-    ham = mut.Multioperator(s_tri, opt.grid_points, exp.B_z)
-    ham_imag = mut.Multioperator(s_tri, opt.grid_points, exp.B_z)
 
-    B_z = exp.B_z*MU_B
-    B_z = B_z[:, np.newaxis]
+    ham_d = mut.Multioperator(s_tri, opt.grid_points, exp.B_z*MU_B)
+    ham_d.create_bilinear_operator(cal.D_tri_tensor, s_tri)
+    ham_d.angle_matrix_changed()
 
-    ham_imag.B_angle_matrix[:, :, 0, 1] = -1 * \
-        B_z * cal.g_tri_tensor.multirot[:, 2, 2]
-    ham_imag.B_angle_matrix[:, :, 1, 0] = +1 * \
-        B_z * cal.g_tri_tensor.multirot[:, 2, 2]
+    eig_d, vec_d = np.linalg.eigh(ham_d.B_angle_matrix)
 
-    ham.B_angle_matrix = cal.D_tri_tensor.multirot * \
-        1 + 1j*ham_imag.B_angle_matrix
+    ham_tri_hf = mut.Multioperator(s_tri, opt.grid_points, exp.B_z*MU_B)
+    ham_tri_hf.zeeman_coupling(cal.g_tri_tensor)
+    ham_tri_hf.B_angle_matrix += ham_d.B_angle_matrix
 
-    ham_tri_hf = ham.B_angle_matrix
+    ham_tri_hf.B_angle_matrix = np.conj(
+        np.transpose(vec_d, (0, 1, 3, 2))) @ ham_tri_hf.B_angle_matrix @ vec_d
+    ham_tri_hf = ham_tri_hf.B_angle_matrix
 
     return ham_tri_hf
 

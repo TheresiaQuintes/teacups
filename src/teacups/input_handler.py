@@ -310,14 +310,20 @@ def create_grid(opt: object, cal: object) -> None:
     Create the orientational grid and set up pairs of theta and phi for each
     angle point. The variable grid_points is changed from the input value
     (Number of points between theta=0 and theta=pi/2) to the number of angle
-    points. A fibonacci grid or a sophe grid either is built.
+    points. A fibonacci grid or a sophe grid either is built, or a grid
+    consisting of user-chosen angle points.
 
     Parameters
     ----------
     opt : object
-        Object of class Options. It has to contain the attribute
-        opt.grid_points which is the number of points between theta=0 and
-        theat=pi/2 on the orientational sphere that shall be calculated.
+        Object of class Options. The attribute opt.grid sets the chosen
+        grid. It may be 'sophe' or 'fibonacci' either.
+        It has to contain the attribute opt.grid_points which is the number of
+        points between theta=0 and theat=pi/2 on the orientational sphere that
+        shall be calculated.
+        If opt.grid is set to 'single' user-chosen orientations can be
+        calculated. In that case opt.theta and opt.phi have to be given as
+        lists containing the desired angle inputs.
     cal : object
         Container for calculated values.
 
@@ -343,6 +349,11 @@ def create_grid(opt: object, cal: object) -> None:
     elif opt.grid == 'fibonacci':
         cal.theta, cal.phi = gri.get_theta_phi(
             int(opt.grid_points + 4*opt.grid_points*(opt.grid_points-1)/2))
+        opt.grid_points = len(cal.phi)
+
+    elif opt.grid == 'single':
+        cal.theta = np.array(opt.theta)
+        cal.phi = np.array(opt.phi)
         opt.grid_points = len(cal.phi)
     return
 

@@ -51,9 +51,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../spinsystem.html">Spin System</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../experimental.html">Experimental</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../simulation_options.html">Simulation Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spinsystem.html">Spin System (Sys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../experimental.html">Experimental (Exp)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulation_options.html">Simulation Options (SimOpt)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../developer.html">Developer</a></li>
 </ul>
 
@@ -411,14 +411,20 @@
 <span class="sd">    Create the orientational grid and set up pairs of theta and phi for each</span>
 <span class="sd">    angle point. The variable grid_points is changed from the input value</span>
 <span class="sd">    (Number of points between theta=0 and theta=pi/2) to the number of angle</span>
-<span class="sd">    points. A fibonacci grid or a sophe grid either is built.</span>
+<span class="sd">    points. A fibonacci grid or a sophe grid either is built, or a grid</span>
+<span class="sd">    consisting of user-chosen angle points.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    opt : object</span>
-<span class="sd">        Object of class Options. It has to contain the attribute</span>
-<span class="sd">        opt.grid_points which is the number of points between theta=0 and</span>
-<span class="sd">        theat=pi/2 on the orientational sphere that shall be calculated.</span>
+<span class="sd">        Object of class Options. The attribute opt.grid sets the chosen</span>
+<span class="sd">        grid. It may be &#39;sophe&#39; or &#39;fibonacci&#39; either.</span>
+<span class="sd">        It has to contain the attribute opt.grid_points which is the number of</span>
+<span class="sd">        points between theta=0 and theat=pi/2 on the orientational sphere that</span>
+<span class="sd">        shall be calculated.</span>
+<span class="sd">        If opt.grid is set to &#39;single&#39; user-chosen orientations can be</span>
+<span class="sd">        calculated. In that case opt.theta and opt.phi have to be given as</span>
+<span class="sd">        lists containing the desired angle inputs.</span>
 <span class="sd">    cal : object</span>
 <span class="sd">        Container for calculated values.</span>
 
@@ -444,6 +450,11 @@
     <span class="k">elif</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid</span> <span class="o">==</span> <span class="s1">&#39;fibonacci&#39;</span><span class="p">:</span>
         <span class="n">cal</span><span class="o">.</span><span class="n">theta</span><span class="p">,</span> <span class="n">cal</span><span class="o">.</span><span class="n">phi</span> <span class="o">=</span> <span class="n">gri</span><span class="o">.</span><span class="n">get_theta_phi</span><span class="p">(</span>
             <span class="nb">int</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span> <span class="o">+</span> <span class="mi">4</span><span class="o">*</span><span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="o">*</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">phi</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid</span> <span class="o">==</span> <span class="s1">&#39;single&#39;</span><span class="p">:</span>
+        <span class="n">cal</span><span class="o">.</span><span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span>
+        <span class="n">cal</span><span class="o">.</span><span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">phi</span><span class="p">)</span>
         <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">phi</span><span class="p">)</span>
     <span class="k">return</span></div>
 

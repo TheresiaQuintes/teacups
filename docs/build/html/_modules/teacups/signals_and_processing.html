@@ -51,9 +51,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../spinsystem.html">Spin System</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../experimental.html">Experimental</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../simulation_options.html">Simulation Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spinsystem.html">Spin System (Sys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../experimental.html">Experimental (Exp)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulation_options.html">Simulation Options (SimOpt)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../developer.html">Developer</a></li>
 </ul>
 
@@ -422,8 +422,8 @@
 <span class="k">def</span> <span class="nf">powder_average</span><span class="p">(</span><span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Build the powder average of a signal. Depending on the chosen grid, points</span>
-<span class="sd">    are just summed up for all orientations (opt.grid=&#39;fibonacci&#39;) or the</span>
-<span class="sd">    signal is interpolated (opt.grid=&#39;sophe&#39;).</span>
+<span class="sd">    are just summed up for all orientations (opt.grid=&#39;fibonacci&#39;,</span>
+<span class="sd">    opt.grid=&#39;single&#39;) or the signal is interpolated (opt.grid=&#39;sophe&#39;).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -464,6 +464,10 @@
     <span class="k">elif</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid</span> <span class="o">==</span> <span class="s1">&#39;fibonacci&#39;</span><span class="p">:</span>
         <span class="n">signal_powder_average</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">signal</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
         <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span> <span class="o">+=</span> <span class="n">signal_powder_average</span>
+
+    <span class="k">elif</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid</span> <span class="o">==</span> <span class="s1">&#39;single&#39;</span><span class="p">:</span>
+        <span class="n">signal_multiple_orientations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">signal</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span> <span class="o">+=</span> <span class="n">signal_multiple_orientations</span>
 
     <span class="k">return</span> <span class="kc">None</span></div>
 

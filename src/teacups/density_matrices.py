@@ -1,6 +1,7 @@
 import numpy as np
 from copy import deepcopy
 import teacups.multioperator_tools as mut
+import teacups.matrix_tools as mt
 import teacups.creators as cr
 import teacups.hamiltonians as ham
 
@@ -75,22 +76,16 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
     """
     if sys.precursor == "zf":
         if sys.spin_system == "trip":
-            # resort populations
-            rho_0_tri = np.array(sys.population, dtype=FLOAT_TYPE)
-            rho_0_tri = cr.create_tensor(rho_0_tri, cal.phi, cal.theta)
 
-            # fill in ZF-populations for all orientations
             rho = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
-            rho.angle_matrix = rho_0_tri.multirot
-            rho.angle_matrix_changed()
 
             # diagonalize hf-Hamiltonians
             eig_hf, vec_hf = np.linalg.eigh(cal.ham_tri_hf)
 
             # basistransformation to the high field functions
             rho.B_angle_matrix = (
-                np.conj(np.transpose(vec_hf, (0, 1, 3, 2)))
-                @ rho.B_angle_matrix
+                np.conj(np.transpose((vec_hf), (0, 1, 3, 2)))
+                @ np.diag(sys.population)
                 @ vec_hf
             )
 
@@ -170,7 +165,8 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
             rho = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
             rho.B_angle_matrix = np.kron(
                 np.diag(np.array(sys.population[:2], dtype=FLOAT_TYPE)
-                        ), cal_tri.rho)
+                        ), np.eye(3, dtype=FLOAT_TYPE)) +\
+                np.kron(np.eye(2, dtype=FLOAT_TYPE), cal_tri.rho)
 
         else:
             raise AttributeError(
@@ -285,4 +281,3 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
         raise AttributeError("opt.space has to be either hilbert or liouville")
 
     return
-

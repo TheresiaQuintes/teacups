@@ -318,8 +318,8 @@ def multicore(time_evolution_function: callable) -> callable:
 def powder_average(exp: object, opt: object, cal: object) -> None:
     """
     Build the powder average of a signal. Depending on the chosen grid, points
-    are just summed up for all orientations (opt.grid='fibonacci') or the
-    signal is interpolated (opt.grid='sophe').
+    are just summed up for all orientations (opt.grid='fibonacci',
+    opt.grid='single') or the signal is interpolated (opt.grid='sophe').
 
     Parameters
     ----------
@@ -360,6 +360,10 @@ def powder_average(exp: object, opt: object, cal: object) -> None:
     elif opt.grid == 'fibonacci':
         signal_powder_average = np.sum(cal.signal, (-1))
         cal.spec_sim += signal_powder_average
+
+    elif opt.grid == 'single':
+        signal_multiple_orientations = np.sum(cal.signal, (-1))
+        cal.spec_sim += signal_multiple_orientations
 
     return None
 

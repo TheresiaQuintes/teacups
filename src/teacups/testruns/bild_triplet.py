@@ -1,10 +1,9 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import teacups.classes as cl
+import teacups.simulations as sim
 import sys
 sys.path.append("../../")
-
-import teacups.simulations as sim
-import teacups.classes as cl
-import numpy as np
-import matplotlib.pyplot as plt
 
 
 # initialize classes with default parameters
@@ -22,7 +21,7 @@ sys.precursor = 'zf'
 sys.population = [0, 0, 1]
 
 sys.decay = 1e-6
-sys.width_gauss = 3.5
+sys.width_gauss = 2.5
 
 # set up experimental parameters
 exp.B_z = np.linspace(300, 400, 1000)
@@ -30,8 +29,11 @@ exp.t_scale = [0, 2e-6]
 exp.t_points = 150
 
 # set up simulation option parameters
-opt.grid_points = 15
+opt.grid_points = 20
 opt.space = 'hilbert'
+opt.grid = 'fibonacci'
+opt.theta = np.array([1, 0.1])
+opt.phi = np.array([2, 0.2])
 
 
 # do simulation

@@ -58,8 +58,9 @@
 <li class="toctree-l1"><a class="reference internal" href="experimental.html">Experimental (Exp)</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Simulation Options (SimOpt)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#grid">Grid</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#simopt-grid-points">SimOpt.grid_points</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#simopt-grid">SimOpt.grid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#simopt-grid-points">SimOpt.grid_points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#simopt-theta-simopt-phi">SimOpt.theta / SimOpt.phi</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#simopt-width-intp">SimOpt.width_intp</a></li>
 </ul>
 </li>
@@ -128,6 +129,29 @@
 </div>
 <section id="grid">
 <h2>Grid<a class="headerlink" href="#grid" title="Link to this heading"></a></h2>
+<section id="simopt-grid">
+<h3>SimOpt.grid<a class="headerlink" href="#simopt-grid" title="Link to this heading"></a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The sophe-grid uses interpolation between the angle points. This does not work properly for narrow spectra. It is useful for fast calculation of very broad spectra with a small number of angle points to get a quick overview. To get a smooth spectrum the fibonacci grid is still recommended.</p>
+</div>
+<ul>
+<li><dl class="simple">
+<dt>Type of the grid that is chosen to distribute points equally on a hemisphere</dt><dd><ul class="simple">
+<li><p>Set it to a string, either ‘fibonacci’ or ‘sophe’ (add SimOpt.grid_points)</p></li>
+<li><p>Set it to ‘single’ if you don’t want to simulate a full hemisphere but your own chosen angle points (add SimOpt.theta and SimOpt.phi)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Obligatory for all simulations</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SimOpt</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="s1">&#39;fibonacci&#39;</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
 <section id="simopt-grid-points">
 <h3>SimOpt.grid_points<a class="headerlink" href="#simopt-grid-points" title="Link to this heading"></a></h3>
 <ul>
@@ -140,31 +164,31 @@
 </dd>
 </dl>
 </li>
-<li><p>Obligatory for all simulations</p></li>
+<li><p>Obligatory for all simulations with ‘fibonacci’ or ‘sophe’ grid</p></li>
 <li><p>e.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SimOpt</span><span class="o">.</span><span class="n">grid_points</span> <span class="o">=</span> <span class="mi">7</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SimOpt</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="s1">&#39;fibonacci&#39;</span>
+<span class="n">SimOpt</span><span class="o">.</span><span class="n">grid_points</span> <span class="o">=</span> <span class="mi">7</span>
 </pre></div>
 </div>
 </li>
 </ul>
 </section>
-<section id="simopt-grid">
-<h3>SimOpt.grid<a class="headerlink" href="#simopt-grid" title="Link to this heading"></a></h3>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The sophe-grid uses interpolation between the angle points. This does not work properly for narrow spectra. It is useful for fast calculation of very broad spectra with a small number of angle points to get a quick overview. To get a smooth spectrum the fibonacci grid is still recommended.</p>
-</div>
+<section id="simopt-theta-simopt-phi">
+<h3>SimOpt.theta / SimOpt.phi<a class="headerlink" href="#simopt-theta-simopt-phi" title="Link to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
-<dt>Type of the grid that is chosen to distribute points equally on a hemisphere</dt><dd><ul class="simple">
-<li><p>Set it to a string, either ‘fibonacci’ or ‘sophe’</p></li>
+<dt>Lists with orientation angles chosen by the user</dt><dd><ul class="simple">
+<li><p>Both lists have to have the same length</p></li>
+<li><p>Angles are given in rad</p></li>
 </ul>
 </dd>
 </dl>
 </li>
-<li><p>Obligatory for all simulations</p></li>
+<li><p>Obligatory for all simulations with SimOpt.grid = ‘single’</p></li>
 <li><p>e.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SimOpt</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="s1">&#39;fibonacci&#39;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SimOpt</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="s1">&#39;single&#39;</span>
+<span class="n">SimOpt</span><span class="o">.</span><span class="n">theta</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span>
+<span class="n">SimOpt</span><span class="o">.</span><span class="n">phi</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span>
 </pre></div>
 </div>
 </li>

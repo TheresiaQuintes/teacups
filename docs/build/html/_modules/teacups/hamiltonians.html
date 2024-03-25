@@ -51,9 +51,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../spinsystem.html">Spin System</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../experimental.html">Experimental</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../simulation_options.html">Simulation Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spinsystem.html">Spin System (Sys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../experimental.html">Experimental (Exp)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulation_options.html">Simulation Options (SimOpt)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../developer.html">Developer</a></li>
 </ul>
 
@@ -289,21 +289,20 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">s_tri</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">Spinoperator</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">ham</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">s_tri</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">)</span>
-    <span class="n">ham_imag</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">s_tri</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">)</span>
 
-    <span class="n">B_z</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="o">*</span><span class="n">MU_B</span>
-    <span class="n">B_z</span> <span class="o">=</span> <span class="n">B_z</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+    <span class="n">ham_d</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">s_tri</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="o">*</span><span class="n">MU_B</span><span class="p">)</span>
+    <span class="n">ham_d</span><span class="o">.</span><span class="n">create_bilinear_operator</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">D_tri_tensor</span><span class="p">,</span> <span class="n">s_tri</span><span class="p">)</span>
+    <span class="n">ham_d</span><span class="o">.</span><span class="n">angle_matrix_changed</span><span class="p">()</span>
 
-    <span class="n">ham_imag</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> \
-        <span class="n">B_z</span> <span class="o">*</span> <span class="n">cal</span><span class="o">.</span><span class="n">g_tri_tensor</span><span class="o">.</span><span class="n">multirot</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-    <span class="n">ham_imag</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">+</span><span class="mi">1</span> <span class="o">*</span> \
-        <span class="n">B_z</span> <span class="o">*</span> <span class="n">cal</span><span class="o">.</span><span class="n">g_tri_tensor</span><span class="o">.</span><span class="n">multirot</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">eig_d</span><span class="p">,</span> <span class="n">vec_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">ham_d</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="p">)</span>
 
-    <span class="n">ham</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">D_tri_tensor</span><span class="o">.</span><span class="n">multirot</span> <span class="o">*</span> \
-        <span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">ham_imag</span><span class="o">.</span><span class="n">B_angle_matrix</span>
+    <span class="n">ham_tri_hf</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">s_tri</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="o">*</span><span class="n">MU_B</span><span class="p">)</span>
+    <span class="n">ham_tri_hf</span><span class="o">.</span><span class="n">zeeman_coupling</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">g_tri_tensor</span><span class="p">)</span>
+    <span class="n">ham_tri_hf</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">+=</span> <span class="n">ham_d</span><span class="o">.</span><span class="n">B_angle_matrix</span>
 
-    <span class="n">ham_tri_hf</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">B_angle_matrix</span>
+    <span class="n">ham_tri_hf</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">vec_d</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span> <span class="o">@</span> <span class="n">ham_tri_hf</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">@</span> <span class="n">vec_d</span>
+    <span class="n">ham_tri_hf</span> <span class="o">=</span> <span class="n">ham_tri_hf</span><span class="o">.</span><span class="n">B_angle_matrix</span>
 
     <span class="k">return</span> <span class="n">ham_tri_hf</span></div>
 

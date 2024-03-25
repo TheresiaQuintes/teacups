@@ -27,29 +27,42 @@ If you use the class provided by teacups.classes, the (recommended) default attr
 Grid
 ----
 
-SimOpt.grid_points
-^^^^^^^^^^^^^^^^^^
-* Number of points between theta = 0 and theta = pi/2 on the orientational sphere
-	* Given as a integer
-	* From this value the grid with points distributed equally on a hemisphere is created
-	* Typical values range from 1-20 points dependent on the anisotropy of the system, the more anisotrope a system is, the more points are needed
-* Obligatory for all simulations
-* e.g.::
-	
-	SimOpt.grid_points = 7
-
-
 SimOpt.grid
 ^^^^^^^^^^^
 .. warning::
    The sophe-grid uses interpolation between the angle points. This does not work properly for narrow spectra. It is useful for fast calculation of very broad spectra with a small number of angle points to get a quick overview. To get a smooth spectrum the fibonacci grid is still recommended.
 
 * Type of the grid that is chosen to distribute points equally on a hemisphere
-	* Set it to a string, either 'fibonacci' or 'sophe'
+	* Set it to a string, either 'fibonacci' or 'sophe' (add SimOpt.grid_points)
+	* Set it to 'single' if you don't want to simulate a full hemisphere but your own chosen angle points (add SimOpt.theta and SimOpt.phi)
 * Obligatory for all simulations
 * e.g.::
 	
 	SimOpt.grid = 'fibonacci'
+
+SimOpt.grid_points
+^^^^^^^^^^^^^^^^^^
+* Number of points between theta = 0 and theta = pi/2 on the orientational sphere
+	* Given as a integer
+	* From this value the grid with points distributed equally on a hemisphere is created
+	* Typical values range from 1-20 points dependent on the anisotropy of the system, the more anisotrope a system is, the more points are needed
+* Obligatory for all simulations with 'fibonacci' or 'sophe' grid
+* e.g.::
+	
+	SimOpt.grid = 'fibonacci'
+	SimOpt.grid_points = 7
+
+SimOpt.theta / SimOpt.phi
+^^^^^^^^^^^^^^^^^^^^^^^^^
+* Lists with orientation angles chosen by the user
+	* Both lists have to have the same length
+	* Angles are given in rad
+* Obligatory for all simulations with SimOpt.grid = 'single'
+* e.g.::
+	
+	SimOpt.grid = 'single'
+	SimOpt.theta = [0, 0.5]
+	SimOpt.phi = [0, np.pi/2]
 
 SimOpt.width_intp
 ^^^^^^^^^^^^^^^^^

@@ -10,6 +10,8 @@ import teacups.creators as cr
 import teacups.hamiltonians as ham
 import teacups.density_matrices as dm
 
+import matplotlib.pyplot as plt
+
 
 def teacups(Sys: object, Exp: object, SimOpt: object, development=False
             ) -> 'np.ndarray':
@@ -100,8 +102,8 @@ def teacups(Sys: object, Exp: object, SimOpt: object, development=False
 
     # Stop simulation routine if only the eigenvalues are desired
     if opt.eigval_mode is True:
-            eigval, eigvec = np.linalg.eigh(cal.ham_sys)
-            return eigval
+        eigval, eigvec = np.linalg.eigh(cal.ham_sys)
+        return eigval
 
     # set up initial density matrix
     if sys.precursor == 'triplet-zf' or sys.precursor == 'triplet-eigen':
@@ -139,7 +141,7 @@ def teacups(Sys: object, Exp: object, SimOpt: object, development=False
     # build signal if no coupling nuclei are given
     else:
         ham.set_up_commutator_superoperator(sys, opt, cal)
-        
+
         print('starting the propagation...')
         sap.propagation(sys, opt, cal)
 
@@ -148,10 +150,10 @@ def teacups(Sys: object, Exp: object, SimOpt: object, development=False
         for key in keys:
             if key.startswith('ham'):
                 delattr(cal, key)
-        
+
         print('start making the signal...')
         sap.make_signal(exp, opt, cal)
-        
+
         sap.powder_average(exp, opt, cal)
 
     # do Voigt convolution
