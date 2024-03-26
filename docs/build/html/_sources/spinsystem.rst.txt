@@ -34,12 +34,19 @@ Sys.precursor
 	* ``'singlet'`` to initialize a pure singlet polarisation. |rarr| possible for radical pair spin systems
 	* ``'triplet-zf'`` to give the polarisation vector as a trplet precursor in the zero field basis |rarr| possible for radical pairs (with triplet precursor) and triplet doublet pairs (consisting of the triplet precursor and a radical precursor
 	* ``'triplet-eigen'`` to give the polarisation vector as a trplet precursor in the eigenbasis |rarr| possible for radical pairs (with triplet precursor) and triplet doublet pairs (consisting of the triplet precursor and a radical precursor
-	* ``'coupled'`` to give the polarisation vector in the basis of doublet and quartet states. |rarr| possible for triplet doublet pair spin systems
+	* ``'coupled'`` to give the polarisation vector in the basis of doublet and quartet states. |rarr| possible for triplet doublet pair spin systems (does not work properly until now)
 * Obligatory for all simulations
 * e.g.::
 
 	 Sys.precursor = 'eigen'
 
+.. hint:: Some bases are especially recommended for special spin systems:
+	
+	- for ``'doub'`` use ``'basis'``
+	- for ``'trip'`` use ``'zf'`` for ISC triplets (populate :math:`T_x`, :math:`T_y` and :math:`T_z`) and ``'eigen'`` for recombination triplets (populate :math:`T_-`, :math:`T_0` and :math:`T_+`)
+	- for ``'rp'`` use ``'singlet'`` for a singlet precursor and ``'triplet-zf'`` for a triplet precursor
+	- for ``'tdp'`` use ``'triplet-zf'`` to populate the zerofield levels and ``'eigen'`` to populate the highfield levels
+	
 Sys.population
 ^^^^^^^^^^^^^^
 * Set the initial population vector in the basis that is defined in Sys.precursor.

@@ -25,7 +25,7 @@ author = "Theresia Quintes"
 
 # The full version, including alpha/beta/rc tags
 release = "2023"
-version = "1.0"
+version = "1.1"
 
 # -- General configuration ---------------------------------------------------
 

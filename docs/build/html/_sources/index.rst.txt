@@ -10,6 +10,7 @@ Welcome to teacups' documentation!
    spinsystem
    experimental
    simulation_options
+   limitations_issiues
    developer
 
 Indices and tables
