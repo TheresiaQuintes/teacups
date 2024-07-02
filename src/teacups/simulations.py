@@ -90,6 +90,8 @@ def teacups(Sys: object, Exp: object, SimOpt: object, development=False
         cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
             exp, opt, cal)
 
+        ham.set_up_f3d_triplet_ham(sys, exp, opt, cal)
+
     elif sys.spin_system == 'doub':
         cal.ham_sys = ham.set_up_doublet_hamiltonian(exp, opt, cal)
         cal.ham_mw = ham.set_up_mw_hamiltonian(sys, exp, opt, cal)

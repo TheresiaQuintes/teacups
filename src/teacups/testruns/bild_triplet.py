@@ -26,7 +26,7 @@ sys.width_gauss = 2.5
 # set up experimental parameters
 exp.B_z = np.linspace(300, 400, 1000)
 exp.t_scale = [0, 2e-6]
-exp.t_points = 150
+exp.t_points = 2
 
 # set up simulation option parameters
 opt.grid_points = 20
@@ -41,7 +41,7 @@ spec = sim.teacups(sys, exp, opt)
 
 # plot result
 plt.figure()
-plt.plot(exp.B_z, spec[25].real)
+plt.plot(exp.B_z, spec[1].real)
 
 plt.figure()
 ax = plt.axes()

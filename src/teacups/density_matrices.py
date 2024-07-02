@@ -92,6 +92,8 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
             # kill all off-diagonal elements
             rho.B_angle_matrix *= np.eye(3, dtype=FLOAT_TYPE)
 
+            #rho.B_angle_matrix = ham.set_up_f3d_triplet_ham(sys, exp, opt, cal)
+
         else:
             raise AttributeError(
                 'The spin_system attribute has to be "trip" \
