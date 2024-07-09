@@ -248,6 +248,61 @@ def set_up_f3d_triplet_ham(sys, exp, opt, cal):
     return rho
 
 
+def set_up_tdp_alternative(sys, exp, opt, cal):
+    setup_s = mt.Spinoperator(0.5, 1)
+
+    S_doub = mt.Spinoperator(0.5, 1)
+    S_trip = mt.Spinoperator(0.5, 1)
+    S_tdp = mt.Spinoperator(0.5, 1)
+
+    S_doub.matrix = setup_s.matrix
+    S_trip.matrix = setup_s.matrix_coupling_spins[0]
+    S_tdp.matrix = setup_s.matrix + setup_s.matrix_coupling_spins[0]
+
+    h_zfs = mut.Multioperator(S_trip, opt.grid_points, exp.B_z*MU_B)
+    h_zfs.create_bilinear_operator(cal.D_tri_tensor, S_trip)
+    h_zfs.angle_matrix_changed()
+
+    eig_zfs, vec_zfs = np.linalg.eigh(h_zfs.B_angle_matrix)
+
+    h_zeeman_doub = mut.Multioperator(S_doub, opt.grid_points, exp.B_z*MU_B)
+    h_zeeman_doub.zeeman_coupling(cal.g_tensor)
+
+    h_zeeman_trip = mut.Multioperator(S_trip, opt.grid_points, exp.B_z*MU_B)
+    h_zeeman_trip.zeeman_coupling(cal.g_tri_tensor)
+
+    h_dip = mut.Multioperator(S_doub, opt.grid_points, exp.B_z*MU_B)
+    h_dip.create_bilinear_operator(cal.D_tensor, S_trip)
+    h_dip.angle_matrix_changed()
+
+    h_ex = mut.Multioperator(S_doub, opt.grid_points, exp.B_z*MU_B)
+    h_ex.exchange_coupling(sys.J_ex, S_trip)
+
+    ham = h_zeeman_doub.B_angle_matrix + h_zeeman_trip.B_angle_matrix +\
+        h_zfs.B_angle_matrix + h_dip.B_angle_matrix + h_ex.B_angle_matrix
+
+    ham_xyz = np.conj(
+        np.transpose(vec_zfs, (0, 1, 3, 2))) @ ham @ vec_zfs
+
+    rho_doub = np.diag(sys.population[:2])
+    rho_doub = np.kron(rho_doub, np.eye(3))
+
+    rho_trip = np.diag(sys.population[2:])
+    rho_trip = np.kron(np.eye(2), rho_trip)
+
+    rho = rho_doub + rho_trip
+
+    eig_hf, vec_hf = np.linalg.eigh(ham_xyz)
+
+    # basistransformation to the high field functions
+    rho = (
+        np.conj(np.transpose((vec_hf), (0, 1, 3, 2)))
+        @ rho
+        @ vec_hf
+    )
+    return rho
+
+
 def set_up_triplet_zero_field_hamiltonian(exp: object, opt: object, cal: object
                                           ) -> 'np.ndarray':
     """

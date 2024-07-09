@@ -170,6 +170,8 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
                         ), np.eye(3, dtype=FLOAT_TYPE)) +\
                 np.kron(np.eye(2, dtype=FLOAT_TYPE), cal_tri.rho)
 
+            rho.B_angle_matrix = ham.set_up_tdp_alternative(sys, exp, opt, cal)
+
         else:
             raise AttributeError(
                 'The spin_system attribute only accpets \
