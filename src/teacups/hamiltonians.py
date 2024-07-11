@@ -300,6 +300,7 @@ def set_up_tdp_alternative(sys, exp, opt, cal):
         @ rho
         @ vec_hf
     )
+    rho *= np.eye(6, dtype=FLOAT_TYPE)
     return rho
 
 
