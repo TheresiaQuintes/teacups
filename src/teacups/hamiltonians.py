@@ -276,7 +276,7 @@ def set_up_tdp_alternative(sys, exp, opt, cal):
     h_dip.angle_matrix_changed()
 
     h_ex = mut.Multioperator(S_doub, opt.grid_points, exp.B_z*MU_B)
-    h_ex.exchange_coupling(sys.J_ex, S_trip)
+    h_ex.exchange_coupling(-1/2*sys.J_ex, S_trip)
 
     ham = h_zeeman_doub.B_angle_matrix + h_zeeman_trip.B_angle_matrix +\
         h_zfs.B_angle_matrix + h_dip.B_angle_matrix + h_ex.B_angle_matrix
@@ -285,10 +285,10 @@ def set_up_tdp_alternative(sys, exp, opt, cal):
         np.transpose(vec_zfs, (0, 1, 3, 2))) @ ham @ vec_zfs
 
     rho_doub = np.diag(sys.population[:2])
-    rho_doub = np.kron(rho_doub, np.eye(3))
+    rho_doub = np.kron(np.eye(3), rho_doub)
 
     rho_trip = np.diag(sys.population[2:])
-    rho_trip = np.kron(np.eye(2), rho_trip)
+    rho_trip = np.kron(rho_trip, np.eye(2))
 
     rho = rho_doub + rho_trip
 
