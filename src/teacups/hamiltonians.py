@@ -259,12 +259,17 @@ def set_up_tdp_alternative(sys, exp, opt, cal):
     S_trip.matrix = setup_s.matrix_coupling_spins[0]
     S_tdp.matrix = setup_s.matrix + setup_s.matrix_coupling_spins[0]
 
+    # ZFS-Hamiltonian für alle Orientierungen aufstellen (gekoppeltes System)
+    # Basis: +1a, 0a, -1a, +1b, 0b, -1b
     h_zfs = mut.Multioperator(S_trip, opt.grid_points, exp.B_z*MU_B)
     h_zfs.create_bilinear_operator(cal.D_tri_tensor, S_trip)
     h_zfs.angle_matrix_changed()
 
     eig_zfs, vec_zfs = np.linalg.eigh(h_zfs.B_angle_matrix)
+    # Diagonal-Basis ist: xa xb ya yb za zb
 
+    # TDP-Hamiltonian (Hochfeld) aufstellen
+    # xyz-Basis: +1a, 0a, -1a, +1b, 0b, -1b
     h_zeeman_doub = mut.Multioperator(S_doub, opt.grid_points, exp.B_z*MU_B)
     h_zeeman_doub.zeeman_coupling(cal.g_tensor)
 
@@ -281,6 +286,8 @@ def set_up_tdp_alternative(sys, exp, opt, cal):
     ham = h_zeeman_doub.B_angle_matrix + h_zeeman_trip.B_angle_matrix +\
         h_zfs.B_angle_matrix + h_dip.B_angle_matrix + h_ex.B_angle_matrix
 
+    # Basistransformation in Diagonal-Basis fom ZFS-Hamiltonian
+    # Neue Basis: xa xb ya yb za zb
     ham_xyz = np.conj(
         np.transpose(vec_zfs, (0, 1, 3, 2))) @ ham @ vec_zfs
 
@@ -292,14 +299,34 @@ def set_up_tdp_alternative(sys, exp, opt, cal):
 
     rho = rho_doub + rho_trip
 
+    # Das ist die Eigenbasis vom TDP-Hamiltonian
+    # Eigenvektoren für die Transformation von/in xyz-Basis
     eig_hf, vec_hf = np.linalg.eigh(ham_xyz)
 
-    # basistransformation to the high field functions
+    # Basistransformation rho: xyz->Eigenbasis von TDP-Hamiltonian
     rho = (
         np.conj(np.transpose((vec_hf), (0, 1, 3, 2)))
         @ rho
         @ vec_hf
     )
+
+    rho *= np.eye(6, dtype=FLOAT_TYPE)
+
+    # Aufstellen von ham_tdp, wie er in sonstigen Rechnungen verwendet wird
+    # ACHTUNG: Hier stimmen die Eigenwerte aktuell nicht ganz mit den
+    # TDP-Hamiltonian-Eigenwerten überein, hat das einen Effekt? Reihenfolge
+    # Stimmt überein, nur ein Shift, für Basistransformation relevant?
+    ham_tdp = set_up_tdp_hamiltonian(sys, exp, opt, cal)
+    # Das ist ebenfalls die Eigenbasis vom TDP-Hamiltonian
+    # Eigenvektoren für die Transformation von/in +1a, 0a, -1a, +1b, 0b, -1b
+    eig_tdp, vec_tdp = np.linalg.eigh(ham_tdp)
+    # Basistransformation rho: Eigenbasis von TDP-Hamiltonian -> +1a, 0a, -1a, +1b, 0b, -1b
+    rho = (
+        vec_tdp
+        @ rho
+        @ np.conj(np.transpose((vec_tdp), (0, 1, 3, 2)))
+    )
+
     rho *= np.eye(6, dtype=FLOAT_TYPE)
     return rho
 
