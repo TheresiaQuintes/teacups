@@ -213,41 +213,6 @@ def set_up_triplet_high_field_hamiltonian(exp: object, opt: object,
     return ham_tri_hf
 
 
-def set_up_f3d_triplet_ham(sys, exp, opt, cal):
-    s_tri = mt.Spinoperator(1)
-    gt = cal.g_tri_tensor.multirot
-    rham = cr.create_dipol_tensor_diagonals(sys.D_tri, sys.E_tri)
-    rham = cr.create_tensor(rham, cal.phi, cal.theta)
-    rham = rham.multirot
-    iham = mut.Multioperator(s_tri, opt.grid_points, exp.B_z*MU_B)
-    ham = mut.Multioperator(s_tri, opt.grid_points, exp.B_z*MU_B)
-
-    rho_ = np.diag(sys.population)
-    rho_ = cr.create_tensor(rho_, cal.phi, cal.theta)
-    rho_ = rho_.multirot
-
-    rho = mut.Multioperator(s_tri, opt.grid_points, exp.B_z*MU_B)
-
-    for b in range(len(exp.B_z)):
-        rho.B_angle_matrix[b] = rho_
-        for a in range(len(cal.phi)):
-            iham.B_angle_matrix[b, a, 0, 1] = gt[a, 2, 2]*exp.B_z[b]*MU_B
-            iham.B_angle_matrix[b, a, 1, 0] = -gt[a, 2, 2]*exp.B_z[b]*MU_B
-            #rho.B_angle_matrix[b, a] = rho_
-    for b in range(len(exp.B_z)):
-        ham.B_angle_matrix[b] = rham+1j*iham.B_angle_matrix[b]
-
-    ham = ham.B_angle_matrix
-    rho = rho.B_angle_matrix
-
-    eigval, eigvec = np.linalg.eigh(ham)
-    inv = np.conj(np.transpose(eigvec, (0, 1, 3, 2)))
-
-    rho = inv@rho@eigvec
-    rho *= np.eye(3, dtype=FLOAT_TYPE)
-    return rho
-
-
 def set_up_tdp_alternative(sys, exp, opt, cal):
     setup_s = mt.Spinoperator(0.5, 1)
 

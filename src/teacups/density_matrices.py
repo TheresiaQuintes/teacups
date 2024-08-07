@@ -151,23 +151,8 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
             rho.B_angle_matrix[:, :, 3, 3] = cal_tri.rho[:, :, 2, 2]
 
         elif sys.spin_system == "tdp":
-            cal_tri = deepcopy(cal)
-            sys_tri = deepcopy(sys)
-            opt_tri = deepcopy(opt)
-            opt_tri.space = "hilbert"
-            sys_tri.s = 1
-            cr.set_up_spinoperator(sys_tri, cal_tri)
-            sys_tri.spin_system = "trip"
-            sys_tri.precursor = "zf"
-            sys_tri.population = np.array(sys.population[2:], dtype=FLOAT_TYPE)
-            set_up_density_matrix(sys_tri, exp, opt_tri, cal_tri)
 
             rho = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
-            rho.B_angle_matrix = np.kron(
-                np.diag(np.array(sys.population[:2], dtype=FLOAT_TYPE)
-                        ), np.eye(3, dtype=FLOAT_TYPE)) +\
-                np.kron(np.eye(2, dtype=FLOAT_TYPE), cal_tri.rho)
-
             rho.B_angle_matrix = ham.set_up_tdp_alternative(sys, exp, opt, cal)
 
         else:
