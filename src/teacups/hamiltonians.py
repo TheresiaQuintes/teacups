@@ -405,7 +405,7 @@ def set_up_tdp_hamiltonian(sys: object, exp: object, opt: object, cal: object
     Coupling with the static magnetic field of the triplet and the doublet is
     included each as well as the ZFS of the triplet and the interactions of the
     two spins. The Hamiltonian is calculated for all orientations and magnetic
-    field points in the singlet-triplet-basis and returned as a
+    field points in the product basis and returned as a
     B_angle_matrix attribute from the class Multioperator. Secular
     approximation is presumed.
 
@@ -466,7 +466,15 @@ def set_up_tdp_full_high_field_hamiltonian(sys: object, exp: object,
                                            opt: object, cal: object
                                            ) -> ['np.ndarray', 'np.ndarray']:
     """
-
+    Calculate a Hamiltonian matrix operator for a coupled triplet doublet pair.
+    Coupling with the static magnetic field of the triplet and the doublet is
+    included each as well as the ZFS of the triplet and the interactions of the
+    two spins. The Hamiltonian is calculated for all orientations and magnetic
+    field points in the product basis and returned as a B_angle_matrix
+    attribute from the class Multioperator. The interaction matrices are
+    calculated by direct prducts of spin matrices and interaction tensors and
+    no secular approximation is applied. The second output is the
+    ZFS-Hamiltonian of the triplet precursor in the coupled basis.
 
     Parameters
     ----------
@@ -492,26 +500,24 @@ def set_up_tdp_full_high_field_hamiltonian(sys: object, exp: object,
         |a, +1>, |a, 0>, |a, -1>, |b, +1>, |b, 0>, |b, -1>.
     ham_zfs : np.ndarray
         Hamiltonian of the bilinear dipolar coupling of the triplet precursor
-        (ZFS) of a coupled triplet doublet pair. Th hamiltonian is given in 
+        (ZFS) of a coupled triplet doublet pair. Th hamiltonian is given in
         the product basis of doublet and triplet:
-        |a, +1>, |a, 0>, |a, -1>, |b, +1>, |b, 0>, |b, -1>.    
+        |a, +1>, |a, 0>, |a, -1>, |b, +1>, |b, 0>, |b, -1>.
 
     """
     setup_s = mt.Spinoperator(0.5, 1)
     S_doub = mt.Spinoperator(0.5, 1)
     S_trip = mt.Spinoperator(0.5, 1)
 
-    S_doub.matrix = cal.setup_s.matrix
-    S_trip.matrix = cal.setup_s.matrix_coupling_spins[0]
+    S_doub.matrix = setup_s.matrix
+    S_trip.matrix = setup_s.matrix_coupling_spins[0]
 
-    # ZFS-Hamiltonian für alle Orientierungen aufstellen (gekoppeltes System)
-    # Basis: +1a, 0a, -1a, +1b, 0b, -1b
+    # ZFS
     h_zfs = mut.Multioperator(S_trip, opt.grid_points, exp.B_z*MU_B)
     h_zfs.create_bilinear_operator(cal.D_tri_tensor, S_trip)
     h_zfs.angle_matrix_changed()
 
-    # TDP-Hamiltonian (Hochfeld) aufstellen
-    # xyz-Basis: +1a, 0a, -1a, +1b, 0b, -1b
+    # zeeman interactions
     h_zeeman_doub = mut.Multioperator(
         S_doub, opt.grid_points, exp.B_z*MU_B)
     h_zeeman_doub.zeeman_coupling(cal.g_tensor)
@@ -520,16 +526,20 @@ def set_up_tdp_full_high_field_hamiltonian(sys: object, exp: object,
         S_trip, opt.grid_points, exp.B_z*MU_B)
     h_zeeman_trip.zeeman_coupling(cal.g_tri_tensor)
 
+    # dipolar interaction
     h_dip = mut.Multioperator(S_doub, opt.grid_points, exp.B_z*MU_B)
     h_dip.create_bilinear_operator(cal.D_tensor, S_trip)
     h_dip.angle_matrix_changed()
 
+    # exchange interaction
     h_ex = mut.Multioperator(S_doub, opt.grid_points, exp.B_z*MU_B)
     h_ex.exchange_coupling(-1/2*sys.J_ex, S_trip)
 
+    # full high field hamiltonian
     ham_hf = h_zeeman_doub.B_angle_matrix + h_zeeman_trip.B_angle_matrix +\
         h_zfs.B_angle_matrix + h_dip.B_angle_matrix + h_ex.B_angle_matrix
 
+    # ZFS hamiltonian
     ham_zfs = h_zfs.B_angle_matrix
 
     return ham_hf, ham_zfs
