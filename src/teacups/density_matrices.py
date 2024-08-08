@@ -3,7 +3,7 @@ from copy import deepcopy
 import teacups.multioperator_tools as mut
 import teacups.matrix_tools as mt
 import teacups.creators as cr
-import teacups.hamiltonians as ham
+import teacups.hamiltonians as ha
 
 import scipy.constants as const
 MU_B = const.physical_constants["Bohr magneton in Hz/T"][0]
@@ -151,9 +151,52 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
             rho.B_angle_matrix[:, :, 3, 3] = cal_tri.rho[:, :, 2, 2]
 
         elif sys.spin_system == "tdp":
+            # set up the full high field hamiltonian of the coupled system
+            # in the product basis: +1a, 0a, -1a, +1b, 0b, -1b
+            # ham_zfs is only the triplet-ZFS part of the coupled hamiltonian
+            ham, ham_zfs = ha.set_up_tdp_full_high_field_hamiltonian(
+                sys, exp, opt, cal)
+
+            # the eigenbasis of ham_zfs is xa xb ya yb za zb (= xyz-basis)
+            eig_zfs, vec_zfs = np.linalg.eigh(ham_zfs)
+
+            # transform high field hamiltonian to xyz-basis
+            ham_xyz = np.conj(
+                np.transpose(vec_zfs, (0, 1, 3, 2))) @ ham @ vec_zfs
+
+            # diagonalise high field hamiltonian to get the eigenvectors for
+            # transformation xyz-basis <-> TDP-eigenbasis
+            eig_hf, vec_hf = np.linalg.eigh(ham_xyz)
+
+            # diagonalise the spin system hamiltonian to get the eigenvectors
+            # for the transformation product basis <-> TDP-eigenbasis
+            eig_sys, vec_sys = np.linalg.eigh(cal.ham_sys)
+
+            # define rho in xyz-basis using populations for triplet-zf levels
+            rho_doub = np.diag(sys.population[:2])
+            rho_doub = np.kron(np.eye(3), rho_doub)
+
+            rho_trip = np.diag(sys.population[2:])
+            rho_trip = np.kron(rho_trip, np.eye(2))
 
             rho = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
-            rho.B_angle_matrix = ham.set_up_tdp_alternative(sys, exp, opt, cal)
+            rho.matrix = rho_doub + rho_trip
+
+            # basistransformation rho: xyz-basis -> TDP-eigenbasis
+            rho.B_angle_matrix = (
+                np.conj(np.transpose((vec_hf), (0, 1, 3, 2)))
+                @ rho.matrix
+                @ vec_hf
+            )
+            rho.B_angle_matrix *= np.eye(6, dtype=FLOAT_TYPE)
+
+            # basistransformation rho: TDP-eigenbasis -> product basis
+            rho.B_angle_matrix = (
+                vec_sys
+                @ rho.B_angle_matrix
+                @ np.conj(np.transpose((vec_sys), (0, 1, 3, 2)))
+            )
+            rho.B_angle_matrix *= np.eye(6, dtype=FLOAT_TYPE)
 
         else:
             raise AttributeError(
