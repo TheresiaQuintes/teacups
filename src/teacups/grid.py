@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.spatial import Delaunay
+from teacups.epr_grid import Grid
 
 
 def sphere_fibonacci_grid_points(ng: int) -> 'np.ndarray':
@@ -147,20 +148,24 @@ def get_theta_phi(grid_points: int) -> tuple['np.ndarray', 'np.ndarray']:
     return theta, phi
 
 
-def sophe_grid(grid_size: int) -> tuple['np.ndarray', 'np.ndarray',
-                                        'np.ndarray']:
+def sophe_grid(grid_size: int, sym: str) -> tuple['np.ndarray', 'np.ndarray',
+                                                  'np.ndarray']:
     """
     Calculate the angles phi and theta of a set of unique orientations on a
-    (half-)sphere. The grid used is called SOPHE grid (see: D. Wang,
+    sphere. The grid used is called SOPHE grid (see: D. Wang,
     G. R. Hanson J.Magn.Reson. A, 117, 1-8 (1995)
     https://doi.org/10.1006/jmra.1995.9978) or Y. Kurihara, Monthly Weather
     Review 93(7), 399-415 (July 1965)
     https://doi.org/10.1175/1520-0493(1965)093<0399:NIOTPE>2.3.CO;2).
+    Code imported from epr_grid written by Florian Quintes.
 
     Parameters
     ----------
     grid_size : int
         Number of points between theta=0 and theta=pi/2.
+    sym : str
+        Point group symmetry. "C1" returns the full sphere, other point groups
+        result in smaller parts of the sphere.
 
     Returns
     -------
@@ -169,51 +174,15 @@ def sophe_grid(grid_size: int) -> tuple['np.ndarray', 'np.ndarray',
     theta : np.ndarray
         Set of spherical angles theta for all orientations.
     weights : np.ndarray
-        Associated weights for each orientation. Sum is 4*pi.
+        Associated weights for each orientation.
 
     """
-    dtheta = (np.pi/2)/(grid_size-1)
-    sindth2 = np.sin(dtheta/2)
-    w1 = 0.5
+    grid = Grid('SOPHE', point_group=sym, knots=grid_size)
+    spherical = grid.get_grid(sym, cartesian=False)
+    weights = grid.get_areas()
+    theta, phi = spherical[:, 1], spherical[:, 2]
 
-    nOct = 4
-    maxphi = 2*np.pi
-
-    nOrientations = grid_size + nOct*grid_size*(grid_size-1)/2
-    nOrientations = int(nOrientations)
-
-    phi = np.zeros(nOrientations)
-    theta = np.zeros(nOrientations)
-    weights = np.zeros(nOrientations)
-
-    phi[0] = 0
-    theta[0] = 0
-    weights[0] = maxphi*(1-np.cos(dtheta/2))
-
-    start = 2
-    for iSlice in range(2, grid_size):
-        nphi = nOct*(iSlice-1)+1
-        dphi = maxphi/(nphi-1)
-        idx = start+np.arange(0, nphi)-1
-        on = np.ones(nphi)
-        on[0] = w1
-        on[-1] = 0.5
-        weights[idx] = 2*np.sin((iSlice-1)*dtheta)*sindth2*dphi*on
-        phi[idx] = np.linspace(0, maxphi, nphi)
-        theta[idx] = (iSlice-1)*dtheta
-        start += nphi
-
-    nphi = nOct*(grid_size-1)+1
-    dphi = maxphi/(nphi-1)
-    idx = start + np.arange(0, nphi)-1
-    phi[idx] = np.linspace(0, maxphi, nphi)
-    theta[idx] = np.pi/2
-    on = np.ones(nphi)
-    on[0] = w1
-    on[-1] = 0.5
-    weights[idx] = sindth2*dphi*on
-
-    return phi, theta, weights
+    return theta, phi, weights
 
 
 def triangles(phi: 'np.ndarray', theta: 'np.ndarray') -> tuple['np.ndarray',

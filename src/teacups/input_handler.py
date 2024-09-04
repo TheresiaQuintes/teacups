@@ -223,12 +223,6 @@ def scale_inputs(sys: object, exp: object, opt: object) -> None:
     std = std/conversion
     sys.width_gauss = std
 
-    if opt.grid == 'sophe':
-        std = opt.width_intp/(2*np.sqrt(2*np.log(2)))
-        conversion = (exp.B_z.max() - exp.B_z.min()) / exp.B_z.shape[0]
-        std = std/conversion
-        opt.width_intp = std
-
     return None
 
 
@@ -341,10 +335,11 @@ def create_grid(opt: object, cal: object) -> None:
     None
 
     """
+    from teacups.epr_grid import Grid
     if opt.grid == 'sophe':
-        cal.phi, cal.theta, w = gri.sophe_grid(opt.grid_points)
+        cal.theta, cal.phi, cal.weights = gri.sophe_grid(opt.grid_points,
+                                                         opt.sym)
         opt.grid_points = len(cal.phi)
-        opt.width_intp /= 1e3
 
     elif opt.grid == 'fibonacci':
         cal.theta, cal.phi = gri.get_theta_phi(

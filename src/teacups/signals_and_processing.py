@@ -353,9 +353,9 @@ def powder_average(exp: object, opt: object, cal: object) -> None:
 
     """
     if opt.grid == 'sophe':
-        cal.spec_sim = interpolate_signal(
-            exp.B_z, cal.signal, cal.phi, cal.theta, opt.number_of_peaks,
-            opt.width_intp)
+        weightened_signal = cal.signal*cal.weights
+        signal_powder_average = np.sum(weightened_signal, (-1))
+        cal.spec_sim += signal_powder_average
 
     elif opt.grid == 'fibonacci':
         signal_powder_average = np.sum(cal.signal, (-1))
