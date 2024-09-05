@@ -459,6 +459,9 @@ def set_up_tdp_full_high_field_hamiltonian(sys: object, exp: object,
     # ZFS hamiltonian
     ham_zfs = h_zfs.B_angle_matrix
 
+    ham_zfs = ham_zfs.astype(COMPLEX_TYPE)
+    ham_hf = ham_hf.astype(COMPLEX_TYPE)
+
     return ham_hf, ham_zfs
 
 

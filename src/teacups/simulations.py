@@ -9,6 +9,7 @@ import teacups.convolution as co
 import teacups.creators as cr
 import teacups.hamiltonians as ham
 import teacups.density_matrices as dm
+import teacups.memory as mem
 
 import matplotlib.pyplot as plt
 
@@ -63,6 +64,15 @@ def teacups(Sys: object, Exp: object, SimOpt: object, development=False
 
     inputs.create_grid(opt, cal)
 
+    bottleneck = mem.define_bottleneck(sys)
+    bp = len(exp.B_z)
+    gp = opt.grid_points
+    chunk_size = mem.chunk_size(bottleneck, bp, gp)
+
+    if chunk_size > 1:
+        print("not enough memory available")
+        return
+
     # create spin operator and detection operator
     cr.set_up_spinoperator(sys, cal)
     cr.set_up_observable(sys, opt, cal)
@@ -106,7 +116,8 @@ def teacups(Sys: object, Exp: object, SimOpt: object, development=False
         return eigval
 
     # set up initial density matrix
-    if sys.precursor == 'triplet-zf' or sys.precursor == 'triplet-eigen':
+    if (sys.precursor == 'triplet-zf' and sys.spin_system == 'rp'
+        ) or (sys.precursor == 'triplet-eigen' and sys.spin_system == 'rp'):
         cal.s_tri = mt.Spinoperator(1)
         cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
             exp, opt, cal)
@@ -116,6 +127,7 @@ def teacups(Sys: object, Exp: object, SimOpt: object, development=False
     dm.set_up_density_matrix(sys, exp, opt, cal)
 
     # clear memory
+
     keys = vars(cal).copy()
     for key in keys:
         if key.endswith('_tensor'):

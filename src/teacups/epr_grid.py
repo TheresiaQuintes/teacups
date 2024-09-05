@@ -16,9 +16,6 @@ class Grid:
     def __init__(self, grid: str = "SOPHE", point_group="Ci", knots: int = 15):
         self._symmetry = point_group
 
-        # Fallback if grid points instead of actual knots is given
-        if knots > 200:
-            knots = round((np.sqrt(8 * knots + 1) - 3) / 2)
         self._points = int(knots)
 
         if grid.lower() == "sophe":

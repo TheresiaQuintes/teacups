@@ -157,7 +157,7 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
             ham, ham_zfs = ha.set_up_tdp_full_high_field_hamiltonian(
                 sys, exp, opt, cal)
 
-            # the eigenbasis of ham_zfs is xa xb ya yb za zb (= xyz-basis)
+            # the eigenbasis of ham_zfs is xx yy zz (= xyz-basis)
             eig_zfs, vec_zfs = np.linalg.eigh(ham_zfs)
 
             # transform high field hamiltonian to xyz-basis
@@ -173,14 +173,11 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
             eig_sys, vec_sys = np.linalg.eigh(cal.ham_sys)
 
             # define rho in xyz-basis using populations for triplet-zf levels
-            rho_doub = np.diag(sys.population[:2])
-            rho_doub = np.kron(np.eye(3), rho_doub)
-
-            rho_trip = np.diag(sys.population[2:])
-            rho_trip = np.kron(rho_trip, np.eye(2))
+            rho_trip = np.diag(np.array(sys.population[2:], dtype=FLOAT_TYPE))
+            rho_trip = np.kron(rho_trip, np.eye(2, dtype=FLOAT_TYPE))
 
             rho = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
-            rho.matrix = rho_doub + rho_trip
+            rho.matrix = rho_trip
 
             # basistransformation rho: xyz-basis -> TDP-eigenbasis
             rho.B_angle_matrix = (
@@ -196,8 +193,13 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
                 @ rho.B_angle_matrix
                 @ np.conj(np.transpose((vec_sys), (0, 1, 3, 2)))
             )
+
             rho.B_angle_matrix *= np.eye(6, dtype=FLOAT_TYPE)
 
+            # add density matrix for the doublet in product basis
+            rho_doub = np.diag(np.array(sys.population[:2], dtype=FLOAT_TYPE))
+            rho_doub = np.kron(rho_doub, np.eye(3, dtype=FLOAT_TYPE))
+            rho.B_angle_matrix += rho_doub
         else:
             raise AttributeError(
                 'The spin_system attribute only accpets \
