@@ -10,19 +10,9 @@ FLOAT_TYPE = np.float32
 # Flexibel um beliebige Funktion drappierbar?
 
 
-def nof_tdp_zf_set_up_density_matrix(bp, gp):
-    complex_memory = 8
-    multioperator = bp*gp*6*6*complex_memory
-    hams = 6*multioperator
-    eigvecs = 3*multioperator
-    basistransformation = 5*multioperator
-    nof = hams+eigvecs+basistransformation
-    return nof
-
-
 def chunk_size(bottleneck, bp, gp):
     if bottleneck == "set_up_density_matrix":
-        need_of_memory = nof_tdp_zf_set_up_density_matrix(bp, gp)
+        need_of_memory = nom_tdp_zf_set_up_density_matrix(bp, gp)
     available_memory = psutil.virtual_memory().available * 0.8
     chunksize = np.ceil(need_of_memory/available_memory)
 
@@ -46,3 +36,30 @@ def split_grid(cal, chunk_size):
     if hasattr(cal, "weights"):
         cal.weights_split = np.array_split(cal.weights, chunk_size)
     return
+
+
+def nom_tdp_zf_set_up_density_matrix(bp, gp):
+    complex_memory = 8
+    multioperator = bp*gp*6*6*complex_memory
+    hams = 6*multioperator
+    eigvecs = 3*multioperator
+    basistransformation = 5*multioperator
+    nom = hams+eigvecs+basistransformation
+    return nom
+
+
+def chunk_size_for_gpu(bp, gp):
+    from pynvml import (
+        nvmlInit,
+        nvmlDeviceGetHandleByIndex,
+        nvmlDeviceGetMemoryInfo,
+    )
+    need_of_memory = nom_tdp_zf_set_up_density_matrix(bp, gp)
+
+    nvmlInit()
+    h = nvmlDeviceGetHandleByIndex(0)
+    info = nvmlDeviceGetMemoryInfo(h)
+    free = info.free
+    available_memory = need_of_memory
+    chunksize = np.ceil(need_of_memory/free)
+    return chunksize

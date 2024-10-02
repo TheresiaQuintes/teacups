@@ -4,6 +4,7 @@ import teacups.multioperator_tools as mut
 import teacups.matrix_tools as mt
 import teacups.creators as cr
 import teacups.hamiltonians as ha
+import teacups.memory as mem
 
 import scipy.constants as const
 MU_B = const.physical_constants["Bohr magneton in Hz/T"][0]
@@ -157,21 +158,6 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
             ham, ham_zfs = ha.set_up_tdp_full_high_field_hamiltonian(
                 sys, exp, opt, cal)
 
-            # the eigenbasis of ham_zfs is xx yy zz (= xyz-basis)
-            eig_zfs, vec_zfs = np.linalg.eigh(ham_zfs)
-
-            # transform high field hamiltonian to xyz-basis
-            ham_xyz = np.conj(
-                np.transpose(vec_zfs, (0, 1, 3, 2))) @ ham @ vec_zfs
-
-            # diagonalise high field hamiltonian to get the eigenvectors for
-            # transformation xyz-basis <-> TDP-eigenbasis
-            eig_hf, vec_hf = np.linalg.eigh(ham_xyz)
-
-            # diagonalise the spin system hamiltonian to get the eigenvectors
-            # for the transformation product basis <-> TDP-eigenbasis
-            eig_sys, vec_sys = np.linalg.eigh(cal.ham_sys)
-
             # define rho in xyz-basis using populations for triplet-zf levels
             rho_trip = np.diag(np.array(sys.population[2:], dtype=FLOAT_TYPE))
             rho_trip = np.kron(rho_trip, np.eye(2, dtype=FLOAT_TYPE))
@@ -179,22 +165,96 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
             rho = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
             rho.matrix = rho_trip
 
-            # basistransformation rho: xyz-basis -> TDP-eigenbasis
-            rho.B_angle_matrix = (
-                np.conj(np.transpose((vec_hf), (0, 1, 3, 2)))
-                @ rho.matrix
-                @ vec_hf
-            )
-            rho.B_angle_matrix *= np.eye(6, dtype=FLOAT_TYPE)
+            CUPY = opt.CUPY
+            if CUPY:
+                import cupy as cp
 
-            # basistransformation rho: TDP-eigenbasis -> product basis
-            rho.B_angle_matrix = (
-                vec_sys
-                @ rho.B_angle_matrix
-                @ np.conj(np.transpose((vec_sys), (0, 1, 3, 2)))
-            )
+                chunk_size = mem.chunk_size_for_gpu(
+                    len(exp.B_z), opt.grid_points)*4
+                print(chunk_size)
 
-            rho.B_angle_matrix *= np.eye(6, dtype=FLOAT_TYPE)
+                ham_split = np.array_split(ham, chunk_size)
+                ham_zfs_split = np.array_split(ham_zfs, chunk_size)
+                ham_sys_split = np.array_split(cal.ham_sys, chunk_size)
+
+                rho_split = []
+
+                from pynvml import (
+                    nvmlInit,
+                    nvmlDeviceGetHandleByIndex,
+                    nvmlDeviceGetMemoryInfo,
+                )
+
+                for chunk in range(len(ham_split)):
+                    ham_zfs_gpu = cp.asarray(ham_zfs_split[chunk])
+                    eig_zfs, vec_zfs = cp.linalg.eigh(ham_zfs_gpu)
+                    del eig_zfs, ham_zfs_gpu
+
+                    ham = cp.asarray(ham_split[chunk])
+                    ham_xyz = cp.conj(cp.transpose(
+                        vec_zfs, (0, 1, 3, 2))) @ ham @ vec_zfs
+                    del vec_zfs, ham
+
+                    eig_hf, vec_hf = cp.linalg.eigh(ham_xyz)
+                    del eig_hf, ham_xyz
+
+                    cal_ham_sys = cp.asarray(ham_sys_split[chunk])
+                    eig_sys, vec_sys = cp.linalg.eigh(cal_ham_sys)
+                    del eig_sys, cal_ham_sys
+
+                    rho_matrix = cp.asarray(rho.matrix)
+                    rho_B_angle_matrix = (
+                        cp.conj(cp.transpose((vec_hf), (0, 1, 3, 2)))
+                        @ rho_matrix
+                        @ vec_hf
+                    )
+                    del rho_matrix, vec_hf
+                    rho_B_angle_matrix *= cp.eye(6, dtype=FLOAT_TYPE)
+
+                    rho_B_angle_matrix = (
+                        vec_sys
+                        @ rho_B_angle_matrix
+                        @ cp.conj(cp.transpose((vec_sys), (0, 1, 3, 2)))
+                    )
+                    del vec_sys
+                    rho_B_angle_matrix *= cp.eye(6, dtype=FLOAT_TYPE)
+
+                    rho_split.append(rho_B_angle_matrix.get())
+                    del rho_B_angle_matrix
+                rho.B_angle_matrix = np.concatenate(rho_split)
+
+            else:
+                # the eigenbasis of ham_zfs is xx yy zz (= xyz-basis)
+                eig_zfs, vec_zfs = np.linalg.eigh(ham_zfs)
+
+                # transform high field hamiltonian to xyz-basis
+                ham_xyz = np.conj(np.transpose(
+                    vec_zfs, (0, 1, 3, 2))) @ ham @ vec_zfs
+
+                # diagonalise high field hamiltonian to get the eigenvectors for
+                # transformation xyz-basis <-> TDP-eigenbasis
+                eig_hf, vec_hf = np.linalg.eigh(ham_xyz)
+
+                # diagonalise the spin system hamiltonian to get the eigenvectors
+                # for the transformation product basis <-> TDP-eigenbasis
+                eig_sys, vec_sys = np.linalg.eigh(cal.ham_sys)
+
+                # basistransformation rho: xyz-basis -> TDP-eigenbasis
+                rho.B_angle_matrix = (
+                    np.conj(np.transpose((vec_hf), (0, 1, 3, 2)))
+                    @ rho.matrix
+                    @ vec_hf
+                )
+                rho.B_angle_matrix *= np.eye(6, dtype=FLOAT_TYPE)
+
+                # basistransformation rho: TDP-eigenbasis -> product basis
+                rho.B_angle_matrix = (
+                    vec_sys
+                    @ rho.B_angle_matrix
+                    @ np.conj(np.transpose((vec_sys), (0, 1, 3, 2)))
+                )
+
+                rho.B_angle_matrix *= np.eye(6, dtype=FLOAT_TYPE)
 
             # add density matrix for the doublet in product basis
             rho_doub = np.diag(np.array(sys.population[:2], dtype=FLOAT_TYPE))

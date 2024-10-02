@@ -70,103 +70,113 @@ def teacups(Sys: object, Exp: object, SimOpt: object, development=False
     chunk_size = mem.chunk_size(bottleneck, bp, gp)
 
     if chunk_size > 1:
-        print("not enough memory available")
-        return
+        chunk_size += 1
 
-    # create spin operator and detection operator
-    cr.set_up_spinoperator(sys, cal)
-    cr.set_up_observable(sys, opt, cal)
+    phi_split = np.array_split(cal.phi, chunk_size)
+    theta_split = np.array_split(cal.theta, chunk_size)
+    weights_split = np.array_split(cal.weights, chunk_size)
+    print(chunk_size)
+    for chunk in range(len(phi_split)):
+        cal.phi = phi_split[chunk]
+        cal.theta = theta_split[chunk]
+        cal.weights = weights_split[chunk]
+        opt.grid_points = len(cal.phi)
 
-    # set up tensors
-    cr.set_up_tensors(sys, cal)
+        # create spin operator and detection operator
+        cr.set_up_spinoperator(sys, cal)
+        cr.set_up_observable(sys, opt, cal)
 
-    # set up hamiltonian
+        # set up tensors
+        cr.set_up_tensors(sys, cal)
 
-    if sys.spin_system == 'rp':
-        cal.ham_sys = ham.set_up_rp_hamiltonian(sys, exp, opt, cal)
-        ham_mw = ham.set_up_mw_hamiltonian(sys, exp, opt, cal)
-        cal.ham = cal.ham_sys + ham_mw
+        # set up hamiltonian
 
-    elif sys.spin_system == 'trip':
-        # set up secular high-field triplet hamiltonian
-        cal.ham_sys = ham.set_up_triplet_hamiltonian(exp, opt, cal)
-        cal.ham_mw = ham.set_up_mw_hamiltonian(sys, exp, opt, cal)
-        cal.ham = cal.ham_sys + cal.ham_mw
+        if sys.spin_system == 'rp':
+            cal.ham_sys = ham.set_up_rp_hamiltonian(sys, exp, opt, cal)
+            ham_mw = ham.set_up_mw_hamiltonian(sys, exp, opt, cal)
+            cal.ham = cal.ham_sys + ham_mw
 
-        # set up (non-secular) zero-field and high-field Hamiltonian without mw
-        # interaction
-        cal.ham_tri_zf = ham.set_up_triplet_zero_field_hamiltonian(
-            exp, opt, cal)
-        cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
-            exp, opt, cal)
+        elif sys.spin_system == 'trip':
+            # set up secular high-field triplet hamiltonian
+            cal.ham_sys = ham.set_up_triplet_hamiltonian(exp, opt, cal)
+            cal.ham_mw = ham.set_up_mw_hamiltonian(sys, exp, opt, cal)
+            cal.ham = cal.ham_sys + cal.ham_mw
 
-    elif sys.spin_system == 'doub':
-        cal.ham_sys = ham.set_up_doublet_hamiltonian(exp, opt, cal)
-        cal.ham_mw = ham.set_up_mw_hamiltonian(sys, exp, opt, cal)
-        cal.ham = cal.ham_sys + cal.ham_mw
+            # set up (non-secular) zero-field and high-field Hamiltonian without mw
+            # interaction
+            cal.ham_tri_zf = ham.set_up_triplet_zero_field_hamiltonian(
+                exp, opt, cal)
+            cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
+                exp, opt, cal)
 
-    elif sys.spin_system == 'tdp':
-        cal.ham_sys = ham.set_up_tdp_hamiltonian(sys, exp, opt, cal)
-        cal.ham_mw = ham.set_up_mw_hamiltonian(sys, exp, opt, cal)
-        cal.ham = cal.ham_sys + cal.ham_mw
+        elif sys.spin_system == 'doub':
+            cal.ham_sys = ham.set_up_doublet_hamiltonian(exp, opt, cal)
+            cal.ham_mw = ham.set_up_mw_hamiltonian(sys, exp, opt, cal)
+            cal.ham = cal.ham_sys + cal.ham_mw
 
-    # Stop simulation routine if only the eigenvalues are desired
-    if opt.eigval_mode is True:
-        eigval, eigvec = np.linalg.eigh(cal.ham_sys)
-        return eigval
+        elif sys.spin_system == 'tdp':
+            cal.ham_sys = ham.set_up_tdp_hamiltonian(sys, exp, opt, cal)
+            cal.ham_mw = ham.set_up_mw_hamiltonian(sys, exp, opt, cal)
+            cal.ham = cal.ham_sys + cal.ham_mw
 
-    # set up initial density matrix
-    if (sys.precursor == 'triplet-zf' and sys.spin_system == 'rp'
-        ) or (sys.precursor == 'triplet-eigen' and sys.spin_system == 'rp'):
-        cal.s_tri = mt.Spinoperator(1)
-        cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
-            exp, opt, cal)
-        cal.ham_tri_zf = ham.set_up_triplet_zero_field_hamiltonian(
-            exp, opt, cal)
+        # Stop simulation routine if only the eigenvalues are desired
+        if opt.eigval_mode is True:
+            eigval, eigvec = np.linalg.eigh(cal.ham_sys)
+            return eigval
 
-    dm.set_up_density_matrix(sys, exp, opt, cal)
+        # set up initial density matrix
+        if (sys.precursor == 'triplet-zf' and sys.spin_system == 'rp'
+            ) or (sys.precursor == 'triplet-eigen' and sys.spin_system == 'rp'):
+            cal.s_tri = mt.Spinoperator(1)
+            cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
+                exp, opt, cal)
+            cal.ham_tri_zf = ham.set_up_triplet_zero_field_hamiltonian(
+                exp, opt, cal)
 
-    # clear memory
-
-    keys = vars(cal).copy()
-    for key in keys:
-        if key.endswith('_tensor'):
-            delattr(cal, key)
-
-    # calculate eigenvalues and eigenvectors of the spinsystem if needed
-    if opt.space == 'liouville':
-        cal.eigval, cal.eigvec = np.linalg.eigh(cal.ham_sys)
-
-    # clear memory
-    delattr(cal, 'ham_sys')
-
-    # build the signal including the hyperfine interactions if any nuclei are
-    # given
-    if list(it.chain(*sys.I)):
-        hf.set_up_hyperfine_tensors(sys, cal)
-
-        cal.ham_hf = hf.create_hf_hamiltonian(sys.s, sys.I, cal.A_tensor)
-
-        # create signal
-        hf.make_signal_with_hyperfine(sys, exp, opt, cal)
-
-    # build signal if no coupling nuclei are given
-    else:
-        ham.set_up_commutator_superoperator(sys, opt, cal)
-
-        print('starting the propagation...')
-        sap.propagation(sys, opt, cal)
+        dm.set_up_density_matrix(sys, exp, opt, cal)
 
         # clear memory
+
         keys = vars(cal).copy()
         for key in keys:
-            if key.startswith('ham'):
+            if key.endswith('_tensor'):
                 delattr(cal, key)
 
-        print('start making the signal...')
-        sap.make_signal(exp, opt, cal)
+        # calculate eigenvalues and eigenvectors of the spinsystem if needed
+        if opt.space == 'liouville':
+            cal.eigval, cal.eigvec = np.linalg.eigh(cal.ham_sys)
 
-        sap.powder_average(exp, opt, cal)
+        # clear memory
+        delattr(cal, 'ham_sys')
+
+        # build the signal including the hyperfine interactions if any nuclei are
+        # given
+        if list(it.chain(*sys.I)):
+            hf.set_up_hyperfine_tensors(sys, cal)
+
+            cal.ham_hf = hf.create_hf_hamiltonian(
+                sys.s, sys.I, cal.A_tensor)
+
+            # create signal
+            hf.make_signal_with_hyperfine(sys, exp, opt, cal)
+
+        # build signal if no coupling nuclei are given
+        else:
+            ham.set_up_commutator_superoperator(sys, opt, cal)
+
+            print('starting the propagation...')
+            sap.propagation(sys, opt, cal)
+
+            # clear memory
+            keys = vars(cal).copy()
+            for key in keys:
+                if key.startswith('ham'):
+                    delattr(cal, key)
+
+            print('start making the signal...')
+            sap.make_signal(exp, opt, cal)
+
+            sap.powder_average(exp, opt, cal)
 
     # do Voigt convolution
     cal.spec_sim = co.voigt_convolution(sys.width_gauss, cal.spec_sim)
