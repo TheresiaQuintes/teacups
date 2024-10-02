@@ -53,6 +53,7 @@ class Test_set_up_density_matrix:
 
         self.exp.B_z = np.array([1/(2*MU_B), 2/(2*MU_B), 3/(2*MU_B)])
         self.opt.grid_points = 1
+        self.opt.CUPY = False
         self.cal.theta, self.cal.phi = grid.get_theta_phi(1)
         self.opt.space = 'hilbert'
 
@@ -333,6 +334,7 @@ class Test_set_up_density_matrix:
         cr.set_up_spinoperator(self.sys, cal)
         cal.ham_tri_hf = cal_trip.ham_tri_hf
         cal.ham_tri_zf = cal_trip.ham_tri_zf
+        cal.ham_sys = ham.set_up_tdp_hamiltonian(self.sys, self.exp, self.opt, cal)
         dm.set_up_density_matrix(self.sys, self.exp, self.opt, cal)
 
         np.testing.assert_allclose(comp, cal.rho)

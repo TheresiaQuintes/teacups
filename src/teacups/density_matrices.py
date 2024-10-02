@@ -3,7 +3,7 @@ from copy import deepcopy
 import teacups.multioperator_tools as mut
 import teacups.matrix_tools as mt
 import teacups.creators as cr
-import teacups.hamiltonians as ha
+import teacups.hamiltonians as ham
 import teacups.memory as mem
 
 import scipy.constants as const
@@ -155,7 +155,7 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
             # set up the full high field hamiltonian of the coupled system
             # in the product basis: +1a, 0a, -1a, +1b, 0b, -1b
             # ham_zfs is only the triplet-ZFS part of the coupled hamiltonian
-            ham, ham_zfs = ha.set_up_tdp_full_high_field_hamiltonian(
+            ham_hf, ham_zfs = ham.set_up_tdp_full_high_field_hamiltonian(
                 sys, exp, opt, cal)
 
             # define rho in xyz-basis using populations for triplet-zf levels
@@ -173,7 +173,7 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
                     len(exp.B_z), opt.grid_points)*4
                 print(chunk_size)
 
-                ham_split = np.array_split(ham, chunk_size)
+                ham_hf_split = np.array_split(ham_hf, chunk_size)
                 ham_zfs_split = np.array_split(ham_zfs, chunk_size)
                 ham_sys_split = np.array_split(cal.ham_sys, chunk_size)
 
@@ -185,15 +185,15 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
                     nvmlDeviceGetMemoryInfo,
                 )
 
-                for chunk in range(len(ham_split)):
+                for chunk in range(len(ham_hf_split)):
                     ham_zfs_gpu = cp.asarray(ham_zfs_split[chunk])
                     eig_zfs, vec_zfs = cp.linalg.eigh(ham_zfs_gpu)
                     del eig_zfs, ham_zfs_gpu
 
-                    ham = cp.asarray(ham_split[chunk])
+                    ham_hf = cp.asarray(ham_hf_split[chunk])
                     ham_xyz = cp.conj(cp.transpose(
-                        vec_zfs, (0, 1, 3, 2))) @ ham @ vec_zfs
-                    del vec_zfs, ham
+                        vec_zfs, (0, 1, 3, 2))) @ ham_hf @ vec_zfs
+                    del vec_zfs, ham_hf
 
                     eig_hf, vec_hf = cp.linalg.eigh(ham_xyz)
                     del eig_hf, ham_xyz
@@ -229,7 +229,7 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
 
                 # transform high field hamiltonian to xyz-basis
                 ham_xyz = np.conj(np.transpose(
-                    vec_zfs, (0, 1, 3, 2))) @ ham @ vec_zfs
+                    vec_zfs, (0, 1, 3, 2))) @ ham_hf @ vec_zfs
 
                 # diagonalise high field hamiltonian to get the eigenvectors for
                 # transformation xyz-basis <-> TDP-eigenbasis

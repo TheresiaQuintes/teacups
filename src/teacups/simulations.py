@@ -9,9 +9,6 @@ import teacups.convolution as co
 import teacups.creators as cr
 import teacups.hamiltonians as ham
 import teacups.density_matrices as dm
-import teacups.memory as mem
-
-import matplotlib.pyplot as plt
 
 
 def teacups(Sys: object, Exp: object, SimOpt: object, development=False
@@ -62,24 +59,18 @@ def teacups(Sys: object, Exp: object, SimOpt: object, development=False
     # initialize spinsystem
     inputs.initialize_spin_system(sys)
 
+    # initialize the grid
     inputs.create_grid(opt, cal)
 
-    bottleneck = mem.define_bottleneck(sys)
-    bp = len(exp.B_z)
-    gp = opt.grid_points
-    chunk_size = mem.chunk_size(bottleneck, bp, gp)
+    # split the grid if not enough memory available
+    inputs.split_grid(sys, exp, opt, cal)
 
-    if chunk_size > 1:
-        chunk_size += 1
-
-    phi_split = np.array_split(cal.phi, chunk_size)
-    theta_split = np.array_split(cal.theta, chunk_size)
-    weights_split = np.array_split(cal.weights, chunk_size)
-    print(chunk_size)
-    for chunk in range(len(phi_split)):
-        cal.phi = phi_split[chunk]
-        cal.theta = theta_split[chunk]
-        cal.weights = weights_split[chunk]
+    # do simulation for each part of the grid
+    for chunk in range(len(cal.phi_split)):
+        cal.phi = cal.phi_split[chunk]
+        cal.theta = cal.theta_split[chunk]
+        if opt.grid == 'sophe':
+            cal.weights = cal.weights_split[chunk]
         opt.grid_points = len(cal.phi)
 
         # create spin operator and detection operator
@@ -102,8 +93,8 @@ def teacups(Sys: object, Exp: object, SimOpt: object, development=False
             cal.ham_mw = ham.set_up_mw_hamiltonian(sys, exp, opt, cal)
             cal.ham = cal.ham_sys + cal.ham_mw
 
-            # set up (non-secular) zero-field and high-field Hamiltonian without mw
-            # interaction
+            # set up (non-secular) zero-field and high-field Hamiltonian
+            # without mw interaction
             cal.ham_tri_zf = ham.set_up_triplet_zero_field_hamiltonian(
                 exp, opt, cal)
             cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
@@ -149,8 +140,8 @@ def teacups(Sys: object, Exp: object, SimOpt: object, development=False
         # clear memory
         delattr(cal, 'ham_sys')
 
-        # build the signal including the hyperfine interactions if any nuclei are
-        # given
+        # build the signal including the hyperfine interactions if any nuclei
+        # are given
         if list(it.chain(*sys.I)):
             hf.set_up_hyperfine_tensors(sys, cal)
 

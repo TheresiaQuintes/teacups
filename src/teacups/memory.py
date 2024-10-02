@@ -11,13 +11,15 @@ FLOAT_TYPE = np.float32
 
 
 def chunk_size(bottleneck, bp, gp):
-    if bottleneck == "set_up_density_matrix":
-        need_of_memory = nom_tdp_zf_set_up_density_matrix(bp, gp)
-    available_memory = psutil.virtual_memory().available * 0.8
-    chunksize = np.ceil(need_of_memory/available_memory)
-
-    if bottleneck == None:
+    if bottleneck is None:
         chunksize = 1
+    else:
+        if bottleneck == "set_up_density_matrix":
+            need_of_memory = nom_tdp_zf_set_up_density_matrix(bp, gp)
+
+        available_memory = psutil.virtual_memory().available * 0.8
+        chunksize = np.ceil(need_of_memory/available_memory)
+
     return chunksize
 
 
@@ -29,13 +31,6 @@ def define_bottleneck(sys):
 
     return bottleneck
 
-
-def split_grid(cal, chunk_size):
-    cal.theta_split = np.array_split(cal.theta, chunk_size)
-    cal.phi_split = np.array_split(cal.phi, chunk_size)
-    if hasattr(cal, "weights"):
-        cal.weights_split = np.array_split(cal.weights, chunk_size)
-    return
 
 
 def nom_tdp_zf_set_up_density_matrix(bp, gp):
@@ -63,3 +58,5 @@ def chunk_size_for_gpu(bp, gp):
     available_memory = need_of_memory
     chunksize = np.ceil(need_of_memory/free)
     return chunksize
+
+

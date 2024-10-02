@@ -1,6 +1,7 @@
 import numpy as np
 from copy import deepcopy
 import teacups.grid as gri
+import teacups.memory as mem
 
 
 COMPLEX_TYPE = np.complex64
@@ -352,6 +353,20 @@ def create_grid(opt: object, cal: object) -> None:
         opt.grid_points = len(cal.phi)
     return
 
+def split_grid(sys, exp, opt, cal):
+    bottleneck = mem.define_bottleneck(sys)
+    bp = len(exp.B_z)
+    gp = opt.grid_points
+    chunk_size = mem.chunk_size(bottleneck, bp, gp)
+
+    if chunk_size > 1:
+        chunk_size += 1
+
+    cal.phi_split = np.array_split(cal.phi, chunk_size)
+    cal.theta_split = np.array_split(cal.theta, chunk_size)
+    if opt.grid == 'sophe':
+        cal.weights_split = np.array_split(cal.weights, chunk_size)
+    print(chunk_size)
 
 def hyperfine_converter(sys: object) -> None:
     """
