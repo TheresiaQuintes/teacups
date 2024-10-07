@@ -1,10 +1,9 @@
+import scipy.signal as ssg
+import numpy as np
+import tests_teacups.simulation_comparison_arrays as comp
+import teacups.simulations as sim
 import sys
 sys.path.append("./..")
-
-import teacups.simulations as sim
-import tests_teacups.simulation_comparison_arrays as comp
-import numpy as np
-import scipy.signal as ssg
 
 
 class Sys:
@@ -68,8 +67,6 @@ class Test_teacups:
         self.opt.pop_evolution = False
         self.opt.eigval_mode = False
         self.opt.cpu_cores = 1
-
-        # Normieren, neue comps, returns entfernen
 
     def test_isotrope_singlet(self):
         self.sys.precursor = 'singlet'
@@ -214,7 +211,6 @@ class Test_treper_all_on:
         self.sys.precursor = 'triplet-zf'
         self.cal = sim.teacups(self.sys, self.exp, self.opt,
                                development=True)
-
         np.testing.assert_allclose(comp.a_hilbert_analytical_triplet,
                                    self.cal.spec_sim/(abs(self.cal.spec_sim.max())),  atol=1e-5, rtol=1e-6)
 
@@ -258,9 +254,8 @@ class Test_teacups_triplet:
 
     def test_value_of_spectrum(self):
         spec = sim.teacups(self.sys, self.exp, self.opt)
-        return spec
         np.testing.assert_allclose(
-            spec[1], comp.triplet_simulation_values, rtol=1e-6)
+            spec[1]/max(abs(spec[1].real)), comp.triplet_simulation_values, rtol=1e-6)
 
 
 class Test_teacups_triplet_liouville:

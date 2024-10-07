@@ -1,10 +1,9 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import teacups.classes as cl
+import teacups.simulations as sim
 import sys
 sys.path.append("../../")
-
-import teacups.simulations as sim
-import teacups.classes as cl
-import numpy as np
-import matplotlib.pyplot as plt
 
 
 sys = cl.Sys()

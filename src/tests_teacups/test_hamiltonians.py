@@ -1,15 +1,15 @@
+import numpy.linalg as la
+import scipy.constants as const
+import tests_teacups.set_up_comparison_arrays as comp
+import teacups.grid as grid
+import teacups.input_handler as inputs
+import teacups.creators as cr
+import teacups.matrix_tools as mt
+import teacups.hamiltonians as ham
+import numpy as np
 import sys
 sys.path.append("./..")
 
-import numpy as np
-import teacups.hamiltonians as ham
-import teacups.matrix_tools as mt
-import teacups.creators as cr
-import teacups.input_handler as inputs
-import teacups.grid as grid
-import tests_teacups.set_up_comparison_arrays as comp
-import scipy.constants as const
-import numpy.linalg as la
 MU_B = const.physical_constants['Bohr magneton in Hz/T'][0]
 
 

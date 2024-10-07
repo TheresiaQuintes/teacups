@@ -1,15 +1,15 @@
+from copy import deepcopy
+import scipy.constants as const
+import tests_teacups.set_up_comparison_arrays as comp
+import teacups.grid as grid
+import teacups.matrix_tools as mt
+import teacups.hamiltonians as ham
+import teacups.creators as cr
+import teacups.density_matrices as dm
+import numpy as np
 import sys
 sys.path.append("./..")
 
-import numpy as np
-import teacups.density_matrices as dm
-import teacups.creators as cr
-import teacups.hamiltonians as ham
-import teacups.matrix_tools as mt
-import teacups.grid as grid
-import tests_teacups.set_up_comparison_arrays as comp
-import scipy.constants as const
-from copy import deepcopy
 
 MU_B = const.physical_constants['Bohr magneton in Hz/T'][0]
 
@@ -241,7 +241,7 @@ class Test_set_up_density_matrix:
         eig_hf, vec_hf = np.linalg.eigh(ham_hf)
 
         rho_trip = cr.create_tensor(self.sys.rho_0_tri, cal.phi, cal.theta)
-        comp = np.linalg.inv(vec_hf) @ rho_trip.multirot @ vec_hf
+        comp = np.linalg.inv(vec_hf) @ rho_trip.tensor @ vec_hf
         comp *= np.eye(3, dtype=np.float32)
 
         np.testing.assert_allclose(cal.rho, comp, atol=1e-8, rtol=1e-5)
@@ -322,22 +322,24 @@ class Test_set_up_density_matrix:
         cal_trip.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
             self.exp, self.opt, cal_trip)
 
-        dm.set_up_density_matrix(self.sys, self.exp, self.opt, cal_trip)
-
-        comp = np.kron(np.diag(np.arange(1, 3)), cal_trip.rho)
-
         cal = self.cal
         self.sys.spin_system = 'tdp'
         self.sys.precursor = 'triplet-zf'
-        self.sys.population = np.array([1, 2, 1, 2, 3])
+        self.sys.population = np.array([0.5, 0.5, 1, 2, 3])
         self.sys.s = [1/2, 1]
         cr.set_up_spinoperator(self.sys, cal)
         cal.ham_tri_hf = cal_trip.ham_tri_hf
         cal.ham_tri_zf = cal_trip.ham_tri_zf
-        cal.ham_sys = ham.set_up_tdp_hamiltonian(self.sys, self.exp, self.opt, cal)
+        cal.ham_sys = ham.set_up_tdp_hamiltonian(
+            self.sys, self.exp, self.opt, cal)
         dm.set_up_density_matrix(self.sys, self.exp, self.opt, cal)
+        dm_small_J = cal.rho
+        self.sys.J_ex = 100000
+        dm.set_up_density_matrix(self.sys, self.exp, self.opt, cal)
+        dm_high_J = cal.rho
 
-        np.testing.assert_allclose(comp, cal.rho)
+        np.testing.assert_allclose(comp.dm_zf_tdp_small_J, dm_small_J)
+        np.testing.assert_allclose(comp.dm_zf_tdp_high_J, dm_high_J)
 
     def test_uncpupled_eigen_tdp(self):
         cal_trip = deepcopy(self.cal)
