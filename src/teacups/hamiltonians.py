@@ -125,7 +125,9 @@ def set_up_triplet_hamiltonian(exp: object, opt: object, cal: object
     interaction (=ZFS). The spinfunctions (-1, 0, +1) are used as a basis set.
     As the Hamiltonian is set up in the rotating frame, secular approximation
     is applied:
-        H = D_zz * (S_z^2 - 1/3*S^2) + H_zeeman
+
+    .. math::
+        H = D_{zz} * (S_z^2 - 1/3*S^2) + H_\mathrm{Zeeman}
 
     Parameters
     ----------
@@ -196,16 +198,20 @@ def set_up_triplet_high_field_hamiltonian(exp: object, opt: object,
     """
     s_tri = mt.Spinoperator(1)
 
+    # ZFS-Hamiltonian
     ham_d = mut.Multioperator(s_tri, opt.grid_points, exp.B_z*MU_B)
     ham_d.create_bilinear_operator(cal.D_tri_tensor, s_tri)
     ham_d.angle_matrix_changed()
 
+    # The eigenbasis of the ZFS-Hamiltonian is the xyz-Basis
     eig_d, vec_d = np.linalg.eigh(ham_d.B_angle_matrix)
 
+    # Calculate high-field Hamiltonian
     ham_tri_hf = mut.Multioperator(s_tri, opt.grid_points, exp.B_z*MU_B)
     ham_tri_hf.zeeman_coupling(cal.g_tri_tensor)
     ham_tri_hf.B_angle_matrix += ham_d.B_angle_matrix
 
+    # Transfer high-field Hamiltonian to xyz-Basis
     ham_tri_hf.B_angle_matrix = np.conj(
         np.transpose(vec_d, (0, 1, 3, 2))) @ ham_tri_hf.B_angle_matrix @ vec_d
     ham_tri_hf = ham_tri_hf.B_angle_matrix
@@ -218,7 +224,10 @@ def set_up_triplet_zero_field_hamiltonian(exp: object, opt: object, cal: object
     """
     Calculate the zero field Hamiltonian matrix of a triplet. It is set up
     by multiplication:
+
+    .. math::
         H = SDS.
+
     The Hamiltonian is given in the main-axis system of the D-tensor.
     It is returned for all magnetic field points and all grid
     points as a B_angle_matrix-attribute of the Multioperator class.

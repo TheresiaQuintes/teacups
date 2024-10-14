@@ -249,10 +249,6 @@ def predefinitions(sys, exp: object, cal: object) -> None:
     cal.spec_sim : np.ndarray
         Array contains only zeros and will be filled later. The shape is
         nPoints x tPoints.
-    cal.intensity : float
-        The attribute intensity is created and set to one. It is changed if
-        hyperfinecouplings are added analytically. Otherwise the intensity
-        factor remains one.
 
     Returns
     -------
@@ -305,7 +301,7 @@ def create_grid(opt: object, cal: object) -> None:
     Create the orientational grid and set up pairs of theta and phi for each
     angle point. The variable grid_points is changed from the input value
     (Number of points between theta=0 and theta=pi/2) to the number of angle
-    points. A fibonacci grid or a sophe grid either is built, or a grid
+    points. A fibonacci grid or a sophe grid either is built, or a "grid"
     consisting of user-chosen angle points.
 
     Parameters
@@ -315,7 +311,8 @@ def create_grid(opt: object, cal: object) -> None:
         grid. It may be 'sophe' or 'fibonacci' either.
         It has to contain the attribute opt.grid_points which is the number of
         points between theta=0 and theat=pi/2 on the orientational sphere that
-        shall be calculated.
+        shall be calculated. In case of a sophe grid opt.sym has to contain
+        a string that defines the symmetry of the system.
         If opt.grid is set to 'single' user-chosen orientations can be
         calculated. In that case opt.theta and opt.phi have to be given as
         lists containing the desired angle inputs.
@@ -353,7 +350,50 @@ def create_grid(opt: object, cal: object) -> None:
         opt.grid_points = len(cal.phi)
     return
 
-def split_grid(sys, exp, opt, cal):
+
+def split_grid(sys: object, exp: object, opt: object, cal: object) -> None:
+    """
+    Find the memory-bottleneck for a routine and split the grid into a number
+    of chunks defined by the available memory.
+
+    Parameters
+    ----------
+    sys : object
+        Contains spinsystem parameters. This function uses the attributes
+        sys.spin_system and sys.precursor.
+    exp : object
+        Contains experimental parameters. This function uses the attributes
+        exp.B_z.
+    opt : object
+        Contains simulation options. This function uses opt.grid_points and
+        opt.grid.
+    cal : object
+        Container for results of calculations during the simulation. This
+        function uses cal.phi, cal.theta and in case that opt.grid is 'sophe'
+        cal.weights.
+
+    Attributes
+    ----------
+    cal.phi_split : list of np.ndarrays
+        List with the array of phi angle points split into multiple numpy
+        arrays. Their length is dependent on the available memory and the
+        simulations bottleneck.
+
+    cal.theta_split : list of np.ndarrays
+        List with the array of theta angle points split into multiple numpy
+        arrays. Their length is dependent on the available memory and the
+        simulations bottleneck.
+
+    cal.weights_split : list of np.ndarrays (optional)
+        List with the array of weights (in case of SOPHE-grid) split into
+        multiple numpy arrays. Their length is dependent on the available
+        memory and the simulations bottleneck.
+
+    Returns
+    -------
+    None
+
+    """
     bottleneck = mem.define_bottleneck(sys)
     bp = len(exp.B_z)
     gp = opt.grid_points
@@ -366,7 +406,9 @@ def split_grid(sys, exp, opt, cal):
     cal.theta_split = np.array_split(cal.theta, chunk_size)
     if opt.grid == 'sophe':
         cal.weights_split = np.array_split(cal.weights, chunk_size)
-    print(chunk_size)
+
+    return
+
 
 def hyperfine_converter(sys: object) -> None:
     """

@@ -145,7 +145,9 @@ class Matrix:
                              orthonormal=False) -> None:
         """
         Change the basis of matrix. trans is the transformation matrix:
-            m = trans^-1 @ m @ trans.
+
+        .. math::
+            M = T^{-1} \cdot M \cdot T.
 
         Parameters
         ----------
@@ -675,7 +677,11 @@ class Spinoperator(Operator):
         Calculate the total spin matrix operator of a radical pair.
 
         The formular following is used:
-        S_ges = S@E + E@S (S is the spin operator of a single electron, E is
+
+        .. math::
+            S_\mathrm{ges} = S\cdot E + E\cdot S 
+
+        (S is the spin operator of a single electron, E is
         the unit matrix, @ means that tensor product is used).
 
         Attributes

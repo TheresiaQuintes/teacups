@@ -157,7 +157,8 @@ def sophe_grid(grid_size: int, sym: str) -> tuple['np.ndarray', 'np.ndarray',
     https://doi.org/10.1006/jmra.1995.9978) or Y. Kurihara, Monthly Weather
     Review 93(7), 399-415 (July 1965)
     https://doi.org/10.1175/1520-0493(1965)093<0399:NIOTPE>2.3.CO;2).
-    Code imported from epr_grid written by Florian Quintes.
+    The grid is set up by the epr_grid module, which is written by Florian
+    Quintes.
 
     Parameters
     ----------
@@ -183,53 +184,3 @@ def sophe_grid(grid_size: int, sym: str) -> tuple['np.ndarray', 'np.ndarray',
     theta, phi = spherical[:, 1], spherical[:, 2]
 
     return theta, phi, weights
-
-
-def triangles(phi: 'np.ndarray', theta: 'np.ndarray') -> tuple['np.ndarray',
-                                                               'np.ndarray']:
-    """
-    Calculate a Delaunay-triangulation over a given grid on a sphere. Indices
-    of the three angle points and areas for each triangle are calculated.
-
-    Parameters
-    ----------
-    phi : np.ndarray
-        Set of spherical angles phi for all orientations on sphere.
-    theta : np.ndarray
-        Set of spherical angles theta for all orientations on sphere.
-
-    Returns
-    -------
-    idx : TYPE
-        Indices of the points of each Delaunay triangle. By using the index on
-        the phi/theta array the coordinates of the points can be calculated.
-    area : TYPE
-        Area of each Delaunay triangle.
-
-    """
-    points = np.dstack((theta*np.cos(phi), theta*np.sin(phi)))
-    tri = Delaunay(points[0])
-    idx = tri.simplices
-
-    rtp = np.dstack((np.ones(len(phi)), theta, phi))
-    rtp = rtp[0].T
-    xyz = spherical2cartesian(rtp)
-    xyz = xyz.T
-    idx_a = idx[:, 0]
-    idx_b = idx[:, 1]
-    idx_c = idx[:, 2]
-    x1 = xyz[idx_a]
-    x2 = xyz[idx_b]
-    x3 = xyz[idx_c]
-
-    a1 = np.arccos(np.sum(x2*x3, -1))
-    a2 = np.arccos(np.sum(x3*x1, -1))
-    a3 = np.arccos(np.sum(x1*x2, -1))
-
-    s = (a1+a2+a3)/2
-    x = np.sqrt(np.tan(s/2)*np.tan((s-a1)/2)*np.tan((s-a2)/2)*np.tan((s-a3)/2))
-    x = np.real(x)
-    area = 4*np.arctan(x)
-
-    area = area*4*np.pi/np.sum(area)
-    return idx, area
