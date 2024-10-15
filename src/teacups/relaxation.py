@@ -3,6 +3,7 @@ import numpy as np
 COMPLEX_TYPE = np.complex64
 FLOAT_TYPE = np.float32
 
+
 def superoperator_population_relaxation(k_matrix):
     """
     Calculate a relaxation superoperator for transitions between the states.
@@ -18,11 +19,18 @@ def superoperator_population_relaxation(k_matrix):
     ----------
     k_matrix : np.ndarray
         Matrix containing the transition rates between the states. E.g.:
-              a  b  c
-            a 4  1  2
-            b 1     3
-            c 2  3
+
+        ::
+
+                         a b c
+                       a 4 1 2
+            k_matrix = b 1   3
+                       c 2 3  
+
         for the transition sceme:
+
+        ::
+
             a <-> b: 1
             a <-> c: 2
             b <-> c: 3
@@ -32,16 +40,19 @@ def superoperator_population_relaxation(k_matrix):
     R : np.ndarray
         Relaxation superoperator. Its dimension is the dimension of T1_matrix
         squared. E.g.:
+
+        ::
+
               aa  ab  ac  ba  bb  bc  ca  cb  cc
-           aa 1              1               2
+           aa 1                1               2
            ab
            ac
            ba
-           bb  1             -4               3
+           bb  1              -4               3
            bc
            ca
            cb
-           cc  2              3              -5
+           cc  2               3              -5
 
     """
     dimension = k_matrix.shape[0]
@@ -84,6 +95,9 @@ def superoperator_coherence_relaxation(k, dimension):
         Relaxationsuperoperator for the coherences. All diagonal elements that
         are assignable to the coherences are set to the negative value of k.
         E.g.:
+
+        ::
+
               aa ab ba bb
            aa
            ab    -k

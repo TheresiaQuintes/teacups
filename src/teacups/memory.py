@@ -4,13 +4,35 @@ import psutil
 COMPLEX_TYPE = np.complex64
 FLOAT_TYPE = np.float32
 
-# Funktion, die Array splittet, abhängig von
-# 1.) Der aktuell verfügbaren Arbeitsspeichermenge
-# 2.) Der am aktuellen Bottleneck benötigten Arbeitsspeichermenge
-# Flexibel um beliebige Funktion drappierbar?
 
+def chunk_size(bottleneck: str, bp: int, gp: int) -> int:
+    """
+    Calculate the number of pieces in which to split the arrays of the
+    simulation to avoid memory overflow. This is dependent on the chosen
+    bottleneck, the size of the arrays and the available memory.
 
-def chunk_size(bottleneck, bp, gp):
+    Parameters
+    ----------
+    bottleneck : str
+        String defining which part of the simulation causes the memory
+        bottleneck. If bottleneck is set to None the chunksize is set to 1
+        as no bottleneck is defined. Otherwise the need of memory is calculated
+        in different ways. Dependent on the available memory the chunksize
+        is returned
+    bp : int
+        Number of magnetic field points. Important for the determination of
+        the need of memory.
+    gp : int
+        Number of grid points. Important for the determination of the need
+        of memory.
+
+    Returns
+    -------
+    chunksize : int
+        Number of pieces in which to split the arrays to avoid a memory
+        overflow during the simulation
+
+    """
     if bottleneck is None:
         chunksize = 1
     else:
@@ -23,7 +45,24 @@ def chunk_size(bottleneck, bp, gp):
     return chunksize
 
 
-def define_bottleneck(sys):
+def define_bottleneck(sys: object) -> str:
+    """
+    Define the simulations bottleneck dependent on the chosen spin system.
+    The proper string for the function chunk_size() is returned.
+
+    Parameters
+    ----------
+    sys : object
+        Container with the definition of the spin system. This is used to
+        find out, which the simulations bottleneck is. The attributes
+        spin_system and precursor are used.
+
+    Returns
+    -------
+    bottleneck : str
+        String defining the bottleneck of the function.
+
+    """
     if sys.spin_system == 'tdp' and sys.precursor == 'triplet-zf':
         bottleneck = "set_up_density_matrix"
     else:
@@ -32,8 +71,25 @@ def define_bottleneck(sys):
     return bottleneck
 
 
+def nom_tdp_zf_set_up_density_matrix(bp: int, gp: int) -> float:
+    """
+    Calculate the need of memory for the function set_up_density_matrix from
+    the module densit_matrices for the case of a "zf-triplet" precursor and
+    "tdp" spin system.
 
-def nom_tdp_zf_set_up_density_matrix(bp, gp):
+    Parameters
+    ----------
+    bp : int
+        Number of magnetic field points.
+    gp : int
+        Number of angle points.
+
+    Returns
+    -------
+    float
+        Need of memory in bytes.
+
+    """
     complex_memory = 8
     multioperator = bp*gp*6*6*complex_memory
     hams = 6*multioperator
@@ -43,7 +99,26 @@ def nom_tdp_zf_set_up_density_matrix(bp, gp):
     return nom
 
 
-def chunk_size_for_gpu(bp, gp):
+def chunk_size_for_gpu(bp: int, gp: int) -> int:
+    """
+    Calculate the cunk size for the calculations using the GPU in the function
+    densit_matrices.set_up_density_matrix() for the case of a "zf-triplet"
+    precursor and "tdp" spin system.
+
+    Parameters
+    ----------
+    bp : int
+        Number of magnetic field points.
+    gp : int
+        Number of angle points.
+
+    Returns
+    -------
+    chunksize : int
+        Number of pieces in which to split the arrays to avoid a memory
+        overflow on the GPU during setup of the density matrix.
+
+    """
     from pynvml import (
         nvmlInit,
         nvmlDeviceGetHandleByIndex,
@@ -55,8 +130,5 @@ def chunk_size_for_gpu(bp, gp):
     h = nvmlDeviceGetHandleByIndex(0)
     info = nvmlDeviceGetMemoryInfo(h)
     free = info.free
-    available_memory = need_of_memory
     chunksize = np.ceil(need_of_memory/free)
     return chunksize
-
-

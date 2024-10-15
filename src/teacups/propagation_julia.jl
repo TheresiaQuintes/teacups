@@ -3,6 +3,11 @@ import FastExpm as fe
 import SparseArrays as sa
 import Expokit as expo
 
+#=
+ Functions in written in JULIA for the determination of a matrix exponential
+ in the propagation function. These functions are for developing purposes only.
+=#
+
 function propagation_julia(x::Array{ComplexF64, 4})
     dimension = size(x)
     propagator = zeros(ComplexF64, dimension)

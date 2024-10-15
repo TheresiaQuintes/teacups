@@ -3,6 +3,7 @@ import numpy as np
 COMPLEX_TYPE = np.complex64
 FLOAT_TYPE = np.float32
 
+
 class Multioperator:
     """
     An object of class Multioperator contains matrix attributes of
@@ -493,7 +494,10 @@ class Multioperator:
         Therefore, the hamiltonian is set up as the sum of the interaction
         hamiltonian with the microwave-field and the offset-hamiltonian which
         describes the shift of all lamor frequencies in rotating frame:
-        H = H_mw - H_off.
+
+        .. math::
+            H = H_\mathrm{mw} - H_\mathrm{off}.
+
         The matrix attribute is changed and afterwards filld in
         angle_matrix and B_angle_matrix by using the function matrix_changed().
 
