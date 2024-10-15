@@ -48,6 +48,7 @@ Exp.freq_mw = 9.75e9
 
 # simulation options
 SimOpt.grid_points = 20
+SimOpt.CUPY = False
 
 
 # do the simulation

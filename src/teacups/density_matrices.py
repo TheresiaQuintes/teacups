@@ -157,6 +157,13 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
             # ham_zfs is only the triplet-ZFS part of the coupled hamiltonian
             ham_hf, ham_zfs = ham.set_up_tdp_full_high_field_hamiltonian(
                 sys, exp, opt, cal)
+            # !!! Kontrolle hat ergeben, dass sich die Eigenwerte von ham_hf
+            # und ham_sys nur um einen Offset von J/4 unterscheiden. Das liegt
+            # an der unterschiedlichen Definition von H_ex (siehe Doku) von
+            # RP (verwendet in multioperator_tools) und TDP. Fürs Spektrum
+            # gibt es keinen Unterschied, allerdings könnte man das beim
+            # Aufräumen vom Code angleichen (z.B. indem H_ex für alle Systeme
+            # identisch aufgestellt wird)
 
             # define rho in xyz-basis using populations for triplet-zf levels
             rho_trip = np.diag(np.array(sys.population[2:], dtype=FLOAT_TYPE))
