@@ -155,7 +155,11 @@ def set_up_tensors(sys: object, cal: object) -> None:
                     sys.g_tri, cal.phi, cal.theta, sys.g_tri_frame)
             else:
                 cal.g_tri_tensor = create_tensor(sys.g_tri, cal.phi, cal.theta)
-            if not hasattr(sys, 'g2'):
+            if hasattr(sys, 'g2'):
+                pass
+            elif hasattr(sys, 'g'):
+                cal.g_iso = 1/2*(1/3*np.sum(sys.g_tri)+1/3*np.sum(sys.g))
+            else:
                 cal.g_iso = 1/3*np.sum(sys.g_tri)
 
         elif attr == 'D_tri':

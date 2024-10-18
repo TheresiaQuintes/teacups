@@ -1,10 +1,9 @@
+import teacups.grid as grid
+import teacups.matrix_tools as mt
+import teacups.creators as cr
+import numpy as np
 import sys
 sys.path.append("./..")
-
-import numpy as np
-import teacups.creators as cr
-import teacups.matrix_tools as mt
-import teacups.grid as grid
 
 
 class Sys:
@@ -28,11 +27,12 @@ class Cal:
 
 
 class Test_create_tensor:
-    diag = [1, 2, 3]
-    theta, phi = grid.get_theta_phi(3)
-    g1Frame = [1, 2, 3]
-    ten1 = cr.create_tensor(diag, phi, theta)
-    ten2 = cr.create_tensor(diag, phi, theta, g1Frame)
+    def setup(self):
+        diag = [1, 2, 3]
+        self.theta, self.phi = grid.get_theta_phi(3)
+        g1Frame = [1, 2, 3]
+        self.ten1 = cr.create_tensor(diag, self.phi, self.theta)
+        self.ten2 = cr.create_tensor(diag, self.phi, self.theta, g1Frame)
 
     def test_tensor(self):
         comp1 = np.array([[1., 0., 0.],
@@ -285,7 +285,6 @@ class Test_set_up_tensors_triplet:
                               self.cal.D_tri_tensor.multirot)
 
     def test_dipole_tensor_with_frame(self):
-        self.sys.precursor = 'triplet'
         self.sys.D_tri = 5
         self.sys.E_tri = 1
         self.sys.D_tri_frame = [1, 2, 3]
@@ -308,12 +307,59 @@ class Test_set_up_tensors_triplet:
         assert g_iso == self.cal.g_iso
 
 
+class Test_set_up_tensors_tdp:
+    def setup(self):
+        self.opt = Opt()
+        self.sys = Sys()
+        self.cal = Cal()
+
+        self.opt.grid_points = 20
+        self.cal.theta, self.cal.phi = grid.get_theta_phi(20)
+        self.sys.g = [1, 2, 3]
+        self.sys.g_tri = [4, 5, 6]
+        self.sys.D_tri = 5
+        self.sys.E_tri = 1
+
+    def test_g(self):
+        g_tensor = cr.create_tensor([1, 2, 3], self.cal.phi, self.cal.theta)
+        cr.set_up_tensors(self.sys, self.cal)
+        assert np.array_equal(g_tensor.multirot, self.cal.g_tensor.multirot)
+
+    def test_g_tri(self):
+        g_tri_tensor = cr.create_tensor(
+            [4, 5, 6], self.cal.phi, self.cal.theta)
+        cr.set_up_tensors(self.sys, self.cal)
+        assert np.array_equal(g_tri_tensor.multirot,
+                              self.cal.g_tri_tensor.multirot)
+
+    def test_D(self):
+        self.sys.D = 5
+        self.sys.E = 1
+        D_tensor = cr.create_tensor(cr.create_dipol_tensor_diagonals(
+            5, 1), self.cal.phi, self.cal.theta)
+        cr.set_up_tensors(self.sys, self.cal)
+        assert np.array_equal(D_tensor.multirot, self.cal.D_tensor.multirot)
+
+    def test_D_tri(self):
+        D_tri_tensor = cr.create_tensor(
+            cr.create_dipol_tensor_diagonals(5, 1), self.cal.phi, self.cal.theta)
+        cr.set_up_tensors(self.sys, self.cal)
+        assert np.array_equal(D_tri_tensor.multirot,
+                              self.cal.D_tri_tensor.multirot)
+
+    def test_g_iso(self):
+        g_iso = 1/2*(1/3*(np.sum(self.sys.g_tri))+1/3*(np.sum(self.sys.g)))
+        cr.set_up_tensors(self.sys, self.cal)
+        assert g_iso == self.cal.g_iso
+
+
 class Test_set_up_spinoperator:
     def setup(self):
         self.cal = Cal()
         self.sys = Sys()
 
-    def test_s_rp(self):
+    def test_s_coupled(self):
+        # radical pair
         s1 = np.array([[[0. + 0.j,  0. + 0.j,  0.5+0.j,  0. + 0.j],
                         [0. + 0.j,  0. + 0.j,  0. + 0.j,  0.5+0.j],
                         [0.5+0.j,  0. + 0.j,  0. + 0.j,  0. + 0.j],
@@ -348,7 +394,8 @@ class Test_set_up_spinoperator:
         cr.set_up_spinoperator(self.sys, self.cal)
         assert np.array_equal(self.cal.s.matrix, S)
 
-    def test_s_doublet(self):
+    def test_s_uncoupled(self):
+        # Doublet
         s = np.array([[[0.+0.j,  0.5+0.j],
                        [0.5+0.j, 0.+0.j]],
 

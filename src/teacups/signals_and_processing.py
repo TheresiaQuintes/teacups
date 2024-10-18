@@ -370,6 +370,7 @@ def powder_average(exp: object, opt: object, cal: object) -> None:
 
 
 def signal_hilbert_decay(sys: object, cal: object) -> None:
+    # !!! In convolution.py zusätzliche Funktion anlegen?
     """
     Multiply each time-spectrum with an exponential term for simulating
     a decay of the system in hilbert space.
