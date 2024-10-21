@@ -321,12 +321,12 @@ class Test_teacups_doublet:
         self.opt = Opt()
 
         self.sys.spin_system = 'doub'
-        self.sys.precursor = 'basis'
+        self.sys.precursor = 'eigen'
         self.sys.width_gauss = 0
         self.sys.g = [1.9, 2, 2.3]
         self.sys.decay = 1e-6
         self.sys.dynamics = None
-        self.sys.population = [0.4, 0.6]
+        self.sys.population = [0.6, 0.4]
 
         self.exp.B_z = np.linspace(290, 380, 40)
         self.exp.t_scale = [0, 2e-6]
@@ -362,9 +362,9 @@ class Test_doublet_liouville:
         self.sys.T_relax_2 = 5e-6
         self.sys.dynamics = None
         self.sys.width_gauss = 4
-        self.sys.population = [0, 1]
+        self.sys.population = [1, 0]
         self.sys.spin_system = 'doub'
-        self.sys.precursor = 'basis'
+        self.sys.precursor = 'eigen'
 
         self.exp.B_z = np.linspace(300, 390, 300)
         self.exp.t_scale = [0, 1.5e-6]

@@ -68,50 +68,6 @@ class Test_set_up_density_matrix:
         rho_tdp = np.diag(np.arange(1, 7))
         self.rho_tdp = np.array([[rho_tdp], [rho_tdp], [rho_tdp]])
 
-    def test_basis_doub(self):
-        cal = Cal()
-        self.sys.spin_system = 'doub'
-        self.sys.precursor = 'basis'
-        self.sys.population = np.arange(1, 3)
-        self.sys.s = 1/2
-        cr.set_up_spinoperator(self.sys, cal)
-        dm.set_up_density_matrix(self.sys, self.exp, self.opt, cal)
-
-        assert np.array_equal(self.rho_doub, cal.rho)
-
-    def test_basis_trip(self):
-        cal = Cal()
-        self.sys.spin_system = 'trip'
-        self.sys.precursor = 'basis'
-        self.sys.population = np.arange(1, 4)
-        self.sys.s = 1
-        cr.set_up_spinoperator(self.sys, cal)
-        dm.set_up_density_matrix(self.sys, self.exp, self.opt, cal)
-
-        assert np.array_equal(self.rho_trip, cal.rho)
-
-    def test_basis_rp(self):
-        cal = Cal()
-        self.sys.spin_system = 'rp'
-        self.sys.precursor = 'basis'
-        self.sys.population = np.arange(1, 5)
-        self.sys.s = [1/2, 1/2]
-        cr.set_up_spinoperator(self.sys, cal)
-        dm.set_up_density_matrix(self.sys, self.exp, self.opt, cal)
-
-        assert np.array_equal(self.rho_rp, cal.rho)
-
-    def test_basis_tdp(self):
-        cal = Cal()
-        self.sys.spin_system = 'tdp'
-        self.sys.precursor = 'basis'
-        self.sys.population = np.arange(1, 7)
-        self.sys.s = [1/2, 1]
-        cr.set_up_spinoperator(self.sys, cal)
-        dm.set_up_density_matrix(self.sys, self.exp, self.opt, cal)
-
-        assert np.array_equal(self.rho_tdp, cal.rho)
-
     def test_eigen_doublet(self):
         cal = Cal()
         self.sys.spin_system = 'doub'
@@ -197,30 +153,6 @@ class Test_set_up_density_matrix:
 
         assert np.array_equal(r, cal.rho)
 
-    def test_coupled_tdp(self):
-        cal = Cal()
-        self.sys.spin_system = 'tdp'
-        self.sys.precursor = 'coupled'
-        self.sys.population = np.arange(1, 7)
-        self.sys.s = [1/2, 1]
-        cr.set_up_spinoperator(self.sys, cal)
-        dm.set_up_density_matrix(self.sys, self.exp, self.opt, cal)
-
-        s13 = np.sqrt(1/3)
-        s23 = np.sqrt(2/3)
-        trans = np.array([[1, 0, 0, 0, 0, 0],
-                          [0, s23, 0, s13, 0, 0],
-                          [0, 0, s13, 0, s23, 0],
-                          [0, 0, 0, 0, 0, 1],
-                          [0, -s13, 0, s23, 0, 0],
-                          [0, 0, s23, 0, -s13, 0]])
-        trans = np.array([[trans], [trans], [trans]])
-
-        comp = np.linalg.inv(trans) @ self.rho_tdp @ trans
-        comp *= np.eye(6)
-
-        np.testing.assert_allclose(comp, cal.rho, atol=1e-8, rtol=1e-5)
-
     def test_zf_triplet(self):
         cal = Cal()
         cal.theta, cal.phi = grid.get_theta_phi(1)
@@ -282,32 +214,6 @@ class Test_set_up_density_matrix:
 
         np.testing.assert_allclose(comp, cal.rho)
 
-    def test_eigen_triplet_rp(self):
-        cal_trip = deepcopy(self.cal)
-        self.sys.spin_system = 'trip'
-        self.sys.precursor = 'eigen'
-        self.sys.population = np.arange(1, 4)
-        self.sys.s = 1
-        cr.set_up_spinoperator(self.sys, cal_trip)
-        cal_trip.ham_sys = ham.set_up_triplet_hamiltonian(self.exp, self.opt,
-                                                          cal_trip)
-        dm.set_up_density_matrix(self.sys, self.exp, self.opt, cal_trip)
-
-        comp = np.zeros((3, 1, 4, 4))
-        comp[:, :, 0, 0] = cal_trip.rho[:, :, 0, 0]
-        comp[:, :, 2, 2] = cal_trip.rho[:, :, 1, 1]
-        comp[:, :, 3, 3] = cal_trip.rho[:, :, 2, 2]
-
-        cal = self.cal
-        self.sys.spin_system = 'rp'
-        self.sys.precursor = 'triplet-eigen'
-        self.sys.population = np.arange(1, 4)
-        self.sys.s = [1/2, 1/2]
-        cr.set_up_spinoperator(self.sys, cal)
-        dm.set_up_density_matrix(self.sys, self.exp, self.opt, cal)
-
-        np.testing.assert_allclose(comp, cal.rho)
-
     def test_uncoupled_zf_tdp(self):
         cal_trip = deepcopy(self.cal)
         self.sys.spin_system = 'trip'
@@ -340,29 +246,6 @@ class Test_set_up_density_matrix:
 
         np.testing.assert_allclose(comp.dm_zf_tdp_small_J, dm_small_J)
         np.testing.assert_allclose(comp.dm_zf_tdp_high_J, dm_high_J)
-
-    def test_uncpupled_eigen_tdp(self):
-        cal_trip = deepcopy(self.cal)
-        self.sys.spin_system = 'trip'
-        self.sys.precursor = 'eigen'
-        self.sys.population = np.arange(1, 4)
-        self.sys.s = 1
-        cr.set_up_spinoperator(self.sys, cal_trip)
-        cal_trip.ham_sys = ham.set_up_triplet_hamiltonian(self.exp, self.opt,
-                                                          cal_trip)
-        dm.set_up_density_matrix(self.sys, self.exp, self.opt, cal_trip)
-
-        comp = np.kron(np.diag(np.arange(1, 3)), cal_trip.rho)
-
-        cal = self.cal
-        self.sys.spin_system = 'tdp'
-        self.sys.precursor = 'triplet-eigen'
-        self.sys.population = np.array([1, 2, 1, 2, 3])
-        self.sys.s = [1/2, 1]
-        cr.set_up_spinoperator(self.sys, cal)
-        dm.set_up_density_matrix(self.sys, self.exp, self.opt, cal)
-
-        np.testing.assert_allclose(comp, cal.rho)
 
 
 class Test_set_up_rp_density_matrix:
@@ -471,11 +354,14 @@ class Test_set_up_doublet_density_matrix:
         self.cal.theta, self.cal.phi = grid.get_theta_phi(3)
         self.opt.space = 'hilbert'
         self.cal.s_doub = mt.Spinoperator(1/2)
-        self.sys.population = [0, 1]
-        self.sys.precursor = 'basis'
+        self.sys.population = [1, 0]
+        self.sys.precursor = 'eigen'
         self.sys.spin_system = 'doub'
         cr.set_up_tensors(self.sys, self.cal)
         cr.set_up_spinoperator(self.sys, self.cal)
+        cr.set_up_spinoperator(self.sys, self.cal)
+        self.cal.ham_sys = ham.set_up_doublet_hamiltonian(self.exp, self.opt,
+                                                          self.cal)
 
     def test_elements_in_multimatrix(self):
         comparison = np.zeros((2, 2))

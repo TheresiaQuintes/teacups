@@ -1,10 +1,9 @@
+import teacups.classes as cl
+import matplotlib.pyplot as plt
+import numpy as np
+import teacups.simulations as sim
 import sys
 sys.path.append("../../")
-
-import teacups.simulations as sim
-import numpy as np
-import matplotlib.pyplot as plt
-import teacups.classes as cl
 
 
 # initialize classes with default parameters
@@ -26,8 +25,8 @@ sys.A1_frame = [0, 1, 0]
 # sys.I = [[1/2, 1/2]]
 
 sys.spin_system = 'doub'
-sys.precursor = 'basis'
-sys.population = [0, 1]
+sys.precursor = 'eigen'
+sys.population = [1, 0]
 
 # set up experimental parameters
 exp.B_z = np.linspace(320, 380, 600)

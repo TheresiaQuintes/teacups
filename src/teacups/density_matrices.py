@@ -274,100 +274,11 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
                                   precursor.'
             )
 
-    elif sys.precursor == "triplet-eigen":
-        if sys.spin_system == "rp":
-            cal_tri = deepcopy(cal)
-            sys_tri = deepcopy(sys)
-            opt_tri = deepcopy(opt)
-            opt_tri.space = "hilbert"
-            sys_tri.s = 1
-            cr.set_up_spinoperator(sys_tri, cal_tri)
-            sys_tri.spin_system = "trip"
-            sys_tri.precursor = "eigen"
-            cal_tri.ham_sys = ham.set_up_triplet_hamiltonian(exp, opt, cal_tri)
-            set_up_density_matrix(sys_tri, exp, opt_tri, cal_tri)
-
-            rho = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
-            rho.B_angle_matrix[:, :, 0, 0] = cal_tri.rho[:, :, 0, 0]
-            rho.B_angle_matrix[:, :, 2, 2] = cal_tri.rho[:, :, 1, 1]
-            rho.B_angle_matrix[:, :, 3, 3] = cal_tri.rho[:, :, 2, 2]
-
-        elif sys.spin_system == "tdp":
-            cal_tri = deepcopy(cal)
-            sys_tri = deepcopy(sys)
-            opt_tri = deepcopy(opt)
-            opt_tri.space = "hilbert"
-            sys_tri.s = 1
-            cr.set_up_spinoperator(sys_tri, cal_tri)
-            sys_tri.spin_system = "trip"
-            sys_tri.precursor = "eigen"
-            cal_tri.ham_sys = ham.set_up_triplet_hamiltonian(exp, opt, cal_tri)
-            sys_tri.population = np.array(sys.population[2:], dtype=FLOAT_TYPE)
-            set_up_density_matrix(sys_tri, exp, opt_tri, cal_tri)
-
-            rho = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
-            rho.B_angle_matrix = np.kron(
-                np.diag(np.array(sys.population[:2], dtype=FLOAT_TYPE)
-                        ), cal_tri.rho)
-        else:
-            raise AttributeError(
-                'The spin_system attribute only accpets \
-                                 "rp" or "tdp" as a value for a triplet\
-                                  precursor.'
-            )
-
-    elif sys.precursor == "coupled":
-        if sys.spin_system == "tdp":
-            s13 = np.sqrt(1 / 3)
-            s23 = np.sqrt(2 / 3)
-            trans = np.array(
-                [
-                    [1, 0, 0, 0, 0, 0],
-                    [0, s23, 0, s13, 0, 0],
-                    [0, 0, s13, 0, s23, 0],
-                    [0, 0, 0, 0, 0, 1],
-                    [0, -s13, 0, s23, 0, 0],
-                    [0, 0, s23, 0, -s13, 0],
-                ],
-                dtype=FLOAT_TYPE,
-            )
-
-            rho = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
-            rho.matrix = np.diag(np.array(sys.population, dtype=FLOAT_TYPE))
-            rho.matrix = np.transpose(trans) @ rho.matrix @ trans
-            rho.matrix *= np.eye(6)
-            rho.matrix_changed()
-
-        else:
-            raise AttributeError(
-                'The spin_system attribute only accpets \
-                                 "tdp" as a value for a coupled precursor.'
-            )
-
-    elif sys.precursor == "basis":
-        if (
-            sys.spin_system == "rp"
-            or sys.spin_system == "trip"
-            or sys.spin_system == "doub"
-            or sys.spin_system == "tdp"
-        ):
-            rho = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
-            rho.matrix = np.diag(np.array(sys.population, dtype=FLOAT_TYPE))
-            rho.matrix_changed()
-
-        else:
-            raise AttributeError(
-                'The spin_system attribute only accepts \
-                                  the following values: "rp", "trip", "doub" \
-                                  or "tdp".'
-            )
-
     else:
         raise AttributeError(
             'The precursor attribute of the Spinsystem-class \
                              only accepts the following values: "zf", "eigen",\
-                            "singlet", "triplet-zf", "triplet-eigen", \
-                            "coupled" or basis".\
+                            "singlet" or "triplet-zf",\
                             For more details see the documentation.'
         )
 
