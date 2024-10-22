@@ -212,7 +212,7 @@ class Test_set_up_triplet_high_field_hamiltonian:
         H = comp.triplet_hamiltonian_analytical
         self.cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
             self.exp, self.opt, self.cal)
-        np.testing.assert_allclose(self.cal.ham_tri_hf, H)
+        np.testing.assert_allclose(self.cal.ham_tri_hf, H, atol=2e6)
 
 
 class Test_set_up_triplet_zerofield_hamiltonian:

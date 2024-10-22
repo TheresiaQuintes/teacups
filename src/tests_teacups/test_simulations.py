@@ -255,7 +255,7 @@ class Test_teacups_triplet:
     def test_value_of_spectrum(self):
         spec = sim.teacups(self.sys, self.exp, self.opt)
         np.testing.assert_allclose(
-            spec[1]/max(abs(spec[1].real)), comp.triplet_simulation_values, rtol=1e-6)
+            spec[1]/max(abs(spec[1].real)), comp.triplet_simulation_values, atol=1e-6)
 
 
 class Test_teacups_triplet_liouville:

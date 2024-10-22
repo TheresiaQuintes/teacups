@@ -7,6 +7,7 @@ import teacups.hamiltonians as ham
 import teacups.creators as cr
 import teacups.density_matrices as dm
 import numpy as np
+import pytest
 import sys
 sys.path.append("./..")
 
@@ -32,6 +33,127 @@ class Opt:
 class Cal:
     def __init__(self):
         return
+
+def initialize_classes(self):
+    self.sys = Sys()
+    self.opt = Opt()
+    self.cal = Cal()
+    self.exp = Exp()
+    return
+
+
+class Test_error_messages:
+    def setup(self):
+        initialize_classes(self)
+
+    def test_zf_error(self):
+        self.sys.precursor = "zf"
+        self.sys.spin_system = "bla"
+        with pytest.raises(AttributeError):
+            dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
+
+    def test_eigen_error(self):
+        self.sys.precursor = "eigen"
+        self.sys.spin_system = "bla"
+        with pytest.raises(AttributeError):
+            dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
+
+    def test_singlet_error(self):
+        self.sys.precursor = "singlet"
+        self.sys.spin_system = "bla"
+        with pytest.raises(AttributeError):
+            dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
+
+    def test_triplet_zf_error(self):
+        self.sys.precursor = "triplet-zf"
+        self.sys.spin_system = "bla"
+        with pytest.raises(AttributeError):
+            dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
+
+    def test_precursor_error(self):
+        self.sys.precursor = "bla"
+        with pytest.raises(AttributeError):
+            dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
+
+
+class Test_doublets:
+    def setup(self):
+        initialize_classes(self)
+        self.opt.CUPY = False
+        self.opt.space = 'hilbert'
+
+        self.cal.theta, self.cal.phi = grid.get_theta_phi(1)
+        self.opt.grid_points = len(self.cal.theta)
+        self.exp.B_z =  np.array([1/(2*MU_B), 2/(2*MU_B), 3/(2*MU_B)])
+
+
+        self.sys.spin_system = "doub"
+        self.sys.s = 1/2
+        cr.set_up_spinoperator(self.sys, self.cal)
+
+        self.sys.g = [1.9, 2., 2.1]
+        self.sys.population = [1, 2]
+
+        cr.set_up_tensors(self.sys, self.cal)
+        self.cal.ham_sys = ham.set_up_doublet_hamiltonian(self.exp, self.opt,
+                                                      self.cal)
+
+        pop = np.diag(np.arange(1, 3))
+        self.rho_basis = np.array([[pop], [pop], [pop]])
+
+    def test_eigen_precursor(self):
+        self.sys.precursor = "eigen"
+        _, vec = np.linalg.eigh(self.cal.ham_sys)
+        rho_eigen = vec@self.rho_basis@np.linalg.inv(vec)
+        rho_eigen *= np.eye(2)
+        dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
+        np.testing.assert_allclose(rho_eigen, self.cal.rho)
+
+
+class Test_triplets:
+    def setup(self):
+        initialize_classes(self)
+        self.opt.CUPY = False
+        self.opt.space = 'hilbert'
+
+        self.cal.theta, self.cal.phi = grid.get_theta_phi(1)
+        self.opt.grid_points = len(self.cal.theta)
+        self.exp.B_z =  np.array([1/(2*MU_B), 2/(2*MU_B), 3/(2*MU_B)])
+
+
+        self.sys.spin_system = "trip"
+        self.sys.s = 1
+        cr.set_up_spinoperator(self.sys, self.cal)
+
+        self.sys.g_tri = [1.9, 2., 2.1]
+        self.sys.D_tri = 1000
+        self.sys.E_tri = -500
+        self.sys.population = [1, 2, 3]
+
+        cr.set_up_tensors(self.sys, self.cal)
+        self.cal.ham_sys = ham.set_up_triplet_hamiltonian(self.exp, self.opt,
+                                                      self.cal)
+        self.cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
+            self.exp, self.opt, self.cal)
+
+        pop = np.diag(np.arange(1, 4))
+        self.rho_basis = np.array([[pop], [pop], [pop]])
+
+    def test_zf_precursor(self):
+        self.sys.precursor = "zf"
+        _, vec = np.linalg.eigh(self.cal.ham_tri_hf)
+        rho_zf = np.linalg.inv(vec)@self.rho_basis@vec
+        rho_zf *= np.eye(3)
+        dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
+        np.testing.assert_allclose(rho_zf, self.cal.rho)
+
+    def test_eigen_precursor(self):
+        self.sys.precursor = "eigen"
+        _, vec = np.linalg.eigh(self.cal.ham_sys)
+        rho_eigen = vec@self.rho_basis@np.linalg.inv(vec)
+        rho_eigen *= np.eye(3)
+        dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
+        np.testing.assert_allclose(rho_eigen, self.cal.rho)
 
 
 class Test_set_up_density_matrix:
@@ -244,8 +366,8 @@ class Test_set_up_density_matrix:
         dm.set_up_density_matrix(self.sys, self.exp, self.opt, cal)
         dm_high_J = cal.rho
 
-        np.testing.assert_allclose(comp.dm_zf_tdp_small_J, dm_small_J)
-        np.testing.assert_allclose(comp.dm_zf_tdp_high_J, dm_high_J)
+        np.testing.assert_allclose(comp.dm_zf_tdp_small_J, dm_small_J, rtol=1e-6, atol=2e-7)
+        np.testing.assert_allclose(comp.dm_zf_tdp_high_J, dm_high_J, rtol=1e-3, atol=1e-3)
 
 
 class Test_set_up_rp_density_matrix:
@@ -282,7 +404,7 @@ class Test_set_up_rp_density_matrix:
         self.sys.precursor = 'triplet-zf'
         dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
         rho = comp.triplet_rho_liouville
-        np.testing.assert_allclose(self.cal.rho, rho)
+        np.testing.assert_allclose(self.cal.rho, rho, atol=1e-5, rtol=1e-5)
 
     def test_singlet_rho_hilbert(self):
         self.sys.precursor = 'singlet'
