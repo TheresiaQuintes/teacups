@@ -26,7 +26,7 @@ class Cal:
         return
 
 
-class Test_create_tensor:
+class TestCreateTensor:
     def setup(self):
         diag = [1, 2, 3]
         self.theta, self.phi = grid.get_theta_phi(3)
@@ -62,7 +62,7 @@ class Test_create_tensor:
             comp2.multirot, self.ten2.multirot, atol=1e-8, rtol=1e-5)
 
 
-class Test_create_dipol_tensor_diagonals:
+class TestCreateDipolTensorDiagonals:
     D = 3
     E = 1
     a = -1/3*D+E
@@ -75,7 +75,7 @@ class Test_create_dipol_tensor_diagonals:
         assert np.array_equal(comp, self.dig)
 
 
-class Test_set_up_tensors_doublet:
+class TestSetUpTensorsDoublet:
 
     def setup(self):
         self.sys = Sys()
@@ -107,7 +107,7 @@ class Test_set_up_tensors_doublet:
         assert g_iso == self.cal.g_iso
 
 
-class Test_set_up_tensors_rp:
+class TestSetUpTensorsRp:
 
     def setup(self):
         self.opt = Opt()
@@ -234,7 +234,7 @@ class Test_set_up_tensors_rp:
         assert g_iso == self.cal.g_iso
 
 
-class Test_set_up_tensors_triplet:
+class TestSetUpTensorsTriplet:
     def setup(self):
         self.opt = Opt()
         self.sys = Sys()
@@ -307,7 +307,7 @@ class Test_set_up_tensors_triplet:
         assert g_iso == self.cal.g_iso
 
 
-class Test_set_up_tensors_tdp:
+class TestSetUpTensorsTdp:
     def setup(self):
         self.opt = Opt()
         self.sys = Sys()
@@ -353,7 +353,7 @@ class Test_set_up_tensors_tdp:
         assert g_iso == self.cal.g_iso
 
 
-class Test_set_up_spinoperator:
+class TestSetUpSpinoperator:
     def setup(self):
         self.cal = Cal()
         self.sys = Sys()

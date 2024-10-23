@@ -5,7 +5,7 @@ import sys
 sys.path.append("./..")
 
 
-class Test_voigt_convolution:
+class TestVoigtConvolution:
     field = np.arange(0, 200)
     spec = np.zeros((100, 200))
     spec[:, 50:150] = 1
