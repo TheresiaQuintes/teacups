@@ -108,7 +108,7 @@ class Test_rotation:
 
 class Test_multi_rotation:
     tensor = mt.Tensor(np.arange(3))
-    theta, phi = grid.get_theta_phi(4)
+    theta, phi = grid.fibonacci_grid(4)
     tensor.multirotation(phi, theta)
 
     def test_shape(self):

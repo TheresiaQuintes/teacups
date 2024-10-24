@@ -80,7 +80,7 @@ class TestDoublets:
         self.opt.CUPY = False
         self.opt.space = 'hilbert'
 
-        self.cal.theta, self.cal.phi = grid.get_theta_phi(1)
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(1)
         self.opt.grid_points = len(self.cal.theta)
         self.exp.B_z =  np.array([1/(2*MU_B), 2/(2*MU_B), 3/(2*MU_B)])
 
@@ -119,7 +119,7 @@ class TestTriplets:
         self.opt.CUPY = False
         self.opt.space = 'hilbert'
 
-        self.cal.theta, self.cal.phi = grid.get_theta_phi(1)
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(1)
         self.opt.grid_points = len(self.cal.theta)
         self.exp.B_z =  np.array([1/(2*MU_B), 2/(2*MU_B), 3/(2*MU_B)])
 
@@ -164,7 +164,7 @@ class TestRps:
         self.opt.CUPY = False
         self.opt.space = 'hilbert'
 
-        self.cal.theta, self.cal.phi = grid.get_theta_phi(1)
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(1)
         self.opt.grid_points = len(self.cal.theta)
         self.exp.B_z =  np.array([1/(2*MU_B), 2/(2*MU_B), 3/(2*MU_B)])
 
@@ -234,7 +234,7 @@ class TestTdps:
         self.opt.CUPY = False
         self.opt.space = 'hilbert'
 
-        self.cal.theta, self.cal.phi = grid.get_theta_phi(1)
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(1)
         self.opt.grid_points = len(self.cal.theta)
         self.exp.B_z =  np.array([1/(2*MU_B), 2/(2*MU_B), 3/(2*MU_B)])
 
@@ -320,7 +320,7 @@ class TestTripletZfDensityMatrixConditions:
         self.cal = Cal()
 
         self.opt.grid_points = 3
-        self.cal.theta, self.cal.phi = grid.get_theta_phi(3)
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(3)
         self.opt.space = 'hilbert'
         self.exp.B_z = np.linspace(1, 3, 3)
         self.exp.B_mw = 7

@@ -340,7 +340,7 @@ def create_grid(opt: object, cal: object) -> None:
         opt.grid_points = len(cal.phi)
 
     elif opt.grid == 'fibonacci':
-        cal.theta, cal.phi = gri.get_theta_phi(
+        cal.theta, cal.phi = gri.fibonacci_grid(
             int(opt.grid_points + 4*opt.grid_points*(opt.grid_points-1)/2))
         opt.grid_points = len(cal.phi)
 

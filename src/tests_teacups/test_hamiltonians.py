@@ -101,7 +101,7 @@ class Test_set_up_doublet_hamiltonian:
         self.exp.B_mw = 7
         self.exp.freq_mw = 9
         self.opt.grid_points = 3
-        self.cal.theta, self.cal.phi = grid.get_theta_phi(3)
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(3)
 
         cr.set_up_spinoperator(self.sys, self.cal)
         self.cal.g_tensor = cr.create_tensor(
@@ -131,7 +131,7 @@ class Test_set_up_triplet_hamiltonian:
         self.cal = Cal()
 
         self.opt.grid_points = 3
-        self.cal.theta, self.cal.phi = grid.get_theta_phi(3)
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(3)
         self.exp.B_z = np.linspace(1, 3, 3)
         self.exp.B_mw = 7
         self.exp.freq_mw = 3
@@ -204,7 +204,7 @@ class Test_set_up_triplet_high_field_hamiltonian:
         self.exp.B_z = np.linspace(342, 348, 4)
 
         self.opt.grid_points = 3
-        self.cal.theta, self.cal.phi = grid.get_theta_phi(3)
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(3)
 
         cr.set_up_tensors(self.sys, self.cal)
 
@@ -223,7 +223,7 @@ class Test_set_up_triplet_zerofield_hamiltonian:
         self.cal = Cal()
 
         self.opt.grid_points = 3
-        self.cal.theta, self.cal.phi = grid.get_theta_phi(3)
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(3)
         self.exp.B_z = np.linspace(1, 3, 3)
         self.exp.B_mw = 7
         self.exp.freq_mw = 3
@@ -276,7 +276,7 @@ class Test_set_up_rp_hamiltonian:
         self.exp.freq_mw = 9.68*1e9
 
         self.opt.grid_points = 3
-        self.cal.theta, self.cal.phi = grid.get_theta_phi(3)
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(3)
         self.opt.space = 'hilbert'
 
         cr.set_up_tensors(self.sys, self.cal)
@@ -316,7 +316,7 @@ class Test_set_up_tdp_hamiltonian:
         self.exp = Exp()
 
         self.opt.grid_points = 1
-        self.cal.theta, self.cal.phi = grid.get_theta_phi(1)
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(1)
         self.exp.B_z = np.zeros(1)
 
         self.sys.g_tri = [2, 2, 2]

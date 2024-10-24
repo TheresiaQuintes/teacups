@@ -11,7 +11,7 @@ import teacups.grid as grid
 class Test_init_multioperator:
     s = mt.Spinoperator(1/2)
     ten = mt.Tensor(np.arange(1, 4))
-    theta, phi = grid.get_theta_phi(3)
+    theta, phi = grid.fibonacci_grid(3)
     ten.multirotation(phi, theta)
     B = np.linspace(2, 3, 2)
     grid_points = 3
@@ -41,7 +41,7 @@ class Test_init_multioperator:
 class Test_get_and_change:
     s = mt.Spinoperator(1/2)
     ten = mt.Tensor(np.arange(1, 4))
-    theta, phi = grid.get_theta_phi(3)
+    theta, phi = grid.fibonacci_grid(3)
     ten.multirotation(phi, theta)
     B = np.linspace(2, 3, 2)
     grid_points = 3
@@ -85,7 +85,7 @@ class Test_get_and_change:
 class Test_multiplications:
     s = mt.Spinoperator(1/2)
     ten = mt.Tensor(np.arange(1, 4))
-    theta, phi = grid.get_theta_phi(3)
+    theta, phi = grid.fibonacci_grid(3)
     ten.multirotation(phi, theta)
     B = np.linspace(2, 3, 2)
     grid_points = 3
@@ -158,7 +158,7 @@ class Test_multiplications:
 class Test_build_vector:
     s = mt.Spinoperator(1/2)
     ten = mt.Tensor(np.arange(1, 4))
-    theta, phi = grid.get_theta_phi(3)
+    theta, phi = grid.fibonacci_grid(3)
     ten.multirotation(phi, theta)
     B = np.linspace(2, 3, 2)
     grid_points = 3
@@ -177,7 +177,7 @@ class Test_build_vector:
 class Test_build_superoperator:
     s = mt.Spinoperator(1/2)
     ten = mt.Tensor(np.arange(1, 4))
-    theta, phi = grid.get_theta_phi(3)
+    theta, phi = grid.fibonacci_grid(3)
     ten.multirotation(phi, theta)
     B = np.linspace(2, 3, 2)
     grid_points = 3
@@ -208,7 +208,7 @@ class Test_build_superoperator:
 class Test_create_linear_operator:
     s = mt.Spinoperator(1/2)
     g = mt.Tensor(np.array([1, 2, 3]))
-    theta, phi = grid.get_theta_phi(3)
+    theta, phi = grid.fibonacci_grid(3)
     g.multirotation(phi, theta)
     grid_points = 3
     h = mut.Multioperator(s, grid_points, np.linspace(1, 2, 2))
@@ -227,7 +227,7 @@ class Test_create_linear_operator:
 class Test_create_bilinear_operator:
     s = mt.Spinoperator(1/2)
     g = mt.Tensor(np.array([1, 2, 3]))
-    theta, phi = grid.get_theta_phi(3)
+    theta, phi = grid.fibonacci_grid(3)
     g.multirotation(phi, theta)
     grid_points = 3
     h = mut.Multioperator(s, grid_points, np.linspace(1, 2, 2))
@@ -248,7 +248,7 @@ class Test_create_bilinear_operator:
 class Test_zeeman_coupling:
     s = mt.Spinoperator(1/2)
     g = mt.Tensor(np.array([1, 2, 3]))
-    theta, phi = grid.get_theta_phi(2)
+    theta, phi = grid.fibonacci_grid(2)
     g.multirotation(phi, theta)
     B = np.linspace(1, 4, 4)
     grid_points = 2
@@ -269,7 +269,7 @@ class Test_zeeman_coupling:
 class Test_isotropic_couplings:
     s = mt.Spinoperator(1/2)
     g = mt.Tensor(np.array([1, 2, 3]))
-    theta, phi = grid.get_theta_phi(2)
+    theta, phi = grid.fibonacci_grid(2)
     g.multirotation(phi, theta)
     B = np.linspace(1, 4, 4)
     grid_points = 2

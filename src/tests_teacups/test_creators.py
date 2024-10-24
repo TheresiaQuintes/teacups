@@ -29,7 +29,7 @@ class Cal:
 class TestCreateTensor:
     def setup(self):
         diag = [1, 2, 3]
-        self.theta, self.phi = grid.get_theta_phi(3)
+        self.theta, self.phi = grid.fibonacci_grid(3)
         g1Frame = [1, 2, 3]
         self.ten1 = cr.create_tensor(diag, self.phi, self.theta)
         self.ten2 = cr.create_tensor(diag, self.phi, self.theta, g1Frame)
@@ -86,7 +86,7 @@ class TestSetUpTensorsDoublet:
         self.sys.g = [1, 2, 3]
         self.sys.g_frame = [0, 0, 0]
         self.opt.grid_points = 3
-        self.cal.theta, self.cal.phi = grid.get_theta_phi(3)
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(3)
 
     def test_g(self):
         g_tensor = cr.create_tensor([1, 2, 3], self.cal.phi, self.cal.theta)
@@ -115,7 +115,7 @@ class TestSetUpTensorsRp:
         self.cal = Cal()
 
         self.opt.grid_points = 20
-        self.cal.theta, self.cal.phi = grid.get_theta_phi(20)
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(20)
 
         self.sys.g1 = [1, 2, 3]
         self.sys.g2 = [2, 3, 4]
@@ -241,7 +241,7 @@ class TestSetUpTensorsTriplet:
         self.cal = Cal()
 
         self.opt.grid_points = 20
-        self.cal.theta, self.cal.phi = grid.get_theta_phi(20)
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(20)
         self.sys.g_tri = [4, 5, 6]
 
     def test_g(self):
@@ -314,7 +314,7 @@ class TestSetUpTensorsTdp:
         self.cal = Cal()
 
         self.opt.grid_points = 20
-        self.cal.theta, self.cal.phi = grid.get_theta_phi(20)
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(20)
         self.sys.g = [1, 2, 3]
         self.sys.g_tri = [4, 5, 6]
         self.sys.D_tri = 5
