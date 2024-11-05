@@ -40,9 +40,10 @@ def create_tensor(diag: list, phi: 'np.ndarray', theta: 'np.ndarray',
     else:
         angle_list = np.array(first_rotation, dtype=FLOAT_TYPE)
         tensor.rotation(angle_list[0], angle_list[1], angle_list[2])
-        tensor.tensor = tensor.rot
+        tensor.tensor = tensor.rot.astype(FLOAT_TYPE)
 
     tensor.multirotation(phi, theta)
+    tensor.multirot = tensor.multirot.astype(FLOAT_TYPE)
     return tensor
 
 
@@ -66,7 +67,7 @@ def create_dipol_tensor_diagonals(D: float, E: float) -> 'np.ndarray':
         This is a 1D-array.
 
     """
-    diag = np.array([-1/3*D+E, -1/3*D-E, 2/3*D])
+    diag = np.array([-1/3*D+E, -1/3*D-E, 2/3*D], dtype=FLOAT_TYPE)
     return diag
 
 
@@ -260,7 +261,7 @@ def set_up_observable(sys: object, opt: object, cal: object) -> None:
         st_transformation = np.array([[1, 0, 0, 0],
                                       [0, np.sqrt(1/2), np.sqrt(1/2), 0],
                                       [0, -np.sqrt(1/2), np.sqrt(1/2), 0],
-                                      [0, 0, 0, 1]])
+                                      [0, 0, 0, 1]], dtype=FLOAT_TYPE)
         obs.matrix = st_transformation.T@obs.matrix@st_transformation
 
     obs.matrix = np.conjugate(obs.matrix.T)

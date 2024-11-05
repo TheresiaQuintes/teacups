@@ -105,6 +105,7 @@ class TestDoublets:
         rho_eigen = vec@self.rho_basis@np.linalg.inv(vec)
         dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
         np.testing.assert_allclose(rho_eigen, self.cal.rho)
+        assert self.cal.rho.dtype == "complex64"
 
     def test_liouville_space_shape(self):
         self.sys.precursor = "eigen"
@@ -148,6 +149,7 @@ class TestTriplets:
         rho_eigen = vec@self.rho_basis@np.linalg.inv(vec)
         dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
         np.testing.assert_allclose(rho_eigen, self.cal.rho)
+        assert self.cal.rho.dtype == "complex64"
 
     def test_zf_precursor(self):
         self.sys.precursor = "zf"
@@ -156,6 +158,7 @@ class TestTriplets:
         rho_zf *= np.eye(3)
         dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
         np.testing.assert_allclose(rho_zf, self.cal.rho)
+        assert self.cal.rho.dtype == "complex64"
 
 
 class TestRps:
@@ -197,6 +200,7 @@ class TestRps:
         rho_eigen = vec@self.rho_basis@np.linalg.inv(vec)
         dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
         np.testing.assert_allclose(rho_eigen, self.cal.rho)
+        assert self.cal.rho.dtype == "complex64"
 
     def test_singlet_precursor(self):
         self.sys.precursor = 'singlet'
@@ -207,6 +211,7 @@ class TestRps:
         r = np.array([[r], [r], [r]])
 
         assert np.array_equal(r, self.cal.rho)
+        assert self.cal.rho.dtype == "complex64"
 
     def test_triplet_zf_precursor(self):
         self.sys.population = np.arange(1, 4, dtype=np.complex64)
@@ -226,6 +231,7 @@ class TestRps:
         comp[:, :, 3, 3] = rho_trip_zf[:, :, 2, 2]
 
         np.testing.assert_allclose(comp, self.cal.rho)
+        assert self.cal.rho.dtype == "complex64"
 
 
 class TestTdps:
@@ -269,6 +275,7 @@ class TestTdps:
         rho_eigen = vec@self.rho_basis@np.linalg.inv(vec)
         dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
         np.testing.assert_allclose(rho_eigen, self.cal.rho, rtol=1e-6) # Toleranz nötig wegen mumerischen Unterschieds zwischen inverser und adjungierter Matrix
+        assert self.cal.rho.dtype == "complex64"
 
 
     def test_triplet_zf_precursor(self):
@@ -296,6 +303,7 @@ class TestTdps:
 
         dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
         np.testing.assert_allclose(rho, self.cal.rho, rtol=1e-6)  # Toleranz nötig wegen mumerischen Unterschieds zwischen inverser und adjungierter Matrix
+        assert self.cal.rho.dtype == "complex64"
 
     def test_triplet_zf_precursor_changing_with_J(self):
         self.sys.precursor = 'triplet-zf'
@@ -342,7 +350,7 @@ class TestTripletZfDensityMatrixConditions:
     def test_trace(self):
         ones = np.ones((3, 3))
         trace = self.cal.rho.trace(axis1=-2, axis2=-1)
-        np.testing.assert_allclose(ones, trace)
+        np.testing.assert_allclose(ones, trace, atol=1e-6)
 
     def test_offdiagonals(self):
         rho_zeroed = self.cal.rho

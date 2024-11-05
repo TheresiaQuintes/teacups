@@ -679,7 +679,7 @@ class Spinoperator(Operator):
         The formular following is used:
 
         .. math::
-            S_\mathrm{ges} = S\cdot E + E\cdot S 
+            S_\mathrm{ges} = S\cdot E + E\cdot S
 
         (S is the spin operator of a single electron, E is
         the unit matrix, @ means that tensor product is used).

@@ -2,7 +2,6 @@ import numpy as np
 import teacups.multioperator_tools as mut
 import teacups.matrix_tools as mt
 import teacups.relaxation as rlx
-import teacups.creators as cr
 
 import scipy.constants as const
 MU_B = const.physical_constants['Bohr magneton in Hz/T'][0]
@@ -172,9 +171,8 @@ def set_up_triplet_high_field_hamiltonian(exp: object, opt: object,
     the ZFS and the Zeeman interaction.
 
     The triplet hamiltonian is calculated for different B_z-values and all
-    combinations of the euler angels phi and theta (grid_points points
-    distributed on the fibonacci sphere). All hamiltonians are returned in
-    cal.ham_tri wich is an object of the class Multioperator.
+    combinations of the euler angels phi and theta. All hamiltonians are
+    returned in cal.ham_tri wich is an object of the class Multioperator.
 
     Parameters
     ----------

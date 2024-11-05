@@ -86,7 +86,7 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
             # basistransformation to the high field functions
             rho.B_angle_matrix = (
                 np.conj(np.transpose((vec_hf), (0, 1, 3, 2)))
-                @ np.diag(sys.population)
+                @ np.diag(np.array(sys.population, dtype=FLOAT_TYPE))
                 @ vec_hf
             )
 

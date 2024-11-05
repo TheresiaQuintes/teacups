@@ -34,6 +34,12 @@ class TestCreateTensor:
         self.ten1 = cr.create_tensor(diag, self.phi, self.theta)
         self.ten2 = cr.create_tensor(diag, self.phi, self.theta, g1Frame)
 
+    def test_dtype(self):
+        assert self.ten1.tensor.dtype == "float32"
+        assert self.ten2.tensor.dtype == "float32"
+        assert self.ten1.multirot.dtype == "float32"
+        assert self.ten2.multirot.dtype == "float32"
+
     def test_tensor(self):
         comp1 = np.array([[1., 0., 0.],
                           [0., 2., 0.],
@@ -42,10 +48,8 @@ class TestCreateTensor:
         comp2 = np.array([[2.79957166,  0.02570897, -0.42563375],
                           [0.02570897,  1.26862141, -0.47826256],
                           [-0.42563375, -0.47826256,  1.93180692]])
-        np.testing.assert_allclose(
-            comp1, self.ten1.tensor, atol=1e-8, rtol=1e-5)
-        np.testing.assert_allclose(
-            comp2, self.ten2.tensor, atol=1e-8, rtol=1e-5)
+        np.testing.assert_allclose(comp1, self.ten1.tensor)
+        np.testing.assert_allclose(comp2, self.ten2.tensor, atol=1e-7)
 
     def test_multirot(self):
         comp1 = mt.Tensor(np.array([1, 2, 3]))
@@ -57,18 +61,22 @@ class TestCreateTensor:
         comp2.multirotation(self.phi, self.theta)
 
         np.testing.assert_allclose(
-            comp1.multirot, self.ten1.multirot, atol=1e-8, rtol=1e-5)
+            comp1.multirot, self.ten1.multirot, atol=1e-7)
         np.testing.assert_allclose(
-            comp2.multirot, self.ten2.multirot, atol=1e-8, rtol=1e-5)
+            comp2.multirot, self.ten2.multirot, atol=1e-7)
 
 
 class TestCreateDipolTensorDiagonals:
-    D = 3
-    E = 1
-    a = -1/3*D+E
-    b = -1/3*D-E
-    c = 2/3*D
-    dig = cr.create_dipol_tensor_diagonals(D, E)
+    def setup(self):
+        D = 3
+        E = 1
+        self.a = -1/3*D+E
+        self.b = -1/3*D-E
+        self.c = 2/3*D
+        self.dig = cr.create_dipol_tensor_diagonals(D, E)
+
+    def test_type(self):
+        assert self.dig.dtype == "float32"
 
     def test_values(self):
         comp = np.array([self.a, self.b, self.c])
@@ -394,6 +402,11 @@ class TestSetUpSpinoperator:
         cr.set_up_spinoperator(self.sys, self.cal)
         assert np.array_equal(self.cal.s.matrix, S)
 
+    def test_dtype_coupled(self):
+        self.sys.s = [1/2, 1/2]
+        cr.set_up_spinoperator(self.sys, self.cal)
+        assert self.cal.s.matrix.dtype == "complex64"
+
     def test_s_uncoupled(self):
         # Doublet
         s = np.array([[[0.+0.j,  0.5+0.j],
@@ -409,6 +422,10 @@ class TestSetUpSpinoperator:
         cr.set_up_spinoperator(self.sys, self.cal)
         assert np.array_equal(self.cal.s.matrix, s)
 
+    def test_dtype_uncoupled(self):
+        self.sys.s = [1/2]
+        cr.set_up_spinoperator(self.sys, self.cal)
+        assert self.cal.s.matrix.dtype == "complex64"
 
 class TestSetUpObservable:
     def setup(self):
@@ -421,15 +438,16 @@ class TestSetUpObservable:
         self.opt.space = 'hilbert'
         cr.set_up_spinoperator(self.sys, self.cal)
 
-    def test_hilbert_signal_rp(self):
+    def test_hilbert_observable_rp(self):
         sig = np.array([[0.-0.j, 0.-0.j, 0.-0.70710678j, 0.-0.j],
                         [0.-0.j, 0.-0.j, 0.-0.j, 0.-0.j],
                         [0.+0.70710678j, 0.-0.j, 0.-0.j, 0.-0.70710678j],
                         [0.-0.j, 0.-0.j, 0.+0.70710678j, 0.-0.j]])
         cr.set_up_observable(self.sys, self.opt, self.cal)
         np.testing.assert_allclose(sig, self.cal.observable)
+        assert self.cal.observable.dtype == "complex64"
 
-    def test_liouville_signal_rp(self):
+    def test_liouville_observable_rp(self):
         sig = np.array([0.-0.j, 0.-0.j, 0.-0.70710678j, 0.-0.j,
                         0.-0.j, 0.-0.j, 0.-0.j, 0.-0.j,
                         0.+0.70710678j, 0.-0.j, 0.-0.j, 0.-0.70710678j,
@@ -437,16 +455,18 @@ class TestSetUpObservable:
         self.opt.space = 'liouville'
         cr.set_up_observable(self.sys, self.opt, self.cal)
         np.testing.assert_allclose(sig, self.cal.observable)
+        assert self.cal.observable.dtype == "complex64"
 
-    def test_hilbert_signal_doub(self):
+    def test_hilbert_observable_doub(self):
         self.sys.spin_system = 'doub'
         self.sys.s = [1/2]
         cr.set_up_spinoperator(self.sys, self.cal)
         cr.set_up_observable(self.sys, self.opt, self.cal)
         sig = self.cal.s.get('y')
         assert np.array_equal(sig, self.cal.observable)
+        assert self.cal.observable.dtype == "complex64"
 
-    def test_liouville_signal_trip(self):
+    def test_liouville_observable_trip(self):
         self.sys.spin_system = 'trip'
         self.sys.s = [1]
         self.opt.space = 'liouville'
@@ -455,3 +475,4 @@ class TestSetUpObservable:
         sig = self.cal.s.get('y')
         sig = sig.flatten()
         assert np.array_equal(sig, self.cal.observable)
+        assert self.cal.observable.dtype == "complex64"
