@@ -103,7 +103,6 @@ def set_up_doublet_hamiltonian(exp: object, opt: object, cal: object
 
     """
     ham = mut.Multioperator(cal.s, opt.grid_points, exp.B_z*MU_B)
-
     B_z = exp.B_z*MU_B
     B_z = B_z[:, np.newaxis]
 
@@ -219,44 +218,7 @@ def set_up_triplet_high_field_hamiltonian(exp: object, opt: object,
     return ham_tri_hf
 
 
-def set_up_triplet_zero_field_hamiltonian(exp: object, opt: object, cal: object
-                                          ) -> 'np.ndarray':
-    """
-    Calculate the zero field Hamiltonian matrix of a triplet. It is set up
-    by multiplication:
 
-    .. math::
-        H = SDS.
-
-    The Hamiltonian is given in the main-axis system of the D-tensor.
-    It is returned for all magnetic field points and all grid
-    points as a B_angle_matrix-attribute of the Multioperator class.
-
-    Parameters
-    ----------
-    exp : object
-        Contains experimental parameters. This function uses the attribute
-        exp.B_z (magnetic field array).
-    opt : object
-        Contains simulation options. This function uses opt.grid_points.
-    cal : object
-        Container for results of calculations during the simulation. This
-        function uses the attribute cal.D_tri_tensor (ZFS-tensor).
-
-    Returns
-    -------
-    cal.ham_tri_zf : np.ndarray
-        Triplet zero field hamiltonian. This is a B_angle_matrix attribute from
-        the class Multioperator.
-
-    """
-    s_tri = mt.Spinoperator(1)
-    ham_zf = mut.Multioperator(s_tri, opt.grid_points, exp.B_z)
-    ham_zf.create_bilinear_operator(cal.D_tri_tensor, s_tri)
-    ham_zf.angle_matrix_changed()
-    ham_tri_zf = ham_zf.B_angle_matrix
-
-    return ham_tri_zf
 
 
 def set_up_rp_hamiltonian(sys: object, exp: object, opt: object, cal: object

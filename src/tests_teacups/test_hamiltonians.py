@@ -33,18 +33,43 @@ class Cal:
         return
 
 
-class Test_mw_hamiltonian:
+def initialize_classes(self):
+    self.sys = Sys()
+    self.opt = Opt()
+    self.cal = Cal()
+    self.exp = Exp()
+    return
+
+
+class TestMwHamiltonian:
     def setup(self):
-        self.sys = Sys()
-        self.opt = Opt()
-        self.cal = Cal()
-        self.exp = Exp()
+        initialize_classes(self)
 
         self.opt.grid_points = 1
 
         self.exp.B_z = [1]
         self.exp.B_mw = 1
         self.exp.freq_mw = 1
+
+    def test_hermitean(self):
+        self.sys.spin_system = 'trip'
+        self.cal.s = mt.Spinoperator(1)
+        self.cal.g_iso = 1/MU_B
+        ham_mw = ham.set_up_mw_hamiltonian(self.sys, self.exp, self.opt,
+                                           self.cal)
+
+        np.testing.assert_array_equal(ham_mw, np.conj(
+            np.transpose(ham_mw, (0, 1, 3, 2))))
+
+    def test_hermitean_rp(self):
+        self.sys.spin_system = 'rp'
+        self.cal.s = mt.Spinoperator(1/2, 1/2)
+        self.cal.g_iso = 1/MU_B
+        ham_mw = ham.set_up_mw_hamiltonian(self.sys, self.exp, self.opt,
+                                           self.cal)
+
+        np.testing.assert_array_equal(ham_mw, np.conj(
+            np.transpose(ham_mw, (0, 1, 3, 2))))
 
     def test_rp(self):
         self.sys.spin_system = 'rp'
@@ -85,50 +110,101 @@ class Test_mw_hamiltonian:
 
         assert np.allclose(comp, ham_mw)
 
+    def test_tdp(self):
+        self.sys.spin_system = 'tdp'
+        self.cal.s = mt.Spinoperator(1/2, 1)
+        self.cal.g_iso = 1/MU_B
+        ham_mw = ham.set_up_mw_hamiltonian(self.sys, self.exp, self.opt,
+                                           self.cal)
+        comp = -self.cal.s.get('z') + self.cal.s.get('x')
 
-class Test_set_up_doublet_hamiltonian:
+        assert np.allclose(comp, ham_mw)
+
+
+    def test_freq_mw(self):
+        self.exp.freq_mw = 7
+        self.cal.s = mt.Spinoperator(1/2)
+        self.sys.spin_system = 'doub'
+        self.cal.g_iso = 1/MU_B
+
+        ham_mw = ham.set_up_mw_hamiltonian(self.sys, self.exp, self.opt,
+                                           self.cal)
+
+        assert ham_mw[0, 0, 0, 0] ==  -7/2
+        assert ham_mw[0, 0, 1, 1] == 7/2
+
+    def test_b_mw(self):
+        self.exp.freq_mw = 1
+        self.cal.s = mt.Spinoperator(1/2)
+        self.sys.spin_system = 'doub'
+        self.cal.g_iso = 7/MU_B
+
+        ham_mw = ham.set_up_mw_hamiltonian(self.sys, self.exp, self.opt,
+                                           self.cal)
+
+        assert ham_mw[0, 0, 0, 1] ==  7/2
+        assert ham_mw[0, 0, 1, 0] == 7/2
+
+
+class TestSetUpDoubletHamiltonian:
 
     def setup(self):
-        self.sys = Sys()
-        self.exp = Exp()
-        self.opt = Opt()
-        self.cal = Cal()
+        initialize_classes(self)
 
         self.sys.s = 1/2
         self.sys.g = [2, 2, 2]
         self.sys.g_frame = [0, 0, 0]
-        self.exp.B_z = np.linspace(1, 3, 3)
+        self.exp.B_z = np.linspace(1, 3, 3)/MU_B
         self.exp.B_mw = 7
         self.exp.freq_mw = 9
-        self.opt.grid_points = 3
-        self.cal.theta, self.cal.phi = grid.fibonacci_grid(3)
+        self.opt.grid_points = 10
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(self.opt.grid_points)
 
         cr.set_up_spinoperator(self.sys, self.cal)
         self.cal.g_tensor = cr.create_tensor(
             self.sys.g, self.cal.phi, self.cal.theta)
 
-    def test_zeeman_coupling_elements(self):
-        self.exp.B_mw = 0
-        self.exp.freq_mw = 0
         self.cal.ham = ham.set_up_doublet_hamiltonian(self.exp, self.opt,
                                                       self.cal)
-        zeeman_interaction = self.exp.B_z*MU_B
-        ham_zeeman = np.zeros((3, 3, 2, 2))
-        for b in range(0, 3):
-            for a in range(0, 3):
-                ham_zeeman[b, a, 0, 0] = 0.5*zeeman_interaction[b] * \
-                    self.cal.g_tensor.multirot[a, 2, 2]
-                ham_zeeman[b, a, 1, 1] = -0.5*zeeman_interaction[b] * \
-                    self.cal.g_tensor.multirot[a, 2, 2]
-        np.testing.assert_allclose(self.cal.ham, ham_zeeman)
+
+    def test_shape(self):
+        assert self.cal.ham.shape == (3, 10, 2, 2)
+
+    def test_off_diagonals(self):
+        assert np.array_equal(self.cal.ham[:, :, 0, 1], np.zeros((3, 10)))
+        assert np.array_equal(self.cal.ham[:, :, 1, 0], np.zeros((3, 10)))
+
+    def test_isotropic_zeeman(self):
+        zeeman = np.broadcast_to((self.sys.g[0]*self.exp.B_z), (10, 3))
+        zeeman = 0.5*MU_B*zeeman.T
+        assert np.array_equal(self.cal.ham[:, :, 0, 0], zeeman)
+        assert np.array_equal(self.cal.ham[:, :, 1, 1], -zeeman)
+
+    def test_anisotripic_zeeman(self):
+        self.sys.g = [2, 3, 4]
+        self.cal.g_tensor = cr.create_tensor(
+            self.sys.g, self.cal.phi, self.cal.theta)
+        self.cal.ham = ham.set_up_doublet_hamiltonian(self.exp, self.opt,
+                                                      self.cal)
+
+        zeeman = np.broadcast_to((self.sys.g[0]*self.exp.B_z), (10, 3))
+        zeeman = 0.5*MU_B*zeeman.T
+        zeeman_1 = self.cal.g_tensor.multirot[3, 2, 2]*self.exp.B_z[0]*MU_B*0.5
+        zeeman_2 = self.cal.g_tensor.multirot[5, 2, 2]*self.exp.B_z[0]*MU_B*-0.5
+        print(self.cal.ham[0, 3, 0, 0])
+        print(zeeman_2)
+        np.testing.assert_allclose(self.cal.ham[0, 3, 0, 0], zeeman_1)
+        np.testing.assert_allclose(self.cal.ham[0, 5, 1, 1], zeeman_2)
+
+        if np.array_equal(zeeman_1, zeeman_2) is False:
+            assert True
+        else:
+            assert False
 
 
 class Test_set_up_triplet_hamiltonian:
     def setup(self):
-        self.opt = Opt()
-        self.sys = Sys()
-        self.exp = Exp()
-        self.cal = Cal()
+        initialize_classes(self)
 
         self.opt.grid_points = 3
         self.cal.theta, self.cal.phi = grid.fibonacci_grid(3)
@@ -215,35 +291,6 @@ class Test_set_up_triplet_high_field_hamiltonian:
         np.testing.assert_allclose(self.cal.ham_tri_hf, H, atol=2e6)
 
 
-class Test_set_up_triplet_zerofield_hamiltonian:
-    def setup(self):
-        self.opt = Opt()
-        self.sys = Sys()
-        self.exp = Exp()
-        self.cal = Cal()
-
-        self.opt.grid_points = 3
-        self.cal.theta, self.cal.phi = grid.fibonacci_grid(3)
-        self.exp.B_z = np.linspace(1, 3, 3)
-        self.exp.B_mw = 7
-        self.exp.freq_mw = 3
-        self.cal.s_tri = mt.Spinoperator(1)
-
-        self.sys.g_tri = [1, 2, 3]
-        self.sys.D_tri = 5
-        self.sys.E_tri = -2
-
-        cr.set_up_tensors(self.sys, self.cal)
-        self.cal.ham_tri_zf = ham.set_up_triplet_zero_field_hamiltonian(
-            self.exp, self.opt, self.cal)
-
-    def test_trace(self):
-        trace = self.cal.ham_tri_zf.trace(axis1=-2, axis2=-1)
-        zeros = np.zeros((3, 3), dtype=np.complex64)
-        np.testing.assert_allclose(zeros, trace, atol=1e-6)
-        # absolute tolerance changed, but the magnitude of the non-zero trace
-        # compared to the magnitude of D and E is neglectable and comes from
-        # a lack in the precision of the arrays (complex64/float32)
 
 
 class Test_set_up_rp_hamiltonian:

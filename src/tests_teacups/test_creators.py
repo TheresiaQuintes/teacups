@@ -410,7 +410,7 @@ class TestSetUpSpinoperator:
         assert np.array_equal(self.cal.s.matrix, s)
 
 
-class Test_set_up_observable:
+class TestSetUpObservable:
     def setup(self):
         self.opt = Opt()
         self.cal = Cal()

@@ -335,8 +335,6 @@ class TestTripletZfDensityMatrixConditions:
         self.sys.precursor = 'zf'
 
         cr.set_up_tensors(self.sys, self.cal)
-        self.cal.ham_tri_zf = ham.set_up_triplet_zero_field_hamiltonian(
-            self.exp, self.opt, self.cal)
         self.cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
             self.exp, self.opt, self.cal)
         dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)

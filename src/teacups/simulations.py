@@ -95,8 +95,6 @@ def teacups(Sys: object, Exp: object, SimOpt: object, development=False
 
             # set up (non-secular) zero-field and high-field Hamiltonian
             # without mw interaction
-            cal.ham_tri_zf = ham.set_up_triplet_zero_field_hamiltonian(
-                exp, opt, cal)
             cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
                 exp, opt, cal)
 
@@ -120,8 +118,6 @@ def teacups(Sys: object, Exp: object, SimOpt: object, development=False
             ) or (sys.precursor == 'triplet-eigen' and sys.spin_system == 'rp'):
             cal.s_tri = mt.Spinoperator(1)
             cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
-                exp, opt, cal)
-            cal.ham_tri_zf = ham.set_up_triplet_zero_field_hamiltonian(
                 exp, opt, cal)
 
         dm.set_up_density_matrix(sys, exp, opt, cal)
