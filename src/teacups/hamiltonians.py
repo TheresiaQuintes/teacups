@@ -360,7 +360,7 @@ def set_up_tdp_full_high_field_hamiltonian(sys: object, exp: object,
     attribute from the class Multioperator. The interaction matrices are
     calculated by direct prducts of spin matrices and interaction tensors and
     no secular approximation is applied. The second output is the
-    ZFS-Hamiltonian of the triplet precursor in the coupled basis.
+    ZFS-Hamiltonian of the triplet precursor in the product basis.
 
     Parameters
     ----------
