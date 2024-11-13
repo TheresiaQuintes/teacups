@@ -7,127 +7,15 @@ import teacups.memory as mem
 COMPLEX_TYPE = np.complex64
 FLOAT_TYPE = np.float32
 
-
 class Calculations:
     """
-    A Calculation object contains nothing, all attributes are empty. They are
-    filled by several functions during the simulation.
-
-    Attributes
-    ----------
-    cal.g1_tensor : object
-        g1-tensor of the radical pair. This is a Tensor object.
-        Can be set up by creators.set_up_tensors.
-    cal.g2_tensor : object
-        g2-tensor of the radical pair. This is a Tensor object.
-        Can be set up by creators.set_up_tensors.
-    cal.D_tensor : object
-        D-tensor of coupled electrons. This is a Tensor object.
-        Can be set up by creators.set_up_tensors.
-    cal.g_tri_tensor : object
-        g-tensor of the triplet precursor. This is a Tensor object.
-        Can be set up by creators.set_up_tensors.
-    cal.D_tri_tensor : object
-        D-Tensor of the triplet precursor. This is a Tensor object.
-        Can be set up by creators.set_up_tensors.
-    cal.g_tensor : object
-        g-Tensor of a radical. This is a Tensor object.
-        Can be set up by creators.set_up_tensors.
-    cal.g_iso : float
-        Isotropic g-value.
-        Can be set up by creators.set_up_tensors.
-    cal.s : object
-        Spinoperator of the spin system. This is a Spinoperator object.
-        Can be set up by creators.set_up_spinoperator.
-    cal.observable : np.ndarray
-        Observable operator (S_y-operator in ST-basis) either as a matrix
-        (calculations in hilbert-space) or as a vector (calculations in
-        liouville space).
-        Can be set up by creators.set_up_observable.
-    cal.rho : np.ndarray
-        The density matrix array in the basis of the systems Hamiltonian.
-        Can be set up by density_matrices.set_up_density_matrix.
-    cal.ham_mw : np.ndarray
-        Microwave coupling hamiltonian in the rotating frame.
-        Can be set up by hamiltonians.set_up_mw_hamiltonian.
-    cal.ham_sys : np.ndarray
-        Spin system hamiltonian. Can be set up by diverse functions from the
-        hamiltonian module.
-    cal.ham_sys : np.ndarray
-        Full interaction hamiltonian. Sum of all hamiltonians.
-    cal.ham_superop : np.ndarray
-        The attribute will be built, if opt.space is set to liouville. This is
-        the commutator superoperator. It can be set up by
-        hamiltonians.set_up_commutator_superoperator.
-    cal.A_tensor : list
-        List of tensor objects one for each hyperfine tensor given in sys.
-        Can be created b hyperfine.set_up_hyperfine_tensors.
-    cal.spec_sim : np.ndarray
-        This matrix contains the intensities in abitrary units of a transient
-        epr spectrum for all time points t in cal.t and all magnetic field
-        points in exp.B_z. It can be set up by the make_signal function from
-        hyperfine or signals_and_processing modules.
-    cal.t : np.ndarray
-        Linear spaced 1D-array with time points at which the spectrum
-        will be simulated. Can be created by input_handler.predifinitions.
-    cal.phi : np.ndarray
-        Array with the phi values for each angle point. Can be created by
-        input_handler.create_grid.
-    cal.theta : np.ndarray
-        Array with the theta values for each angle point. Can be created by
-        input_handler.create_grid.
-    cal.propagation : np.ndarray
-        Time propagation operator. Can be set up by
-        signals_and_processing.propagation.
-    cal.signal : np.ndarray
-        This matrix contains the intensities in abitrary units of a transient
-        epr spectrum for all time points t in cal.t and all magnetic field
-        points in exp.B_z and all orientation points.
-        It can be created by signals_and_processing.make_signal.
-    cal.eigval : np.ndarray
-        Eigenvalues of the spin system.
-    cal.eigvec : np.ndarray
-        Corresponding eigenvectors of the spin system.
-    cal.pop_evolution : np.ndarray
-        Population evolution of the spin system.
-
-
+    An object of class Calculations has no attributes at the beginning. The
+    object of the Calculations-Class is used during the simulation by several
+    functions to save results.
     """
 
-    def __init__(self):
-        self.g1_tensor = None
-        self.g2_tensor = None
-        self.D_tensor = None
-        self.g_tri_tensor = None
-        self.D_tri_tensor = None
-        self.g_tensor = None
-        self.g_iso = None
-
-        self.s = None
-
-        self.observable = None
-        self.rho = None
-
-        self.ham_mw = None
-        self.ham_sys = None
-        self.h = None
-        self.ham_superop = None
-
-        self.A_tensor = None
-
-        self.spec_sim = None
-        self.t = None
-
-        self.theta = None
-        self.phi = None
-
-        self.propagation = None
-        self.signal = None
-
-        self.eigval = None
-        self.eigvec = None
-
-        self.pop_evolution = None
+    def __init(self):
+        return
 
 
 def input_object_handler(Sys: object, Exp: object, Opt: object
@@ -230,7 +118,7 @@ def scale_inputs(sys: object, exp: object, opt: object) -> None:
 def predefinitions(sys, exp: object, cal: object) -> None:
     """
     Predefine arrays needed for the calculations: A linear spaced t-axis,
-    an empty signal-array and a hyperfine intensity attribute.
+    and an empty signal-array.
 
     Parameters
     ----------
