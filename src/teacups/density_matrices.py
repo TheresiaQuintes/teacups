@@ -153,9 +153,8 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
 
         elif sys.spin_system == "tdp":
             # set up the full high field hamiltonian of the coupled system
-            # in the product basis: +1a, 0a, -1a, +1b, 0b, -1b
-            # ham_zfs is only the triplet-ZFS part of the coupled hamiltonian
-            ham_hf, ham_zfs = ham.set_up_tdp_full_high_field_hamiltonian(
+            # in the xyz-Basis: xxyyzz
+            ham_xyz = ham.set_up_tdp_full_high_field_hamiltonian(
                 sys, exp, opt, cal)
             # !!! Kontrolle hat ergeben, dass sich die Eigenwerte von ham_hf
             # und ham_sys nur um einen Offset von J/4 unterscheiden. Das liegt
@@ -180,8 +179,7 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
                     len(exp.B_z), opt.grid_points)*4
                 print(chunk_size)
 
-                ham_hf_split = np.array_split(ham_hf, chunk_size)
-                ham_zfs_split = np.array_split(ham_zfs, chunk_size)
+                ham_xyz_split = np.array_split(ham_xyz, chunk_size)
                 ham_sys_split = np.array_split(cal.ham_sys, chunk_size)
 
                 rho_split = []
@@ -192,15 +190,8 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
                     nvmlDeviceGetMemoryInfo,
                 )
 
-                for chunk in range(len(ham_hf_split)):
-                    ham_zfs_gpu = cp.asarray(ham_zfs_split[chunk])
-                    eig_zfs, vec_zfs = cp.linalg.eigh(ham_zfs_gpu)
-                    del eig_zfs, ham_zfs_gpu
-
-                    ham_hf = cp.asarray(ham_hf_split[chunk])
-                    ham_xyz = cp.conj(cp.transpose(
-                        vec_zfs, (0, 1, 3, 2))) @ ham_hf @ vec_zfs
-                    del vec_zfs, ham_hf
+                for chunk in range(len(ham_xyz_split)):
+                    ham_xyz = cp.asarray(ham_xyz_split[chunk])
 
                     eig_hf, vec_hf = cp.linalg.eigh(ham_xyz)
                     del eig_hf, ham_xyz
@@ -231,13 +222,6 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
                 rho.B_angle_matrix = np.concatenate(rho_split)
 
             else:
-                # the eigenbasis of ham_zfs is xx yy zz (= xyz-basis)
-                eig_zfs, vec_zfs = np.linalg.eigh(ham_zfs)
-
-                # transform high field hamiltonian to xyz-basis
-                ham_xyz = np.conj(np.transpose(
-                    vec_zfs, (0, 1, 3, 2))) @ ham_hf @ vec_zfs
-
                 # diagonalise high field hamiltonian to get the eigenvectors for
                 # transformation xyz-basis <-> TDP-eigenbasis
                 eig_hf, vec_hf = np.linalg.eigh(ham_xyz)

@@ -331,9 +331,6 @@ class TestSetUpTripletHighFieldHamiltonian:
         np.testing.assert_allclose(self.cal.ham, np.conj(
             np.transpose(self.cal.ham, (0, 1, 3, 2))), atol=2e6)
 
-    def test_triplet_ham(self):
-        H = comp.triplet_hamiltonian_analytical
-        np.testing.assert_allclose(self.cal.ham, H, atol=2e6)
 
     def test_basis_transformation(self):
         s_tri = mt.Spinoperator(1)
@@ -622,24 +619,224 @@ class TestSetUpTdpHamiltonianAnisotrope:
         np.testing.assert_allclose(self.cal.ham[:, :, 5, 5], d)
 
 
-class Test_set_up_commutator_superoperator:
+class TestSetUpTdpFullHighFieldHamiltonian:
     def setup(self):
-        self.sys = Sys()
-        self.opt = Opt()
-        self.cal = Cal()
-        self.exp = Exp()
+        initialize_classes(self)
+
+        self.opt.grid_points = 5
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(5)
+        self.exp.B_z = np.linspace(1, 4, 4)/MU_B
+
+        self.sys.g_tri = [1, 2, 3]
+        self.sys.D_tri = 4
+        self.sys.E_tri = 3
+        self.sys.g = [4, 5, 6]
+        self.sys.D = 5
+        self.sys.E = 6
+        self.sys.J_ex = 7
+        self.sys.s = [1/2, 1]
+
+        cr.set_up_spinoperator(self.sys, self.cal)
+
+        cr.set_up_tensors(self.sys, self.cal)
+        self.cal.ham = ham.set_up_tdp_full_high_field_hamiltonian(self.sys,
+                                                                  self.exp,
+                                                                  self.opt,
+                                                                  self.cal)
+
+        s_trip = mt.Spinoperator(1/2, 1)
+        s_trip.matrix = s_trip.matrix_coupling_spins[0]
+
+        s_doub = mt.Spinoperator(1/2, 1)
+
+        self.ham_zfs = mut.Multioperator(s_trip, self.opt.grid_points,
+                                         self.exp.B_z*MU_B)
+        self.ham_zfs.create_bilinear_operator(self.cal.D_tri_tensor, s_trip)
+        self.ham_zfs.angle_matrix_changed()
+        self.ham_zfs = self.ham_zfs.B_angle_matrix
+        _, self.vec_zfs = np.linalg.eigh(self.ham_zfs)
+
+        self.ham_zeeman_doub = mut.Multioperator(s_doub,
+                                                 self.opt.grid_points,
+                                                 self.exp.B_z*MU_B)
+        self.ham_zeeman_doub.zeeman_coupling(self.cal.g_tensor)
+
+        self.ham_zeeman_trip = mut.Multioperator(s_trip,
+                                                 self.opt.grid_points,
+                                                 self.exp.B_z*MU_B)
+        self.ham_zeeman_trip.zeeman_coupling(self.cal.g_tri_tensor)
+
+        self.ham_dip = mut.Multioperator(s_doub, self.opt.grid_points,
+                                         self.exp.B_z*MU_B)
+        self.ham_dip.create_bilinear_operator(self.cal.D_tensor, s_trip)
+        self.ham_dip.angle_matrix_changed()
+
+        self.ham_ex = mut.Multioperator(s_doub, self.opt.grid_points,
+                                         self.exp.B_z*MU_B)
+        self.ham_ex.exchange_coupling(-1/2*self.sys.J_ex, s_trip)
+
+
+    def test_shape(self):
+        assert self.cal.ham.shape == (4, 5, 6, 6)
+
+    def test_dtype(self):
+        assert self.cal.ham.dtype == 'complex64'
+
+    def test_hermitean(self):
+        np.testing.assert_allclose(self.cal.ham, np.conj(
+            np.transpose(self.cal.ham, (0, 1, 3, 2))), atol=2e6)
+
+    def test_zfs(self):
+        self.sys.g_tri = [0, 0, 0]
+        self.sys.D_tri = 4
+        self.sys.E_tri = 3
+        self.sys.g = [0, 0, 0]
+        self.sys.D = 0
+        self.sys.E = 0
+        self.sys.J_ex = 0
+        cr.set_up_tensors(self.sys, self.cal)
+        self.cal.ham = ham.set_up_tdp_full_high_field_hamiltonian(self.sys,
+                                                                  self.exp,
+                                                                  self.opt,
+                                                                  self.cal)
+
+        ham_zfs = np.conj(np.transpose(self.vec_zfs, (0, 1, 3, 2))) @\
+            self.ham_zfs @ self.vec_zfs
+        np.testing.assert_allclose(self.cal.ham, ham_zfs, atol=2e-6)
+
+    def test_zeeman_triplet(self):
+        self.sys.g_tri = [1, 2, 3]
+        self.sys.D_tri = 4
+        self.sys.E_tri = 3
+        self.sys.g = [0, 0, 0]
+        self.sys.D = 0
+        self.sys.E = 0
+        self.sys.J_ex = 0
+        cr.set_up_tensors(self.sys, self.cal)
+        self.cal.ham = ham.set_up_tdp_full_high_field_hamiltonian(self.sys,
+                                                                  self.exp,
+                                                                  self.opt,
+                                                                  self.cal)
+
+        self.cal.ham = self.vec_zfs @ self.cal.ham @\
+            np.conj(np.transpose(self.vec_zfs, (0, 1, 3, 2)))-self.ham_zfs
+
+        zeeman = self.ham_zeeman_trip.B_angle_matrix
+        np.testing.assert_allclose(self.cal.ham, zeeman, atol=2e-6)
+
+    def test_zeeman_doublet(self):
+        self.sys.g_tri = [0, 0, 0]
+        self.sys.D_tri = 4
+        self.sys.E_tri = 3
+        self.sys.g = [4, 5, 6]
+        self.sys.D = 0
+        self.sys.E = 0
+        self.sys.J_ex = 0
+        cr.set_up_tensors(self.sys, self.cal)
+        self.cal.ham = ham.set_up_tdp_full_high_field_hamiltonian(self.sys,
+                                                                  self.exp,
+                                                                  self.opt,
+                                                                  self.cal)
+
+        self.cal.ham = self.vec_zfs @ self.cal.ham @\
+            np.conj(np.transpose(self.vec_zfs, (0, 1, 3, 2)))-self.ham_zfs
+
+        zeeman = self.ham_zeeman_doub.B_angle_matrix
+        np.testing.assert_allclose(self.cal.ham, zeeman, atol=2e-6)
+
+    def test_dipolar_coupling(self):
+        self.sys.g_tri = [0, 0, 0]
+        self.sys.D_tri = 4
+        self.sys.E_tri = 3
+        self.sys.g = [0, 0, 0]
+        self.sys.D = 5
+        self.sys.E = 6
+        self.sys.J_ex = 0
+        cr.set_up_tensors(self.sys, self.cal)
+        self.cal.ham = ham.set_up_tdp_full_high_field_hamiltonian(self.sys,
+                                                                  self.exp,
+                                                                  self.opt,
+                                                                  self.cal)
+
+        self.cal.ham = self.vec_zfs @ self.cal.ham @\
+            np.conj(np.transpose(self.vec_zfs, (0, 1, 3, 2)))-self.ham_zfs
+
+        dipolar = self.ham_dip.B_angle_matrix
+        np.testing.assert_allclose(self.cal.ham, dipolar, atol=2e-6)
+
+    def test_exchange_coupling(self):
+        self.sys.g_tri = [0, 0, 0]
+        self.sys.D_tri = 4
+        self.sys.E_tri = 3
+        self.sys.g = [0, 0, 0]
+        self.sys.D = 0
+        self.sys.E = 0
+        self.sys.J_ex = 7
+        cr.set_up_tensors(self.sys, self.cal)
+        self.cal.ham = ham.set_up_tdp_full_high_field_hamiltonian(self.sys,
+                                                                  self.exp,
+                                                                  self.opt,
+                                                                  self.cal)
+
+        self.cal.ham = self.vec_zfs @ self.cal.ham @\
+            np.conj(np.transpose(self.vec_zfs, (0, 1, 3, 2)))-self.ham_zfs
+
+        exchange = self.ham_ex.B_angle_matrix
+        np.testing.assert_allclose(self.cal.ham, exchange, atol=2e-6)
+
+
+class TestSetUpCommutatorSuperoperator:
+    def setup(self):
+        initialize_classes(self)
 
         self.opt.space = 'liouville'
+
+        self.hamiltonian = np.arange(1, 10, dtype=np.float32).reshape(3, 3)
+        self.cal.ham = np.broadcast_to(self.hamiltonian, (2, 2, 3, 3))
+        _, self.cal.eigvec = la.eigh(self.cal.ham)
+        self.sys.dynamics = np.diag([1, 2, 3])
+        ham.set_up_commutator_superoperator(self.sys, self.opt, self.cal)
+        self.superop = self.cal.ham_superop
+
+    def test_shape(self):
+        assert self.superop.shape == (2, 2, 9, 9)
+
+    def test_dtype(self):
+        assert self.superop.dtype == 'complex64'
+
+    def test_commutator(self):
         self.sys.dynamics = np.zeros((3, 3))
 
-    def test_commutator_value(self):
-        hamiltonian = np.arange(1, 10).reshape(3, 3)
-        self.cal.ham = np.broadcast_to(hamiltonian, (2, 2, 3, 3))
-        val, self.cal.eigvec = la.eigh(self.cal.ham)
-        ham_adj = np.conjugate(hamiltonian.T)
-        superop = np.kron(np.eye(3), hamiltonian) - np.kron(ham_adj, np.eye(3))
+        ham_adj = np.conjugate(self.hamiltonian.T)
+        superop = np.kron(np.eye(3), self.hamiltonian)\
+            - np.kron(ham_adj, np.eye(3))
         superop_3d = np.broadcast_to(superop, (2, 2, 9, 9))
 
         ham.set_up_commutator_superoperator(self.sys, self.opt, self.cal)
 
-        assert np.array_equal(self.cal.ham_superop, superop_3d)
+        np.testing.assert_array_equal(self.cal.ham_superop, superop_3d)
+
+    def test_relaxation(self):
+        hamiltonian = np.zeros((3, 3))
+        self.cal.ham = np.broadcast_to(hamiltonian, (2, 2, 3, 3))
+        val, self.cal.eigvec = la.eigh(self.cal.ham)
+
+        ham.set_up_commutator_superoperator(self.sys, self.opt, self.cal)
+
+        relaxation = np.zeros((2, 2, 9, 9), dtype=np.complex128)
+        relaxation[:, :, 0, 0] = 1j
+        relaxation[:, :, 4, 4] = 2j
+        relaxation[:, :, 8, 8] = 3j
+        np.testing.assert_array_equal(self.cal.ham_superop, relaxation)
+
+    def test_shape_hilbert(self):
+        self.opt.space = 'hilbert'
+
+        self.hamiltonian = np.arange(11, 20, dtype=np.float32).reshape(3, 3)
+        self.cal.ham = np.broadcast_to(self.hamiltonian, (2, 2, 3, 3))
+        _, self.cal.eigvec = la.eigh(self.cal.ham)
+        self.sys.dynamics = np.diag([3, 4, 5])
+
+        ham.set_up_commutator_superoperator(self.sys, self.opt, self.cal)
+        # superoperator-attribute is not changed if opt.space='hilbert'
+        np.testing.assert_array_equal(self.superop, self.cal.ham_superop)

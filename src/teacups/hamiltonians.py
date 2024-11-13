@@ -189,7 +189,8 @@ def set_up_triplet_high_field_hamiltonian(exp: object, opt: object,
     Returns
     -------
     ham_tri_hf : np.ndarray
-        Hamiltonian of a triplet precursor of a radical pair in high field.
+        Hamiltonian of a triplet in high field in the basis, where the ZFS-
+        Tensor is diagonal (xyz-Basis).
         This is a B_angle_matrix attribute from the class Multioperator.
 
     """
@@ -350,17 +351,17 @@ def set_up_tdp_hamiltonian(sys: object, exp: object, opt: object, cal: object
 
 def set_up_tdp_full_high_field_hamiltonian(sys: object, exp: object,
                                            opt: object, cal: object
-                                           ) -> ['np.ndarray', 'np.ndarray']:
+                                           ) -> 'np.ndarray':
     """
     Calculate a Hamiltonian matrix operator for a coupled triplet doublet pair.
     Coupling with the static magnetic field of the triplet and the doublet is
     included each as well as the ZFS of the triplet and the interactions of the
     two spins. The Hamiltonian is calculated for all orientations and magnetic
-    field points in the product basis and returned as a B_angle_matrix
+    field points in the xyz-Basis (basis in which the ZFS-Hamiltonian of the
+    triplet is diagonal) and returned as a B_angle_matrix
     attribute from the class Multioperator. The interaction matrices are
     calculated by direct prducts of spin matrices and interaction tensors and
-    no secular approximation is applied. The second output is the
-    ZFS-Hamiltonian of the triplet precursor in the product basis.
+    no secular approximation is applied.
 
     Parameters
     ----------
@@ -382,13 +383,8 @@ def set_up_tdp_full_high_field_hamiltonian(sys: object, exp: object,
     ham_hf : np.ndarray
         Full triplet-doublet-pair high-field hamiltonian in the shape of a
         B_angle_matrix from the class Multioperator. The hamiltonian is given
-        in the product basis of doublet and triplet:
-        |a, +1>, |a, 0>, |a, -1>, |b, +1>, |b, 0>, |b, -1>.
-    ham_zfs : np.ndarray
-        Hamiltonian of the bilinear dipolar coupling of the triplet precursor
-        (ZFS) of a coupled triplet doublet pair. Th hamiltonian is given in
-        the product basis of doublet and triplet:
-        |a, +1>, |a, 0>, |a, -1>, |b, +1>, |b, 0>, |b, -1>.
+        in the xyz-Basis of doublet and triplet:
+        |a, x>, |b, x>, |a, y>, |b, y>, |a, z>, |b, z>.
 
     """
     setup_s = mt.Spinoperator(0.5, 1)
@@ -425,13 +421,18 @@ def set_up_tdp_full_high_field_hamiltonian(sys: object, exp: object,
     ham_hf = h_zeeman_doub.B_angle_matrix + h_zeeman_trip.B_angle_matrix +\
         h_zfs.B_angle_matrix + h_dip.B_angle_matrix + h_ex.B_angle_matrix
 
-    # ZFS hamiltonian
-    ham_zfs = h_zfs.B_angle_matrix
 
-    ham_zfs = ham_zfs.astype(COMPLEX_TYPE)
+    # the eigenbasis of ham_zfs is xx yy zz (= xyz-basis)
+    eig_zfs, vec_zfs = np.linalg.eigh(h_zfs.B_angle_matrix)
+
+    # transform high field hamiltonian to xyz-basis
+    ham_hf = np.conj(np.transpose(
+        vec_zfs, (0, 1, 3, 2))) @ ham_hf @ vec_zfs
+
+
     ham_hf = ham_hf.astype(COMPLEX_TYPE)
 
-    return ham_hf, ham_zfs
+    return ham_hf
 
 
 def set_up_commutator_superoperator(sys: object, opt: object, cal: object

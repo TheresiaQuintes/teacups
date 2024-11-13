@@ -260,8 +260,7 @@ class TestTdps:
         cr.set_up_tensors(self.sys, self.cal)
         self.cal.ham_sys = ham.set_up_tdp_hamiltonian(self.sys, self.exp,
                                                       self.opt, self.cal)
-        self.cal.ham_hf, self.cal.ham_zf = \
-            ham.set_up_tdp_full_high_field_hamiltonian(
+        self.cal.ham_hf = ham.set_up_tdp_full_high_field_hamiltonian(
             self.sys, self.exp, self.opt, self.cal)
         self.cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
             self.exp, self.opt, self.cal)
@@ -286,10 +285,7 @@ class TestTdps:
         rho_basis = np.array([[pop], [pop], [pop]])
         rho_basis = np.kron(rho_basis, np.eye(2, dtype=np.float32))
 
-        _, vec_zf = np.linalg.eigh(self.cal.ham_zf)
-        ham_xyz = np.linalg.inv(vec_zf)@self.cal.ham_hf@vec_zf
-
-        _, vec_xyz = np.linalg.eigh(ham_xyz)
+        _, vec_xyz = np.linalg.eigh(self.cal.ham_hf)
         _, vec_sys = np.linalg.eigh(self.cal.ham_sys)
 
         rho = np.linalg.inv(vec_xyz)@rho_basis@vec_xyz
