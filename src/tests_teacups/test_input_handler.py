@@ -2,6 +2,7 @@ import sys
 sys.path.append("./..")
 
 import teacups.input_handler as inp
+import teacups.grid as gri
 import numpy as np
 
 
@@ -28,7 +29,7 @@ class Exp:
 
 class Opt:
     def __init__(self):
-        return
+        self.grid_points = 5
 
 
 class Cal:
@@ -119,8 +120,108 @@ class TestInitalizeSpinSystem:
         inp.initialize_spin_system(self.sys)
         assert self.sys.s == [1/2, 1]
 
-class Test_hyperfine_converter:
 
+class TestCreateGridSophe:
+    def setup(self):
+        initialize_classes(self)
+        self.opt.grid = "sophe"
+        self.opt.sym = "D2h"
+        inp.create_grid(self.opt, self.cal)
+
+    def test_shape(self):
+        assert self.cal.theta.shape == (21, )
+        assert self.cal.phi.shape == (21, )
+        assert self.cal.weights.shape == (21, )
+        assert self.opt.grid_points == 21
+
+    def test_arrays(self):
+        theta, phi, weights = gri.sophe_grid(5, "D2h")
+        np.testing.assert_allclose(self.cal.theta, theta)
+        np.testing.assert_allclose(self.cal.phi, phi)
+        np.testing.assert_allclose(self.cal.weights, weights)
+
+    def test_type(self):
+        assert self.cal.theta.dtype == "float32"
+        assert self.cal.phi.dtype == "float32"
+        assert self.cal.weights.dtype == "float32"
+
+class TestCreateGridFibonacci:
+    def setup(self):
+        initialize_classes(self)
+        self.opt.grid = "fibonacci"
+        inp.create_grid(self.opt, self.cal)
+
+    def test_shape(self):
+        assert self.cal.theta.shape == (45, )
+        assert self.cal.phi.shape == (45, )
+        assert self.opt.grid_points == 45
+
+    def test_arrays(self):
+        theta, phi = gri.fibonacci_grid(45)
+        np.testing.assert_allclose(self.cal.theta, theta)
+        np.testing.assert_allclose(self.cal.phi, phi)
+
+    def test_type(self):
+        assert self.cal.theta.dtype == "float32"
+        assert self.cal.phi.dtype == "float32"
+
+class TestCreateGridSingle:
+    def setup(self):
+        initialize_classes(self)
+        self.opt.grid = "single"
+        self.opt.theta = [2, 5]
+        self.opt.phi = [1, 2]
+        inp.create_grid(self.opt, self.cal)
+
+    def test_shape(self):
+        assert self.cal.theta.shape == (2, )
+        assert self.cal.phi.shape == (2, )
+        assert self.opt.grid_points == 2
+
+    def test_arrays(self):
+        theta = np.array([2, 5])
+        phi = np.array([1, 2])
+        np.testing.assert_array_equal(self.cal.theta, theta)
+        np.testing.assert_array_equal(self.cal.phi, phi)
+
+    def test_type(self):
+        assert self.cal.theta.dtype == "float32"
+        assert self.cal.phi.dtype == "float32"
+
+
+class TestSplitGrid:
+    def setup(self):
+        initialize_classes(self)
+        self.sys.spin_system = "bla"
+        self.sys.precursor = "blub"
+        self.opt.grid = "piep"
+        self.cal.theta = np.array([1, 2, 3])
+        self.cal.phi = np.array([4, 5, 6])
+        self.cal.weights = np.array([7, 8, 9])
+        inp.split_grid(self.sys, self.exp, self.opt, self.cal)
+
+    def test_type(self):
+        assert type(self.cal.phi_split) == list
+        assert type(self.cal.theta_split) == list
+
+    def test_len(self):
+        assert len(self.cal.phi_split) == 1
+        assert len(self.cal.theta_split) == 1
+
+    def test_phi(self):
+        np.testing.assert_array_equal(self.cal.phi, self.cal.phi_split[0])
+
+    def test_theta(self):
+        np.testing.assert_array_equal(self.cal.theta, self.cal.theta_split[0])
+
+    def test_weights(self):
+        self.opt.grid = "sophe"
+        inp.split_grid(self.sys, self.exp, self.opt, self.cal)
+        np.testing.assert_array_equal(self.cal.weights,
+                                      self.cal.weights_split[0])
+
+
+class Test_hyperfine_converter:
     def setup(self):
         self.sys = Sys()
 

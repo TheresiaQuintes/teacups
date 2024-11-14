@@ -42,6 +42,8 @@ def chunk_size(bottleneck: str, bp: int, gp: int) -> int:
         available_memory = psutil.virtual_memory().available * 0.8
         chunksize = np.ceil(need_of_memory/available_memory)
 
+    if chunksize > 1:
+        chunksize += 1
     return chunksize
 
 

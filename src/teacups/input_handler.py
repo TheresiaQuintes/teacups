@@ -221,20 +221,24 @@ def create_grid(opt: object, cal: object) -> None:
     None
 
     """
-    from teacups.epr_grid import Grid
     if opt.grid == 'sophe':
-        cal.theta, cal.phi, cal.weights = gri.sophe_grid(opt.grid_points,
-                                                         opt.sym)
+        theta, phi, weights = gri.sophe_grid(opt.grid_points, opt.sym)
+        cal.theta = theta.astype(FLOAT_TYPE)
+        cal.phi = phi.astype(FLOAT_TYPE)
+        cal.weights = weights.astype(FLOAT_TYPE)
+
         opt.grid_points = len(cal.phi)
 
     elif opt.grid == 'fibonacci':
-        cal.theta, cal.phi = gri.fibonacci_grid(
+        theta, phi = gri.fibonacci_grid(
             int(opt.grid_points + 4*opt.grid_points*(opt.grid_points-1)/2))
+        cal.theta = theta.astype(FLOAT_TYPE)
+        cal.phi = phi.astype(FLOAT_TYPE)
         opt.grid_points = len(cal.phi)
 
     elif opt.grid == 'single':
-        cal.theta = np.array(opt.theta)
-        cal.phi = np.array(opt.phi)
+        cal.theta = np.array(opt.theta, dtype=FLOAT_TYPE)
+        cal.phi = np.array(opt.phi, dtype=FLOAT_TYPE)
         opt.grid_points = len(cal.phi)
     return
 
@@ -286,9 +290,6 @@ def split_grid(sys: object, exp: object, opt: object, cal: object) -> None:
     bp = len(exp.B_z)
     gp = opt.grid_points
     chunk_size = mem.chunk_size(bottleneck, bp, gp)
-
-    if chunk_size > 1:
-        chunk_size += 1
 
     cal.phi_split = np.array_split(cal.phi, chunk_size)
     cal.theta_split = np.array_split(cal.theta, chunk_size)
