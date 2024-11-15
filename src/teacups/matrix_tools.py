@@ -142,7 +142,7 @@ class Matrix:
         return None
 
     def basis_transformation(self, trans: 'np.ndarray',
-                             orthonormal=False) -> None:
+                             inverse_left=True, orthonormal=False) -> None:
         """
         Change the basis of matrix. trans is the transformation matrix:
 
@@ -154,6 +154,13 @@ class Matrix:
         trans : np.ndarray
             Transformation matrix containing arrays of the new basis. The
             array has to have the same shape as the matrix attribute.
+        inverse_left : boolean, optional
+            Defines the direction of the basis transformation. If set to
+            True the inverse of the transformation matrix is multiplied
+            from the left side. If set to false, the inverse of the
+            transformation matrix is multiplied from the right side and the
+            direction of the basistransformation is reversed.
+            The default is True.
         orthonormal : boolean, optional
             If orthonormal is set to True the basis transforation is done by
             using the adjungate instead of the inverse transformation matrix
@@ -180,51 +187,65 @@ class Matrix:
                [-2.,  1.]])
 
         """
-        if orthonormal is True:
-            self.matrix = np.conj(trans.T) @ self.matrix @ trans
+        if trans.shape != self.matrix.shape:
+            raise IndexError("Transformationmatrix must have same shape as" +
+                             "matrix attribute.")
+
+        if inverse_left is True:
+            if orthonormal is True:
+                self.matrix = np.conj(trans.T) @ self.matrix @ trans
+            else:
+                self.matrix = np.linalg.inv(trans) @ self.matrix @ trans
         else:
-            self.matrix = np.linalg.inv(trans) @ self.matrix @ trans
+            if orthonormal is True:
+                self.matrix = trans @ self.matrix @ np.conj(trans.T)
+            else:
+                self.matrix = trans @ self.matrix @ np.linalg.inv(trans)
 
         return None
 
 
 class Tensor(Matrix):
     """
-    A Tensor object contains a tensor. This is a diagonal quadratic matrix.
-    Further it contains the attribute rot. This is the same as the tensor
-    attribute but can be changed by the function rotation.
+    An object from class Tensor is a special Matrix object. The matrix
+    attribute contains a diagonal 3x3 matrix. The diagonal elements
+    are given when setting up the object. The class Tensor provides functions
+    for the rotation of a tensor to other frames.
 
     Parameters
     ----------
     diagonal : np.ndarray
-        1D-array containing the diagonal elements of the tensor.
-        All other values in the tensor matrix will be set to zero.
+        1D-List (or array) containing exactly 3 diagonal elements of the
+        tensor. All other values in the tensor matrix will be set to zero.
 
     Attributes
     ----------
-    tensor : np.ndarray
-        The tensor attribute is a diagonal matrix (usually 3x3) which contains
+    matrix : np.ndarray
+        The matrix attribute is a diagonal 3x3-matrix which contains
         the diagonal elements given in "diagonal".
+    dimension: int
+        The dimension of the matrix attribute is 3.
+
 
     Examples
     --------
     >>> a = np.arange(1, 4)
     >>> t = tensor(a)
-    >>> t.tensor
+    >>> t.matrix
     array([[1., 0., 0.],
            [0., 2., 0.],
            [0., 0., 3.]])
-    >>> t.rot
-    array([[1., 0., 0.],
-           [0., 2., 0.],
-           [0., 0., 3.]])
+    >>> t.dimension
+    3
 
     """
 
-    def __init__(self, diagonal: int):
-        self.tensor = np.eye(len(diagonal), dtype=FLOAT_TYPE)
-        self.tensor *= diagonal
-        self.rot = self.tensor
+    def __init__(self, diagonal: list):
+        if len(diagonal) != 3:
+            raise IndexError("Tensor needs exactly three diagonal elements")
+
+        self.matrix = np.diag(np.array(diagonal, dtype=FLOAT_TYPE))
+        self.dimension = 3
 
     def rotation(self, phi: float, theta: float, psi=0.0) -> None:
         """
@@ -266,10 +287,10 @@ class Tensor(Matrix):
                [-0.58737276,  0.3825737 ,  2.08522113]])
 
         """
-        if len(self.tensor) != 3:
+        if len(self.matrix) != 3:
             raise ValueError("Rotation only possible for 3x3-Tensors")
         else:
-            self.rot = odh.tensor_rotation(self.tensor, phi, theta, psi)
+            self.rot = odh.tensor_rotation(self.matrix, phi, theta, psi)
 
         return None
 
@@ -967,7 +988,7 @@ class Hamiltonian(Operator):
         >>> h = Hamiltonian(2)
         >>> s = Spinoperator(1/2)
         >>> g = Tensor(np.arange(1, 4))
-        >>> h.zeeman_coupling(g.tensor, 42.5, s)
+        >>> h.zeeman_coupling(g.matrix, 42.5, s)
         >>> h.matrix
         array([[ 63.75+0.j,   0.  +0.j],
                [  0.  +0.j, -63.75+0.j]])
@@ -1005,7 +1026,7 @@ class Hamiltonian(Operator):
         >>> s = Spinoperator(1/2)
         >>> s.total_spin_radpair()
         >>> d = Tensor(np.arange(1, 4))
-        >>> h.dipol_coupling(d.tensor, s)
+        >>> h.dipol_coupling(d.matrix, s)
         >>> h.matrix
         array([[ 4.5+0.j,  0. +0.j,  0. +0.j, -0.5+0.j],
                [ 0. +0.j,  1.5+0.j,  1.5+0.j,  0. +0.j],

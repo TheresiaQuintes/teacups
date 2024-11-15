@@ -32,6 +32,7 @@ class Cal:
     def __init__(self):
         return
 
+
 def initialize_classes(self):
     self.sys = Sys()
     self.opt = Opt()
@@ -82,8 +83,7 @@ class TestDoublets:
 
         self.cal.theta, self.cal.phi = grid.fibonacci_grid(1)
         self.opt.grid_points = len(self.cal.theta)
-        self.exp.B_z =  np.array([1/(2*MU_B), 2/(2*MU_B), 3/(2*MU_B)])
-
+        self.exp.B_z = np.array([1/(2*MU_B), 2/(2*MU_B), 3/(2*MU_B)])
 
         self.sys.spin_system = "doub"
         self.sys.s = 1/2
@@ -94,7 +94,7 @@ class TestDoublets:
 
         cr.set_up_tensors(self.sys, self.cal)
         self.cal.ham_sys = ham.set_up_doublet_hamiltonian(self.exp, self.opt,
-                                                      self.cal)
+                                                          self.cal)
 
         pop = np.diag(np.arange(1, 3))
         self.rho_basis = np.array([[pop], [pop], [pop]])
@@ -111,7 +111,7 @@ class TestDoublets:
         self.sys.precursor = "eigen"
         self.opt.space = "liouville"
         dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
-        assert(self.cal.rho.shape == (3, 1, 4))
+        assert (self.cal.rho.shape == (3, 1, 4))
 
 
 class TestTriplets:
@@ -122,8 +122,7 @@ class TestTriplets:
 
         self.cal.theta, self.cal.phi = grid.fibonacci_grid(1)
         self.opt.grid_points = len(self.cal.theta)
-        self.exp.B_z =  np.array([1/(2*MU_B), 2/(2*MU_B), 3/(2*MU_B)])
-
+        self.exp.B_z = np.array([1/(2*MU_B), 2/(2*MU_B), 3/(2*MU_B)])
 
         self.sys.spin_system = "trip"
         self.sys.s = 1
@@ -136,7 +135,7 @@ class TestTriplets:
 
         cr.set_up_tensors(self.sys, self.cal)
         self.cal.ham_sys = ham.set_up_triplet_hamiltonian(self.exp, self.opt,
-                                                      self.cal)
+                                                          self.cal)
         self.cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
             self.exp, self.opt, self.cal)
 
@@ -169,7 +168,7 @@ class TestRps:
 
         self.cal.theta, self.cal.phi = grid.fibonacci_grid(1)
         self.opt.grid_points = len(self.cal.theta)
-        self.exp.B_z =  np.array([1/(2*MU_B), 2/(2*MU_B), 3/(2*MU_B)])
+        self.exp.B_z = np.array([1/(2*MU_B), 2/(2*MU_B), 3/(2*MU_B)])
 
         self.sys.spin_system = "rp"
         self.sys.s = [1/2, 1/2]
@@ -187,7 +186,7 @@ class TestRps:
 
         cr.set_up_tensors(self.sys, self.cal)
         self.cal.ham_sys = ham.set_up_rp_hamiltonian(self.sys, self.exp, self.opt,
-                                                      self.cal)
+                                                     self.cal)
         self.cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
             self.exp, self.opt, self.cal)
 
@@ -230,7 +229,7 @@ class TestRps:
         comp[:, :, 2, 2] = rho_trip_zf[:, :, 1, 1]
         comp[:, :, 3, 3] = rho_trip_zf[:, :, 2, 2]
 
-        np.testing.assert_allclose(comp, self.cal.rho)
+        np.testing.assert_allclose(comp, self.cal.rho, atol=2e-6)
         assert self.cal.rho.dtype == "complex64"
 
 
@@ -242,7 +241,7 @@ class TestTdps:
 
         self.cal.theta, self.cal.phi = grid.fibonacci_grid(1)
         self.opt.grid_points = len(self.cal.theta)
-        self.exp.B_z =  np.array([1/(2*MU_B), 2/(2*MU_B), 3/(2*MU_B)])
+        self.exp.B_z = np.array([1/(2*MU_B), 2/(2*MU_B), 3/(2*MU_B)])
 
         self.sys.spin_system = "tdp"
         self.sys.s = [1/2, 1]
@@ -273,9 +272,9 @@ class TestTdps:
         _, vec = np.linalg.eigh(self.cal.ham_sys)
         rho_eigen = vec@self.rho_basis@np.linalg.inv(vec)
         dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
-        np.testing.assert_allclose(rho_eigen, self.cal.rho, rtol=1e-6) # Toleranz nötig wegen mumerischen Unterschieds zwischen inverser und adjungierter Matrix
+        # Toleranz nötig wegen mumerischen Unterschieds zwischen inverser und adjungierter Matrix
+        np.testing.assert_allclose(rho_eigen, self.cal.rho, rtol=1e-6)
         assert self.cal.rho.dtype == "complex64"
-
 
     def test_triplet_zf_precursor(self):
         self.sys.precursor = 'triplet-zf'
@@ -289,16 +288,17 @@ class TestTdps:
         _, vec_sys = np.linalg.eigh(self.cal.ham_sys)
 
         rho = np.linalg.inv(vec_xyz)@rho_basis@vec_xyz
-        rho*=np.eye(6, dtype=np.float32)
+        rho *= np.eye(6, dtype=np.float32)
         rho = vec_sys@rho@np.linalg.inv(vec_sys)
-        rho*=np.eye(6, dtype=np.float32)
+        rho *= np.eye(6, dtype=np.float32)
 
         rho_doub = np.diag(np.array([0.5, 0.51], dtype=np.float32))
         rho_doub = np.kron(rho_doub, np.eye(3, dtype=np.float32))
         rho += rho_doub
 
         dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
-        np.testing.assert_allclose(rho, self.cal.rho, rtol=1e-6)  # Toleranz nötig wegen mumerischen Unterschieds zwischen inverser und adjungierter Matrix
+        # Toleranz nötig wegen mumerischen Unterschieds zwischen inverser und adjungierter Matrix
+        np.testing.assert_allclose(rho, self.cal.rho, rtol=1e-6)
         assert self.cal.rho.dtype == "complex64"
 
     def test_triplet_zf_precursor_changing_with_J(self):

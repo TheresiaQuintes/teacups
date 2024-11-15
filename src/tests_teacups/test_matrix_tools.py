@@ -1,91 +1,130 @@
+import teacups.grid as grid
+import teacups.orientation_dependent_ham as odh
+import numpy as np
+import teacups.matrix_tools as mt
+import pytest as pt
 import sys
 sys.path.append("./..")
-
-import pytest as pt
-import teacups.matrix_tools as mt
-import numpy as np
-import teacups.orientation_dependent_ham as odh
-import teacups.grid as grid
 
 
 # Testing of class matrix
 
-class Test_scalar:
-    m = mt.Matrix(2)
-    m.matrix = np.arange(1, 5).reshape((2, 2))
-    m.scalar(np.array([2, 3]))
+class TestScalar:
+    def setup(self):
+        self.m = mt.Matrix(2)
+        self.m.matrix = np.arange(1, 5).reshape((2, 2))
+        self.m.matrix = self.m.matrix.astype(np.complex64)
+        self.m.scalar(np.array([2, 3]))
 
     def test_value(self):
         comp = np.array([[6, 12], [18, 24]])
         assert np.array_equal(comp, self.m.matrix)
 
+    def test_dtype(self):
+        assert self.m.matrix.dtype == "complex64"
 
-class Test_product:
+
+class TestProduct:
+    def setup(self):
+        self.m = mt.Matrix(2)
+        self.m.matrix = np.arange(1, 5).reshape((2, 2))
+        self.m.matrix = self.m.matrix.astype(np.complex64)
+        self.scd_matrix = np.array(
+            np.arange(2, 6).reshape((2, 2)), dtype=np.complex64)
+
     def test_wrong_shape(self):
-        m = mt.Matrix(2)
-        m.matrix = np.arange(1, 5).reshape((2, 2))
         with pt.raises(IndexError):
-            m.product(np.eye(3))
+            self.m.product(np.eye(3))
 
-    def test_value_right(self):
-        m = mt.Matrix(2)
-        m.matrix = np.arange(1, 5).reshape((2, 2))
-        scd_matrix = np.array(np.arange(2, 6).reshape((2, 2)))
-        m.product(scd_matrix)
+    def test_product_right(self):
+        self.m.product(self.scd_matrix)
         comp = np.array([[10, 13], [22, 29]])
-        assert np.array_equal(comp, m.matrix)
 
-    def test_value_left(self):
-        m = mt.Matrix(2)
-        m.matrix = np.arange(1, 5).reshape((2, 2))
-        scd_matrix = np.array(np.arange(2, 6).reshape((2, 2)))
-        m.product(scd_matrix, left=True)
+        assert np.array_equal(comp, self.m.matrix)
+        assert self.m.matrix.dtype == "complex64"
+
+    def test_product_left(self):
+        self.m.product(self.scd_matrix, left=True)
         comp = np.array([[11, 16], [19, 28]])
-        assert np.array_equal(comp, m.matrix)
+        assert np.array_equal(comp, self.m.matrix)
+        assert self.m.matrix.dtype == "complex64"
 
 
-class Test_basis_transformation:
-    vec1 = np.arange(0, 16).reshape((4, 4))
-    vec2 = np.arange(2, 18).reshape((4, 4))
-    m1 = np.array([[1, 3, 5, 9], [14, 13, 0, 15], [7, 2, 18, 4], [1, 3, 3, 4]])
-    b = 1/np.sqrt(2)
-    m2 = np.array([[1, 0, 0, 0], [0, b, b, 0], [0, -b, b, 0], [0, 0, 0, 1]])
+class TestBasisTransformation:
+    def setup(self):
+        self.m = mt.Matrix(3)
+        self.m.matrix = np.array([[1+2j, 2+3j, 7+1j, 3+0j],
+                                 [2+0j, 4+1j, 3+0j, 4-1j],
+                                 [10+7j, 5-2j, 8-4j, 10+10j],
+                                 [2+1j, 0+1j, 3-7j, 8+0j]],
+                                 dtype=np.complex64)
+        self.eig, self.vec = np.linalg.eig(self.m.matrix)
+        self.eigm = np.diag(self.eig)
 
-    def test_value1(self):
-        test = mt.Matrix(4)
-        test.matrix = self.vec1
-        test.basis_transformation(self.m1)
-        comp = np.linalg.inv(self.m1) @ self.vec1 @ self.m1
-        assert np.array_equal(comp, test.matrix)
+        b = 1j/np.sqrt(2)
+        self.ort_trans = np.array([[1, 0, 0, 0], [0, b, b, 0],
+                                   [0, -b, b, 0], [0, 0, 0, 1]])
 
-    def test_value2(self):
-        test = mt.Matrix(4)
-        test.matrix = self.vec1
-        test.basis_transformation(self.m2, orthonormal=True)
-        comp = np.linalg.inv(self.m2) @ self.vec1 @ self.m2
-        np.testing.assert_allclose(comp, test.matrix, atol=1e-8, rtol=1e-5)
+    def test_inverse_left(self):
+        self.m.basis_transformation(self.vec)
+        np.testing.assert_allclose(self.m.matrix, self.eigm, atol=2e-6)
+        assert self.m.matrix.dtype == "complex64"
 
-    def test_optional_argument(self):
-        test = mt.Matrix(4)
-        test.matrix = self.vec1
-        test.basis_transformation(self.m1, orthonormal=True)
-        comp = self.m1.T @ self.vec1 @ self.m1
-        assert np.array_equal(comp, test.matrix)
+    def test_inverse_right(self):
+        c = mt.Matrix(3)
+        c.matrix = self.eigm
+        c.basis_transformation(self.vec, inverse_left=False)
+        np.testing.assert_allclose(c.matrix, self.m.matrix, atol=2e-6)
+        assert c.matrix.dtype == "complex64"
+
+    def test_inverse_left_orthonormal(self):
+        comp = np.conj(self.vec.T) @ self.m.matrix @ self.vec
+        self.m.basis_transformation(self.vec, orthonormal=True)
+        np.testing.assert_allclose(
+            self.m.matrix, comp)
+        assert self.m.matrix.dtype == "complex64"
+
+    def test_inverse_right_orhtonormal(self):
+        comp = self.vec @ self.eigm @ np.conj(self.vec.T)
+
+        c = mt.Matrix(3)
+        c.matrix = self.eigm
+        c.basis_transformation(self.vec, inverse_left=False, orthonormal=True)
+        np.testing.assert_allclose(c.matrix, comp)
+        assert c.matrix.dtype == "complex64"
+
+    def test_orthonormal_identical(self):
+        normal = self.m
+        onormal = self.m
+        normal.basis_transformation(self.ort_trans, orthonormal=False)
+        onormal.basis_transformation(self.ort_trans, orthonormal=True)
+        np.testing.assert_allclose(normal.matrix, onormal.matrix)
+
 
 # Testing of class tensor
 
+class TestTensorInit:
+    def setup(self):
+        self.ten = mt.Tensor(np.arange(3))
 
-class Test_tensor__init__:
-    ten = mt.Tensor(np.arange(3))
+    def test_shape(self):
+        assert self.ten.matrix.shape == (3, 3)
+
+    def test_dtype(self):
+        assert self.ten.matrix.dtype == "float32"
 
     def test_value(self):
         comp = np.array([[0., 0., 0.], [0., 1., 0.], [0., 0., 2.]])
-        assert np.array_equal(comp, self.ten.tensor)
+        assert np.array_equal(comp, self.ten.matrix)
+
+    def test_wrong_number_of_diagonals(self):
+        with pt.raises(IndexError):
+            mt.Tensor([1, 2, 3, 4])
 
 
 class Test_rotation:
     tensor = mt.Tensor(np.arange(3))
-    unit = mt.Tensor(np.eye(3))
+    unit = mt.Tensor([1, 1, 1])
     tensor.rotation(1, 2)
     unit.rotation(1, 2)
 
@@ -97,7 +136,7 @@ class Test_rotation:
 
     def test_eye(self):
         np.testing.assert_allclose(
-            self.unit.tensor, self.unit.rot, atol=1e-8, rtol=1e-5)
+            self.unit.matrix, self.unit.rot, atol=1e-8, rtol=1e-5)
 
     def test_values(self):
         comp = np.array([[1.77626649, -0.18920062,  0.48886663],
@@ -284,8 +323,8 @@ class Test_create_linear_operator:
     g = mt.Tensor(np.arange(1, 4))
 
     def test_value(self):
-        comp = odh.create_linear_hamiltonian(self.g.tensor, self.s.matrix)
-        self.h.create_linear_operator(self.g.tensor, self.s)
+        comp = odh.create_linear_hamiltonian(self.g.matrix, self.s.matrix)
+        self.h.create_linear_operator(self.g.matrix, self.s)
         assert np.array_equal(comp, self.h.matrix)
 
     def test_rotated_tensor(self):
@@ -303,8 +342,8 @@ class Test_create_bilinear_operator:
 
     def test_value(self):
         comp = odh.create_bilinear_hamiltonian(
-            self.s.matrix, self.D.tensor, self.s.matrix)
-        self.h.create_bilinear_operator(self.s, self.D.tensor, self.s)
+            self.s.matrix, self.D.matrix, self.s.matrix)
+        self.h.create_bilinear_operator(self.s, self.D.matrix, self.s)
         assert np.array_equal(comp, self.h.matrix)
 
     def test_rotated_tensor(self):
@@ -358,11 +397,11 @@ class Test_zeeman_coupling:
     g = mt.Tensor(np.arange(1, 4))
     B_z = 340.1
     s = mt.Spinoperator(1/2)
-    h.zeeman_coupling(g.tensor, B_z, s)
+    h.zeeman_coupling(g.matrix, B_z, s)
 
     def test_value(self):
         comp = mt.Hamiltonian(2)
-        comp.create_linear_operator(self.g.tensor, self.s)
+        comp.create_linear_operator(self.g.matrix, self.s)
         comp.matrix *= self.B_z
         assert np.array_equal(comp.matrix, self.h.matrix)
 
@@ -376,11 +415,11 @@ class Test_dipol_coupling:
     d = mt.Tensor(np.arange(1, 4))
     S = mt.Spinoperator(1/2)
     S.total_spin_radpair()
-    h.dipol_coupling(d.tensor, S)
+    h.dipol_coupling(d.matrix, S)
 
     def test_value(self):
         comp = mt.Hamiltonian(4)
-        comp.create_bilinear_operator(self.S, self.d.tensor, self.S)
+        comp.create_bilinear_operator(self.S, self.d.matrix, self.S)
         assert np.array_equal(self.h.matrix, comp.matrix)
 
     def test_hermitesch(self):

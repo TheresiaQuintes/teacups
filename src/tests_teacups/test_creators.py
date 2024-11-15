@@ -35,8 +35,8 @@ class TestCreateTensor:
         self.ten2 = cr.create_tensor(diag, self.phi, self.theta, g1Frame)
 
     def test_dtype(self):
-        assert self.ten1.tensor.dtype == "float32"
-        assert self.ten2.tensor.dtype == "float32"
+        assert self.ten1.matrix.dtype == "float32"
+        assert self.ten2.matrix.dtype == "float32"
         assert self.ten1.multirot.dtype == "float32"
         assert self.ten2.multirot.dtype == "float32"
 
@@ -48,8 +48,8 @@ class TestCreateTensor:
         comp2 = np.array([[2.79957166,  0.02570897, -0.42563375],
                           [0.02570897,  1.26862141, -0.47826256],
                           [-0.42563375, -0.47826256,  1.93180692]])
-        np.testing.assert_allclose(comp1, self.ten1.tensor)
-        np.testing.assert_allclose(comp2, self.ten2.tensor, atol=1e-7)
+        np.testing.assert_allclose(comp1, self.ten1.matrix)
+        np.testing.assert_allclose(comp2, self.ten2.matrix, atol=1e-7)
 
     def test_multirot(self):
         comp1 = mt.Tensor(np.array([1, 2, 3]))
@@ -57,7 +57,7 @@ class TestCreateTensor:
 
         comp2 = mt.Tensor(np.array([1, 2, 3]))
         comp2.rotation(1, 2, 3)
-        comp2.tensor = comp2.rot
+        comp2.matrix = comp2.rot
         comp2.multirotation(self.phi, self.theta)
 
         np.testing.assert_allclose(
@@ -426,6 +426,7 @@ class TestSetUpSpinoperator:
         self.sys.s = [1/2]
         cr.set_up_spinoperator(self.sys, self.cal)
         assert self.cal.s.matrix.dtype == "complex64"
+
 
 class TestSetUpObservable:
     def setup(self):

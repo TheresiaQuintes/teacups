@@ -40,7 +40,7 @@ def create_tensor(diag: list, phi: 'np.ndarray', theta: 'np.ndarray',
     else:
         angle_list = np.array(first_rotation, dtype=FLOAT_TYPE)
         tensor.rotation(angle_list[0], angle_list[1], angle_list[2])
-        tensor.tensor = tensor.rot.astype(FLOAT_TYPE)
+        tensor.matrix = tensor.rot.astype(FLOAT_TYPE)
 
     tensor.multirotation(phi, theta)
     tensor.multirot = tensor.multirot.astype(FLOAT_TYPE)
