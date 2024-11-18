@@ -122,36 +122,40 @@ class TestTensorInit:
             mt.Tensor([1, 2, 3, 4])
 
 
-class Test_rotation:
-    tensor = mt.Tensor(np.arange(3))
-    unit = mt.Tensor([1, 1, 1])
-    tensor.rotation(1, 2)
-    unit.rotation(1, 2)
+class TestRotation:
+    def setup(self):
+        self.tensor = mt.Tensor(np.arange(3, dtype=np.float32))
+        self.unit = mt.Tensor([1, 1, 1])
+        self.tensor.rotation(1, 2)
+        self.unit.rotation(1, 2)
 
     def test_shape(self):
         assert self.tensor.rot.shape == (3, 3)
 
-    def test_type(self):
-        assert type(self.tensor.rot) == np.ndarray
+    def test_dtype(self):
+        assert self.tensor.rot.dtype == "float32"
 
     def test_eye(self):
-        np.testing.assert_allclose(
-            self.unit.matrix, self.unit.rot, atol=1e-8, rtol=1e-5)
+        np.testing.assert_allclose(self.unit.matrix, self.unit.rot, atol=2e-6)
 
     def test_values(self):
         comp = np.array([[1.77626649, -0.18920062,  0.48886663],
                          [-0.18920062,  0.29192658,  0.41341091],
                          [0.48886663,  0.41341091,  0.93180692]])
-        np.testing.assert_allclose(comp, self.tensor.rot, atol=1e-8, rtol=1e-5)
+        np.testing.assert_allclose(comp, self.tensor.rot, atol=2e-6)
 
 
-class Test_multi_rotation:
-    tensor = mt.Tensor(np.arange(3))
-    theta, phi = grid.fibonacci_grid(4)
-    tensor.multirotation(phi, theta)
+class TestMultiRotation:
+    def setup(self):
+        self.tensor = mt.Tensor(np.arange(3))
+        theta, phi = grid.fibonacci_grid(4)
+        self.tensor.multirotation(phi, theta)
 
     def test_shape(self):
         assert self.tensor.multirot.shape == (4, 3, 3)
+
+    def test_dtype(self):
+        assert self.tensor.multirot.dtype == "float32"
 
     def test_value(self):
         comp = np.array([[[0.63139576+0.j, -0.35790232+0.j,  0.75722593+0.j],
@@ -173,15 +177,11 @@ class Test_multi_rotation:
 
 
 # Testing of class operator
-
-
-class Test_build_vector:
-    o = mt.Operator(2)
-    o.matrix[0, 0] = 1
-    o.matrix[0, 1] = 2
-    o.matrix[1, 0] = 3
-    o.matrix[1, 1] = 4
-    o.build_vector()
+class TestBuildVector:
+    def setup(self):
+        self.o = mt.Operator(2)
+        self.o.matrix = np.arange(1, 5, dtype="float32").reshape(2, 2)
+        self.o.build_vector()
 
     def test_shape(self):
         assert self.o.vector.shape == (4,)
@@ -190,52 +190,55 @@ class Test_build_vector:
         comp = np.arange(1, 5)
         assert np.array_equal(comp, self.o.vector)
 
-    def test_type(self):
-        assert type(self.o.vector) == np.ndarray
+    def test_dtype(self):
+        assert self.o.vector.dtype == "float32"
 
 
-class Test_superop:
-    o = mt.Operator(2)
-    o.matrix[0, 0] = 1
-    o.matrix[1, 1] = 2
+class TestSuperop:
+    def setup(self):
+        self.o = mt.Operator(2)
+        self.o.matrix = np.diag(np.array([1, 2], dtype=np.float32))
 
     def test_value1(self):
         comp = np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 2, 0],
                          [0, 0, 0, 2]])
         self.o.build_superoperator()
-        assert np.array_equal(comp, self.o.superop)
+        np.testing.assert_array_equal(comp, self.o.superop)
 
     def test_value2(self):
-        o = mt.Operator(2)
-        o.matrix[0, 0] = 1
-        o.matrix[1, 1] = 2
-        o.build_superoperator(swap=True)
+        self.o.build_superoperator(swap=True)
         comp = np.array([[1, 0, 0, 0], [0, 2, 0, 0], [0, 0, 1, 0],
                          [0, 0, 0, 2]])
-        assert np.array_equal(comp, o.superop)
+        np.testing.assert_array_equal(comp, self.o.superop)
 
 
 # Testing of class spinoperator
-class Test_spinoperator_init:
+class TestPauliMatrices:
     def test_spin_1_2(self):
         s = mt.Spinoperator(1/2)
+        sx, sy, sz = s.pauli_matrices(1/2)
+        s = np.array([sx, sy, sz])
         x = np.array([[0, 1], [1, 0]])
         y = np.array([[0, -1j], [1j, 0]])
         z = np.array([[1, 0], [0, -1]])
-        ges = np.array([x, y, z])
-        assert np.array_equal(ges, 2*s.matrix)
+        ges = np.array([x, y, z])/2
+        np.testing.assert_array_equal(ges, s)
 
     def test_spin_1(self):
         s = mt.Spinoperator(1)
+        sx, sy, sz = s.pauli_matrices(1)
+        s = np.array([sx, sy, sz])
         st = np.sqrt(2)
         x = np.array([[0, st, 0], [st, 0, st], [0, st, 0]])
         y = np.array([[0, -1j*st, 0], [1j*st, 0, -1j*st], [0, 1j*st, 0]])
         z = np.array([[1, 0, 0], [0, 0, 0], [0, 0, -1]])
         ges = np.array([1/2*x, 1/2*y, z], dtype=np.complex64)
-        assert np.array_equal(ges, s.matrix)
+        np.testing.assert_array_equal(ges, s)
 
     def test_spin_3_2(self):
         s = mt.Spinoperator(3/2)
+        sx, sy, sz = s.pauli_matrices(3/2)
+        s = np.array([sx, sy, sz])
         st = np.sqrt(3)
         sf = np.sqrt(4)
         x = np.array([[0, st, 0, 0], [st, 0, sf, 0],
@@ -244,38 +247,79 @@ class Test_spinoperator_init:
                       [0, 1j*2, 0, -1j*st], [0, 0, 1j*st, 0]])
         z = np.array([[3, 0, 0, 0], [0, 1, 0, 0],
                       [0, 0, -1, 0], [0, 0, 0, -3]])
-        ges = np.array([x, y, z], dtype=np.complex64)
-        assert np.array_equal(ges, 2*s.matrix)
-
-    def test_spin_1_and_1_2(self):
-        s = mt.Spinoperator(1, 1/2)
-        spin_1 = mt.Spinoperator(1)
-        spin_1_2 = mt.Spinoperator(1/2)
-        matrix_spin_1 = np.kron(spin_1.matrix, np.eye(2))
-        matrix_spin_1 = matrix_spin_1[np.newaxis, :, :, :]
-        matrix_spin_2 = np.kron(np.eye(3), spin_1_2.matrix)
-        matrix_spin_2 = matrix_spin_2[np.newaxis, :, :, :]
-        assert np.allclose(matrix_spin_1, s.matrix)
-        assert np.allclose(matrix_spin_2, s.matrix_coupling_spins)
-
-    def test_spin_1_2_and_1_and_1_2(self):
-        s_1_2 = mt.Spinoperator(1/2)
-        s_1 = mt.Spinoperator(1)
-        s = mt.Spinoperator(1/2, [1, 1/2])
-
-        matrix_core_1 = np.kron(s_1.matrix, np.eye(2))
-        matrix_core_1 = np.kron(np.eye(2), matrix_core_1)
-        matrix_core_2 = np.kron(np.eye(3), s_1_2.matrix)
-        matrix_core_2 = np.kron(np.eye(2), matrix_core_2)
-        matrix_spin = np.kron(s_1_2.matrix, np.eye(6))
-
-        np.testing.assert_allclose(s.matrix_coupling_spins[0], matrix_core_1)
-        np.testing.assert_allclose(s.matrix_coupling_spins[1], matrix_core_2)
-        np.testing.assert_allclose(s.matrix, matrix_spin)
+        ges = np.array([x, y, z], dtype=np.complex64)/2
+        np.testing.assert_array_equal(ges, s)
 
 
-class Test_get:
-    s = mt.Spinoperator(1/2)
+class TestSpinoperatorInitUncoupled:
+    def setup(self):
+        self.s = mt.Spinoperator(3/2)
+
+    def test_dimension(self):
+        assert self.s.dimension == 4
+
+    def test_matrix(self):
+        comp = self.s.pauli_matrices(3/2)
+        comp = np.array(comp)
+        np.testing.assert_array_equal(comp, self.s.matrix)
+
+    def test_matrix_dtype(self):
+        assert self.s.matrix.dtype == "complex64"
+
+    def test_matrix_shape(self):
+        assert self.s.matrix.shape == (3, 4, 4)
+
+    def test_vector(self):
+        comp = self.s.matrix.flatten()
+        np.testing.assert_array_equal(comp, self.s.vector)
+
+    def test_superoperator(self):
+        comp = np.kron(self.s.matrix, np.eye(4))
+        np.testing.assert_array_equal(comp, self.s.superop)
+
+
+
+class TestSpinoperatorInitCoupled:
+    def setup(self):
+        self.s = mt.Spinoperator(1, 1/2)
+
+    def test_dimension(self):
+        assert self.s.dimension == 6
+
+    def test_matrix(self):
+        comp = np.kron(self.s.pauli_matrices(1), np.eye(2))
+        comp = np.array(comp)
+        np.testing.assert_array_equal(comp, self.s.matrix)
+
+    def test_matrix_dtype(self):
+        assert self.s.matrix.dtype == "complex64"
+
+    def test_matrix_shape(self):
+        assert self.s.matrix.shape == (3, 6, 6)
+
+    def test_matrix_coupling_spins(self):
+        comp = np.kron(np.eye(3), self.s.pauli_matrices(1/2))
+        comp = np.array(comp)
+        np.testing.assert_array_equal(comp, self.s.matrix_coupling_spins[0])
+
+    def test_matrix_coupling_spins_dtype(self):
+        assert self.s.matrix_coupling_spins.dtype == "complex64"
+
+    def test_matrix_coupling_spins_shape(self):
+        assert self.s.matrix_coupling_spins.shape == (1, 3, 6, 6)
+
+    def test_vector(self):
+        comp = self.s.matrix.flatten()
+        np.testing.assert_array_equal(comp, self.s.vector)
+
+    def test_superoperator(self):
+        comp = np.kron(self.s.matrix, np.eye(6))
+        np.testing.assert_array_equal(comp, self.s.superop)
+
+
+class TestGet:
+    def setup(self):
+        self.s = mt.Spinoperator(1/2)
 
     def test_get_x(self):
         comp = 1/2*np.array([[0, 1], [1, 0]])
@@ -294,134 +338,149 @@ class Test_get:
             self.s.get('w')
 
 
-class Test_total_spin_radpair:
-    s = mt.Spinoperator(1/2)
-
-    def test_value(self):
-        comp = np.array([[[0. + 0j,  0.5+0j,  0.5+0j,  0. + 0j],
-                          [0.5+0j,  0. + 0j,  0. + 0j,  0.5+0j],
-                          [0.5+0j,  0. + 0j,  0. + 0j,  0.5+0j],
-                          [0. + 0j,  0.5+0j,  0.5+0j,  0. + 0j]],
-
-                         [[0. + 0j,  0. - 0.5j,  0. - 0.5j,  0. + 0j],
-                          [0. + 0.5j,  0. + 0j,  0. + 0j,  0. - 0.5j],
-                          [0. + 0.5j,  0. + 0j,  0. + 0j,  0. - 0.5j],
-                          [0. + 0j,  0. + 0.5j,  0. + 0.5j,  0. + 0j]],
-
-                         [[1. + 0j,  0. + 0j,  0. + 0j,  0. + 0j],
-                          [0. + 0j,  0. + 0j,  0. + 0j,  0. + 0j],
-                          [0. + 0j,  0. + 0j,  0. + 0j,  0. + 0j],
-                          [0. + 0j,  0. + 0j,  0. + 0j, -1. + 0j]]])
-        self.s.total_spin_radpair()
-        assert np.array_equal(comp, self.s.matrix)
-
-
 # Testing of class hamiltonian
-class Test_create_linear_operator:
-    h = mt.Hamiltonian(3)
-    s = mt.Spinoperator(1)
-    g = mt.Tensor(np.arange(1, 4))
-
-    def test_value(self):
-        comp = odh.create_linear_hamiltonian(self.g.matrix, self.s.matrix)
-        self.h.create_linear_operator(self.g.matrix, self.s)
-        assert np.array_equal(comp, self.h.matrix)
-
-    def test_rotated_tensor(self):
-        self.g.rotation(1, 2)
-        comp = odh.create_linear_hamiltonian(self.g.rot, self.s.matrix)
-        self.h.create_linear_operator(self.g.rot, self.s)
-        assert np.array_equal(comp, self.h.matrix)
-
-
-class Test_create_bilinear_operator:
-    h = mt.Hamiltonian(4)
-    s = mt.Spinoperator(1/2)
-    s.total_spin_radpair()
-    D = mt.Tensor(np.arange(1, 4))
-
-    def test_value(self):
-        comp = odh.create_bilinear_hamiltonian(
-            self.s.matrix, self.D.matrix, self.s.matrix)
-        self.h.create_bilinear_operator(self.s, self.D.matrix, self.s)
-        assert np.array_equal(comp, self.h.matrix)
-
-    def test_rotated_tensor(self):
-        self.D.rotation(1, 2)
-        comp = odh.create_bilinear_hamiltonian(
-            self.s.matrix, self.D.rot, self.s.matrix)
-        self.h.create_bilinear_operator(self.s, self.D.rot, self.s)
-        assert np.array_equal(comp, self.h.matrix)
-
-
-class Test_exchange_coupling:
-    h = mt.Hamiltonian(4)
-    s1 = mt.Spinoperator(1/2)
-    s1.build_superoperator()
-    s1.matrix = s1.superop
-    s2 = mt.Spinoperator(1/2)
-    s2.build_superoperator(swap=True)
-    s2.matrix = s2.superop
-    j = 7
-    h.exchange_coupling(s1, j, s2)
+class TestExchangeCoupling:
+    def setup(self):
+        self.h = mt.Hamiltonian(4)
+        self.s1 = mt.Spinoperator(1/2, 1/2)
+        self.s2 = mt.Spinoperator(1/2, 1/2)
+        self.s2.matrix = self.s1.matrix_coupling_spins[0]
+        self.j = 7
+        self.h.exchange_coupling(self.s1, self.j, self.s2)
 
     def test_value(self):
         comp = -self.j*(0.5*np.eye(4)+2*(self.s1.get('x')@self.s2.get('x') +
                                          self.s1.get('y') @ self.s2.get('y') +
                                          self.s1.get('z')@self.s2.get('z')))
-        assert np.array_equal(comp, self.h.matrix)
+        np.testing.assert_array_equal(comp, self.h.matrix)
 
-    def test_hermitesch(self):
-        assert np.array_equal(
+    def test_hermitean(self):
+        np.testing.assert_array_equal(
             self.h.matrix, np.transpose(np.conj(self.h.matrix)))
 
+    def test_shape(self):
+        assert self.h.matrix.shape == (4, 4)
 
-class Test_microwave_coupling:
-    h = mt.Hamiltonian(2)
-    s = mt.Spinoperator(1/2)
-    omega_nut = 12.4
-    omega_mw = 9.7
-    h.microwave_coupling(omega_mw, omega_nut, s)
+    def test_dtype(self):
+        assert self.h.matrix.dtype == "complex64"
+
+    def test_vector(self):
+        comp = self.h.matrix.flatten()
+        np.testing.assert_array_equal(comp, self.h.vector)
+
+    def test_superoperator(self):
+        comp = np.kron(self.h.matrix, np.eye(4))
+        np.testing.assert_array_equal(comp, self.h.superop)
+
+
+
+class TestMicrowaveCoupling:
+    def setup(self):
+        self.h = mt.Hamiltonian(2)
+        self.s = mt.Spinoperator(1/2)
+        self.omega_nut = 2
+        self.omega_mw = -2
+        self.h.microwave_coupling(self.omega_mw, self.omega_nut, self.s)
 
     def test_value(self):
-        comp = -self.omega_mw*self.s.get('z')+self.omega_nut*self.s.get('x')
-        assert np.array_equal(comp, self.h.matrix)
+        comp = np.ones((2, 2))
+        comp[1, 1] *= -1
+        np.testing.assert_array_equal(comp, self.h.matrix)
 
-    def test_hermitesch(self):
-        assert np.array_equal(
+    def test_hermitean(self):
+        np.testing.assert_array_equal(
             self.h.matrix, np.transpose(np.conj(self.h.matrix)))
+
+    def test_shape(self):
+        assert self.h.matrix.shape == (2, 2)
+
+    def test_dtype(self):
+        assert self.h.matrix.dtype == "complex64"
+
+    def test_vector(self):
+        comp = self.h.matrix.flatten()
+        np.testing.assert_array_equal(comp, self.h.vector)
+
+    def test_superoperator(self):
+        comp = np.kron(self.h.matrix, np.eye(2))
+        np.testing.assert_array_equal(comp, self.h.superop)
 
 
 class Test_zeeman_coupling:
-    h = mt.Hamiltonian(2)
-    g = mt.Tensor(np.arange(1, 4))
-    B_z = 340.1
-    s = mt.Spinoperator(1/2)
-    h.zeeman_coupling(g.matrix, B_z, s)
+    def setup(self):
+        self.h_dig = mt.Hamiltonian(2)
+        self.h_rot = mt.Hamiltonian(2)
+        self.g = mt.Tensor(np.arange(1, 4))
+        self.g.rotation(1, 2)
+        self.B_z = 340.1
+        self.s = mt.Spinoperator(1/2)
+        self.h_dig.zeeman_coupling(self.g.matrix, self.B_z, self.s)
+        self.h_rot.zeeman_coupling(self.g.rot, self.B_z, self.s)
 
-    def test_value(self):
-        comp = mt.Hamiltonian(2)
-        comp.create_linear_operator(self.g.matrix, self.s)
-        comp.matrix *= self.B_z
-        assert np.array_equal(comp.matrix, self.h.matrix)
+    def test_value_dig(self):
+        comp = odh.create_linear_hamiltonian(self.g.matrix, self.s.matrix)
+        comp *= self.B_z
+        np.testing.assert_array_equal(comp, self.h_dig.matrix)
 
-    def test_hermitesch(self):
+    def test_value_rot(self):
+        comp = odh.create_linear_hamiltonian(self.g.rot, self.s.matrix)
+        comp *= self.B_z
+        np.testing.assert_array_equal(comp, self.h_rot.matrix)
+
+    def test_hermitean(self):
+        np.testing.assert_array_equal(
+            self.h_rot.matrix, np.transpose(np.conj(self.h_rot.matrix)))
+
+    def test_shape(self):
+        assert self.h_dig.matrix.shape == (2, 2)
+
+    def test_dtype(self):
+        assert self.h_dig.matrix.dtype == "complex64"
+
+    def test_vector(self):
+        comp = self.h_dig.matrix.flatten()
+        np.testing.assert_array_equal(comp, self.h_dig.vector)
+
+    def test_superoperator(self):
+        comp = np.kron(self.h_dig.matrix, np.eye(2))
+        np.testing.assert_array_equal(comp, self.h_dig.superop)
+
+class TestDipolCoupling:
+    def setup(self):
+        self.h_dig = mt.Hamiltonian(4)
+        self.h_rot = mt.Hamiltonian(3)
+        self.d = mt.Tensor(np.arange(1, 4))
+        self.d.rotation(1, 2)
+        self.s1 = mt.Spinoperator(1/2, 1/2)
+        self.s2 = mt.Spinoperator(1/2, 1/2)
+        self.s2.matrix = self.s1.matrix_coupling_spins[0]
+        self.h_dig.dipol_coupling(self.s1, self.d.matrix, self.s2)
+        self.h_rot.dipol_coupling(self.s1, self.d.rot, self.s2)
+
+    def test_value_dig(self):
+        comp = odh.create_bilinear_hamiltonian(self.s1.matrix, self.d.matrix,
+                                               self.s2.matrix)
+        np.testing.assert_array_equal(self.h_dig.matrix, comp)
+
+    def test_value_rot(self):
+        comp = odh.create_bilinear_hamiltonian(self.s1.matrix, self.d.rot,
+                                               self.s2.matrix)
+        np.testing.assert_array_equal(self.h_rot.matrix, comp)
+
+    def test_hermitean(self):
         assert np.array_equal(
-            self.h.matrix, np.transpose(np.conj(self.h.matrix)))
+            self.h_rot.matrix, np.transpose(np.conj(self.h_rot.matrix)))
 
+    def test_shape(self):
+        assert self.h_dig.matrix.shape == (4, 4)
 
-class Test_dipol_coupling:
-    h = mt.Hamiltonian(4)
-    d = mt.Tensor(np.arange(1, 4))
-    S = mt.Spinoperator(1/2)
-    S.total_spin_radpair()
-    h.dipol_coupling(d.matrix, S)
+    def test_dtype(self):
+        assert self.h_dig.matrix.dtype == "complex64"
 
-    def test_value(self):
-        comp = mt.Hamiltonian(4)
-        comp.create_bilinear_operator(self.S, self.d.matrix, self.S)
-        assert np.array_equal(self.h.matrix, comp.matrix)
+    def test_vector(self):
+        comp = self.h_dig.matrix.flatten()
+        np.testing.assert_array_equal(comp, self.h_dig.vector)
 
-    def test_hermitesch(self):
-        assert np.array_equal(
-            self.h.matrix, np.transpose(np.conj(self.h.matrix)))
+    def test_superoperator(self):
+        comp = np.kron(self.h_dig.matrix, np.eye(4))
+        np.testing.assert_array_equal(comp, self.h_dig.superop)
