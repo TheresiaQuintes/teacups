@@ -3,69 +3,11 @@ import numpy as np
 COMPLEX_TYPE = np.complex64
 FLOAT_TYPE = np.float32
 
-
-class Multioperator:
-    """
-    An object of class Multioperator contains matrix attributes of
-    different dimensions (see below). Furthermore it contains a tensor, a
-    spinoperator and a magnetic fiels vector setting the dimensions.
-    Spinoperator, rotated tensor and magnetic field vector are given to
-    initialisation function.
-
-    Parameters
-    ----------
-    spinop : object
-        Initialised attribute of the class Spinoperator. Therefore, it
-        contains the spin of the system.
-    grid_points : int
-        Number of different orientations that shall be calculated. This
-        determines the angle-dimension.
-    B : np.ndarray
-        Magnetic field vector. The length of this vector determines the
-        B-dimension of the multioperator. This is a 1D-array
-
-    Attributes
-    ----------
-    spinop : object
-        The spinop attribute contains the spinoperator given.
-    B : np.ndarray
-        The B attribute contains the magnetic field vector given.
-    dimension : int
-        The cartesian spinoperator matrices have the shape (dimension,
-        dimension)
-    angle_shape : tuple
-        Dimension of angles and cartesian spinoperator matrices. The tuple
-        order is: (grid_points, dimension, dimension)
-    B_angle_shape : tuple
-        Dimension of B-variation, angle-variations and cartesian
-        spinoperator matrices. The tuple order is: (len(B), grid_points,
-        dimension, dimension).
-    matrix : np.ndarray
-        The matrix  attribute contains only zeros but values can be
-        changed. Represents the operator matrix for a single orientation
-        and a single B-field-value. Its dimension is dimension x dimension.
-    angle_matrix : np.ndarray
-        Contains a dimension x dimension array for each pair of phi and
-        theta angles. Its shape is equal to angle_shape.
-    B_angle_matrix: np.ndarray
-        Contains a angle_matrix for each B-fieldpoint. Its shape is equal to
-        B_angle_shape.
-    B_angle_vector: None
-        After initialisation it is NoneType but attribute can be changed
-        later by the function build_vector. Afterwards it represents the
-        B_angle_matrix in vector-dimension.
-    B_angle_superop: None
-        After initialisation it is NoneType but attribute can be changed
-        later by the function build_superoperator. Afterwards it represents
-        the B_angle_matrix in superoperator-dimension.
-
-    """
-
-    def __init__(self, spinop: object, grid_points: int, B: 'np.ndarray'):
-        self.spinop = spinop
+class Multimatrix:
+    def __init__(self, dimension, grid_points: int, B: 'np.ndarray'):
         self.B = B
 
-        self.dimension = self.spinop.dimension
+        self.dimension = dimension
         self.angle_shape = (grid_points, self.dimension,
                             self.dimension)
         self.B_angle_shape = (len(self.B), grid_points,
@@ -76,9 +18,6 @@ class Multioperator:
         self.angle_matrix = np.zeros((self.angle_shape), dtype=COMPLEX_TYPE)
         self.B_angle_matrix = np.zeros(
             (self.B_angle_shape), dtype=COMPLEX_TYPE)
-
-        self.B_angle_vector = None
-        self.B_angle_superop = None
 
     def matrix_changed(self) -> None:
         """
@@ -131,60 +70,6 @@ class Multioperator:
 
         return None
 
-    def get_matrix(self, b: int, angle: int) -> None:
-        """
-        Change the value of matrix attribute to the value of a matrix attribute
-        from B_angle_matrix. Specify the position of this matrix attribute in
-        B_angle_matrix by the positional parameters b and angle.
-
-        Parameters
-        ----------
-        b : int
-            Index of the desired magnetic field point.
-        angle : int
-            Index of the desired angle combination.
-
-        Attributes
-        ----------
-        matrix : np.ndarray
-            The matrix attribute is changed to the value of the B_angle_matrix
-            at the given position.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.matrix = self.B_angle_matrix[b, angle]
-
-        return None
-
-    def get_angle_matrix(self, b: int) -> None:
-        """
-        Change the value of angle_matrix attribute to the value of an
-        angle_matrix attribute from B_angle_matrix. Specify the position of
-        this angle_matrix attribute in B_angle_matrix by the positional
-        parameter b.
-
-        Parameters
-        ----------
-        b : int
-            Index of the desired magnetic field point.
-
-        Attributes
-        ----------
-        angle_matrix : np.ndarray
-            The angle_matrix attribute is changed to the value of the
-            B_angle_matrix at the given position.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.angle_matrix = self.B_angle_matrix[b]
-
-        return None
 
     def scalar(self, factors: 'np.ndarray') -> None:
         """
@@ -277,7 +162,11 @@ class Multioperator:
             self.B_angle_matrix = np.conj(trans.T) @ self.B_angle_matrix[:, :]\
                 @ trans
 
-        return None
+class Multioperator_pre(Multimatrix):
+    def __init__(self, dimension, grid_points: int, B: 'np.ndarray'):
+        Multimatrix.__init__(self, dimension, grid_points, B)
+        self.B_angle_vector = self.build_vector()
+        self.B_angle_superop = self.build_superoperator()
 
     def build_vector(self) -> None:
         """
@@ -335,6 +224,69 @@ class Multioperator:
             self.B_angle_superop = np.kron(eye, self.B_angle_matrix[:, :])
 
         return None
+
+
+
+class Multioperator(Multioperator_pre):
+    """
+    An object of class Multioperator contains matrix attributes of
+    different dimensions (see below). Furthermore it contains a tensor, a
+    spinoperator and a magnetic fiels vector setting the dimensions.
+    Spinoperator, rotated tensor and magnetic field vector are given to
+    initialisation function.
+
+    Parameters
+    ----------
+    spinop : object
+        Initialised attribute of the class Spinoperator. Therefore, it
+        contains the spin of the system.
+    grid_points : int
+        Number of different orientations that shall be calculated. This
+        determines the angle-dimension.
+    B : np.ndarray
+        Magnetic field vector. The length of this vector determines the
+        B-dimension of the multioperator. This is a 1D-array
+
+    Attributes
+    ----------
+    spinop : object
+        The spinop attribute contains the spinoperator given.
+    B : np.ndarray
+        The B attribute contains the magnetic field vector given.
+    dimension : int
+        The cartesian spinoperator matrices have the shape (dimension,
+        dimension)
+    angle_shape : tuple
+        Dimension of angles and cartesian spinoperator matrices. The tuple
+        order is: (grid_points, dimension, dimension)
+    B_angle_shape : tuple
+        Dimension of B-variation, angle-variations and cartesian
+        spinoperator matrices. The tuple order is: (len(B), grid_points,
+        dimension, dimension).
+    matrix : np.ndarray
+        The matrix  attribute contains only zeros but values can be
+        changed. Represents the operator matrix for a single orientation
+        and a single B-field-value. Its dimension is dimension x dimension.
+    angle_matrix : np.ndarray
+        Contains a dimension x dimension array for each pair of phi and
+        theta angles. Its shape is equal to angle_shape.
+    B_angle_matrix: np.ndarray
+        Contains a angle_matrix for each B-fieldpoint. Its shape is equal to
+        B_angle_shape.
+    B_angle_vector: None
+        After initialisation it is NoneType but attribute can be changed
+        later by the function build_vector. Afterwards it represents the
+        B_angle_matrix in vector-dimension.
+    B_angle_superop: None
+        After initialisation it is NoneType but attribute can be changed
+        later by the function build_superoperator. Afterwards it represents
+        the B_angle_matrix in superoperator-dimension.
+
+    """
+
+    def __init__(self, spinop: object, grid_points: int, B: 'np.ndarray'):
+        Multioperator_pre.__init__(self, spinop.dimension, grid_points, B)
+        self.spinop = spinop
 
     def create_linear_operator(self, tensor) -> None:
         """

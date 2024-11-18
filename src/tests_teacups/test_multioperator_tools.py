@@ -7,6 +7,32 @@ import teacups.multioperator_tools as mut
 import teacups.orientation_dependent_ham as odh
 import teacups.grid as grid
 
+# Testing of class Multimatrix
+class TestInitMultimatrix:
+    def setup(self):
+        self.dimension = 2
+        self.gp = 4
+        self.B = np.array([1, 2, 3])
+        self.m = mut.Multimatrix(self.dimension, self.gp, self.B)
+
+    def test_dimensions(self):
+        assert self.m.dimension == 2
+        assert self.m.angle_shape == (4, 2, 2)
+        assert self.m.B_angle_shape == (3, 4, 2, 2)
+
+    def test_matrix(self):
+        assert self.m.matrix.shape == (2, 2)
+        assert self.m.matrix.dtype == "complex64"
+
+    def test_angle_matrix(self):
+        assert self.m.angle_matrix.shape == (4, 2, 2)
+        assert self.m.angle_matrix.dtype == "complex64"
+
+    def test_B_angle_matrix(self):
+        assert self.m.B_angle_matrix.shape == (3, 4, 2, 2)
+        assert self.m.B_angle_matrix.dtype == "complex64"
+
+
 
 class Test_init_multioperator:
     s = mt.Spinoperator(1/2)
@@ -64,22 +90,6 @@ class Test_get_and_change:
         h.angle_matrix_changed()
         assert np.array_equal(h.angle_matrix, self.b)
         assert np.array_equal(h.B_angle_matrix, self.c)
-
-    def test_get_matrix(self):
-        h = mut.Multioperator(self.s, self.grid_points, self.B)
-        h.B_angle_matrix[:, 0] = np.ones((2, 2))
-        h.get_matrix(0, 0)
-        assert np.array_equal(h.matrix, np.ones((2, 2)))
-        h.get_matrix(0, 1)
-        assert np.array_equal(h.matrix, np.zeros((2, 2)))
-
-    def test_get_angle_matrix(self):
-        h = mut.Multioperator(self.s, self.grid_points, self.B)
-        h.B_angle_matrix[1] = np.ones((3, 2, 2))
-        h.get_angle_matrix(0)
-        assert np.array_equal(h.angle_matrix, np.zeros((3, 2, 2)))
-        h.get_angle_matrix(1)
-        assert np.array_equal(h.angle_matrix, np.ones((3, 2, 2)))
 
 
 class Test_multiplications:
