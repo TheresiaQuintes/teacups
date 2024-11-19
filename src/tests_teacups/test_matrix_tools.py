@@ -52,7 +52,7 @@ class TestProduct:
 
 class TestBasisTransformation:
     def setup(self):
-        self.m = mt.Matrix(3)
+        self.m = mt.Matrix(4)
         self.m.matrix = np.array([[1+2j, 2+3j, 7+1j, 3+0j],
                                  [2+0j, 4+1j, 3+0j, 4-1j],
                                  [10+7j, 5-2j, 8-4j, 10+10j],
@@ -64,6 +64,10 @@ class TestBasisTransformation:
         b = 1j/np.sqrt(2)
         self.ort_trans = np.array([[1, 0, 0, 0], [0, b, b, 0],
                                    [0, -b, b, 0], [0, 0, 0, 1]])
+
+    def test_wrong_shape(self):
+        with pt.raises(IndexError):
+            self.m.basis_transformation(np.eye(3))
 
     def test_inverse_left(self):
         self.m.basis_transformation(self.vec)
@@ -210,6 +214,14 @@ class TestSuperop:
         comp = np.array([[1, 0, 0, 0], [0, 2, 0, 0], [0, 0, 1, 0],
                          [0, 0, 0, 2]])
         np.testing.assert_array_equal(comp, self.o.superop)
+
+    def test_shape(self):
+        self.o.build_superoperator()
+        assert self.o.superop.shape == (4, 4)
+
+    def test_dtype(self):
+        self.o.build_superoperator()
+        assert self.o.superop.dtype == "float32"
 
 
 # Testing of class spinoperator
@@ -372,6 +384,9 @@ class TestExchangeCoupling:
         comp = np.kron(self.h.matrix, np.eye(4))
         np.testing.assert_array_equal(comp, self.h.superop)
 
+    def test_wrong_spinoperator_dimension(self):
+        with pt.raises(IndexError):
+            self.h.exchange_coupling(self.s1, self.j, mt.Spinoperator(1/2))
 
 
 class TestMicrowaveCoupling:
@@ -484,3 +499,8 @@ class TestDipolCoupling:
     def test_superoperator(self):
         comp = np.kron(self.h_dig.matrix, np.eye(4))
         np.testing.assert_array_equal(comp, self.h_dig.superop)
+
+    def test_wrong_spinoperator_dimension(self):
+        with pt.raises(IndexError):
+            self.h_dig.dipol_coupling(self.s1, self.d.matrix,
+                                      mt.Spinoperator(1/2))

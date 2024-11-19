@@ -427,7 +427,7 @@ class Operator(Matrix):
                [0., 0., 0., 0.]])
 
         """
-        eye = np.eye(self.dimension, dtype=COMPLEX_TYPE)
+        eye = np.eye(self.dimension, dtype=self.matrix.dtype)
         if not swap:
             self.superop = np.kron(self.matrix, eye)
         else:
@@ -752,6 +752,9 @@ class Hamiltonian(Operator):
                [ -0. +0.j, -10.4+0.j]])
 
         """
+        if spinoperator1.dimension != spinoperator2.dimension:
+            raise IndexError("Spinoperatordimensions must not differ.")
+
         self.matrix = -J_ex*(0.5*np.eye(self.dimension)+2 * (
             spinoperator1.get('x')@spinoperator2.get('x')
             + spinoperator1.get('y')@spinoperator2.get('y')
@@ -860,7 +863,7 @@ class Hamiltonian(Operator):
 
         return None
 
-    def dipol_coupling(self,spinoperator1: object, D_tensor: 'np.ndarray',
+    def dipol_coupling(self, spinoperator1: object, D_tensor: 'np.ndarray',
                        spinoperator2: object) -> None:
         """
         Calculate the hamiltonian of a dipolar coupling of two spins.
@@ -872,7 +875,7 @@ class Hamiltonian(Operator):
             Spinoperator object.
         D_tensor : np.ndarray
             Dipolar coupling tensor in xyz-frame. The shape is 3 x 3.
-        spinoperator : object
+        spinoperator2 : object
             Spin vector operator of the first interacting spin. This is a
             Spinoperator object.
 
@@ -900,6 +903,9 @@ class Hamiltonian(Operator):
                [-0.5+0.j,  0. +0.j,  0. +0.j,  4.5+0.j]])
 
         """
+        if spinoperator1.dimension != spinoperator2.dimension:
+            raise IndexError("Spinoperatordimensions must not differ.")
+
         self.matrix = odh.create_bilinear_hamiltonian(
             spinoperator1.matrix, D_tensor, spinoperator2.matrix)
         self.build_vector()

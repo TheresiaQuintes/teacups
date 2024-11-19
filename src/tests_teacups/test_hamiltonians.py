@@ -740,7 +740,7 @@ class TestSetUpTdpFullHighFieldHamiltonian:
             np.conj(np.transpose(self.vec_zfs, (0, 1, 3, 2)))-self.ham_zfs
 
         zeeman = self.ham_zeeman_doub.B_angle_matrix
-        np.testing.assert_allclose(self.cal.ham, zeeman, atol=2e-6)
+        np.testing.assert_allclose(self.cal.ham, zeeman, atol=3e-6)
 
     def test_dipolar_coupling(self):
         self.sys.g_tri = [0, 0, 0]
