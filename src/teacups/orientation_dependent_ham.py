@@ -57,6 +57,7 @@ def tensor_rotation(tensor: 'np.ndarray', phi: float, theta: float,
     # Final two sided matrix multiplication (similarity transformation)
     eulermatrix_transpose = eulermatrix.T
     rotated_tensor = eulermatrix_transpose@(tensor@eulermatrix)
+    rotated_tensor = rotated_tensor.astype(tensor.dtype)
     return rotated_tensor
 
 
