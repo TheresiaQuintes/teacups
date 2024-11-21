@@ -474,10 +474,13 @@ def set_up_commutator_superoperator(sys: object, opt: object, cal: object
         pass
     elif opt.space == 'liouville':
         ham_adj = np.transpose(np.conjugate(cal.ham), [0, 1, 3, 2])
-        ham_superop = np.kron(np.eye(
-            cal.ham.shape[-1], dtype=FLOAT_TYPE), cal.ham[:, :]) - \
-            np.kron(ham_adj[:, :], np.eye(cal.ham.shape[-1], dtype=FLOAT_TYPE))
+        ham_superop = np.kron(cal.ham[:, :], np.eye(
+            cal.ham.shape[-1], dtype=FLOAT_TYPE)) - \
+            np.kron(np.eye(cal.ham.shape[-1], dtype=FLOAT_TYPE), ham_adj[:, :])
 
+        """
+        https://physics.stackexchange.com/questions/163546/finding-the-matrix-representation-of-a-superoperator
+        """
         relax = rlx.create_relaxation_superoperator(sys, cal)
 
         ham_superop = ham_superop + 1j * relax

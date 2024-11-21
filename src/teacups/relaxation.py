@@ -25,7 +25,7 @@ def superoperator_population_relaxation(k_matrix):
                          a b c
                        a 4 1 2
             k_matrix = b 1   3
-                       c 2 3  
+                       c 2 3
 
         for the transition sceme:
 
@@ -162,6 +162,23 @@ def relaxation_operator_to_hamiltonian_basis(relaxation_superoperator:
     the relaxaton superoperator has this shape too, as basistransformation
     is done for every B- and angle-point.
 
+    The matrix containing the eigenvectors of the system is defined by:
+
+    .. math::
+        H_\mathrm{diag} = v^{-1} H v
+
+    In superoperator space the transformationmatrix for the identical
+    basistransformation can be set up as
+
+    .. math::
+        v_\mathrm{super} = v \otimes v
+
+    so that a basistransformation of a superoperator R can be done by:
+
+    .. math::
+        R_\mathrm{H basis} = v_\mathrm{super} \cdot R_\mathrm{diag}\
+            \cdot v_\mathrm{super}^{-1}.
+
     Parameters
     ----------
     relaxation_superoperator : np.ndarray
@@ -183,13 +200,12 @@ def relaxation_operator_to_hamiltonian_basis(relaxation_superoperator:
     dim = (eigvec.shape[0], eigvec.shape[1], eigvec.shape[2]**2,
            eigvec.shape[3]**2)
     R = np.zeros(dim, dtype=COMPLEX_TYPE)
-    inv = np.conj(np.transpose(eigvec, (0, 1, 3, 2)))
     for b in range(dim[0]):
         for a in range(dim[1]):
-            R[b, a] = np.kron(eigvec[b, a].T, inv[b, a])
+            R[b, a] = np.kron(eigvec[b, a], eigvec[b, a])
 
-    relaxation = np.conj(np.transpose(R, (0, 1, 3, 2)))\
-        @ relaxation_superoperator @ R
+    relaxation = R\
+        @ relaxation_superoperator @ np.conj(np.transpose(R, (0, 1, 3, 2)))
 
     return relaxation
 

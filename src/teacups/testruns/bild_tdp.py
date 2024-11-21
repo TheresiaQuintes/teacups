@@ -39,6 +39,16 @@ opt.pop_evolution = True
 # %% Define relaxation operator for RQM
 opt.eigval_mode = True
 eigenvalues = sim.teacups(sys, exp, opt)
+plt.plot(eigenvalues[:, 0])
+
+sys.dynamics = np.array([
+    [0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0.],
+    [0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0],
+    [0, 0, 0., 0, 0, 0]])
+
 eigval = eigenvalues[0, 0]
 de_02 = eigval[0] - eigval[2]
 de_04 = eigval[0] - eigval[4]
@@ -108,5 +118,3 @@ plt.ylabel("$t / \mu\mathrm{s}$")
 x, y = np.meshgrid(exp.B_z, t)
 ax.pcolormesh(x, y, spec.real, cmap="RdBu", shading="auto")
 plt.show()
-
-
