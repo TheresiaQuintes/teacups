@@ -8,11 +8,11 @@ import pytest as pt
 
 
 class Sys:
-    def setup(self):
+    def __init__(self):
         return
 
 class Cal:
-    def setup(self):
+    def __init__(self):
         return
 
 

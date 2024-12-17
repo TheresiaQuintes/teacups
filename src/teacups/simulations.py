@@ -163,7 +163,7 @@ def teacups(Sys: object, Exp: object, SimOpt: object, development=False
             print('start making the signal...')
             sap.make_signal(exp, opt, cal)
 
-            sap.powder_average(exp, opt, cal)
+            sap.powder_average(opt, cal)
 
     # do Voigt convolution
     cal.spec_sim = co.voigt_convolution(sys.width_gauss, cal.spec_sim)

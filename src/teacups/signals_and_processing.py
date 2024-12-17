@@ -49,7 +49,7 @@ def propagation(sys: object, opt: object, cal: object) -> None:
         propagation = np.zeros(cal.ham.shape, dtype=COMPLEX_TYPE)
 
         eigval, vec = np.linalg.eigh(cal.ham)
-        exp_arg = 1j*eigval
+        exp_arg = -1j*eigval
 
         n = propagation.shape[-1]
         propagation[:, :, range(n), range(n)] = np.exp(exp_arg*step)
@@ -134,7 +134,7 @@ def make_signal(exp: object, opt: object, cal: object) -> None:
     # calculate population evolution
     if opt.pop_evolution is True and opt.space == 'liouville':
         print("starting population evolution...")
-        rho_prop = cal.rho[1, 0, :, np.newaxis]
+        rho_prop = cal.rho[0, 0, :, np.newaxis]
         cal.pop_evolution = []
         for i in range(0, len(cal.t)):
             pop_matrix = np.conj(np.transpose(cal.eigvec[0, 0])) @\
@@ -315,7 +315,7 @@ def multicore(time_evolution_function: callable) -> callable:
     return multicore_wrapper
 
 
-def powder_average(exp: object, opt: object, cal: object) -> None:
+def powder_average(opt: object, cal: object) -> None:
     """
     Build the powder average of a signal. Depending on the chosen grid, points
     are just summed up for all orientations (opt.grid='fibonacci',
@@ -358,13 +358,9 @@ def powder_average(exp: object, opt: object, cal: object) -> None:
         signal_powder_average = np.sum(weightened_signal, (-1))
         cal.spec_sim += signal_powder_average
 
-    elif opt.grid == 'fibonacci':
+    else:
         signal_powder_average = np.sum(cal.signal, (-1))
         cal.spec_sim += signal_powder_average
-
-    elif opt.grid == 'single':
-        signal_multiple_orientations = np.sum(cal.signal, (-1))
-        cal.spec_sim += signal_multiple_orientations
 
     return None
 
