@@ -7,6 +7,7 @@ from unittest.mock import Mock
 import teacups.signals_and_processing as sap
 import teacups.relaxation as rlx
 from copy import deepcopy
+import teacups.matrix_tools as mt
 
 class Sys:
     def __init__(self):
@@ -333,9 +334,51 @@ class TestMakeSignalSignals:
         assert self.cal.signal.dtype == "complex64"
         np.testing.assert_allclose(self.cal.signal, cal_comp.signal)
 
-    def test_pop_evolution(self):
+
+class TestMakeSignalPopEvolution:
+    def setup(self):
+        initialize_classes(self)
+        self.exp.B_z = np.array([2, 3, 4])
+        self.opt.grid_points = 2
+        self.opt.cpu_cores = 1
         self.opt.pop_evolution = True
-        p = np.arange(1, 17).reshape(4, 4)
-        self.propagation = np.array([[p, p], [p, p], [p, p]])
+        self.opt.space = "liouville"
+
+        self.sup = np.arange(1, 17, dtype=np.complex64).reshape(4, 4)
+        self.sup_b_angle_matrix = np.array([[self.sup, self.sup],
+                                            [self.sup, self.sup],
+                                            [self.sup, self.sup]])
+        self.vec = np.array([1, 2, 3, 4], dtype=np.complex64)
+        self.vec_b_angle_matrix = np.array([[self.vec, self.vec],
+                                            [self.vec, self.vec],
+                                            [self.vec, self.vec]])
+        self.hil = np.array([[1, 2], [3, 4]], dtype=np.complex64)
+        self.hil_b_angle_matrix = np.array([[self.hil, self.hil],
+                                            [self.hil, self.hil],
+                                            [self.hil, self.hil]])
+
+        self.cal.propagation = self.sup_b_angle_matrix
+        self.cal.rho = self.vec_b_angle_matrix
+        self.cal.observable = self.vec
+
+        self.cal.eigvec = self.hil_b_angle_matrix
+        self.cal.s = mt.Spinoperator(1/2)
         sap.make_signal(self.exp, self.opt, self.cal)
-        assert False
+
+
+    def test_shape(self):
+        assert self.cal.pop_evolution.shape == (3, 2)
+
+    def test_dtype(self):
+        assert self.cal.pop_evolution.dtype == "complex64"
+
+    def test_value(self):
+        r = self.vec
+        t1 = np.conj(self.hil.T) @ r.reshape(2, 2) @ self.hil
+        r = self.sup @ r
+        t2 = np.conj(self.hil.T) @ r.reshape(2, 2) @ self.hil
+        r = self.sup @ r
+        t3 = np.conj(self.hil.T) @ r.reshape(2, 2) @ self.hil
+
+        comp = np.array([np.diag(t1), np.diag(t2), np.diag(t3)])
+        np.testing.assert_allclose(comp, self.cal.pop_evolution)
