@@ -171,8 +171,9 @@ def set_up_triplet_high_field_hamiltonian(exp: object, opt: object,
     the ZFS and the Zeeman interaction.
 
     The triplet hamiltonian is calculated for different B_z-values and all
-    combinations of the euler angels phi and theta. All hamiltonians are
-    returned in cal.ham_tri wich is an object of the class Multioperator.
+    combinations of the euler angels phi and theta (grid_points points
+    distributed on the fibonacci sphere). All hamiltonians are returned in
+    cal.ham_tri wich is an object of the class Multioperator.
 
     Parameters
     ----------
@@ -189,8 +190,7 @@ def set_up_triplet_high_field_hamiltonian(exp: object, opt: object,
     Returns
     -------
     ham_tri_hf : np.ndarray
-        Hamiltonian of a triplet in high field in the basis, where the ZFS-
-        Tensor is diagonal (xyz-Basis).
+        Hamiltonian of a triplet precursor of a radical pair in high field.
         This is a B_angle_matrix attribute from the class Multioperator.
 
     """
@@ -207,7 +207,7 @@ def set_up_triplet_high_field_hamiltonian(exp: object, opt: object,
     # Calculate high-field Hamiltonian
     ham_tri_hf = mut.Multioperator(s_tri, opt.grid_points, exp.B_z*MU_B)
     ham_tri_hf.zeeman_coupling(cal.g_tri_tensor)
-    ham_tri_hf.B_angle_matrix += ham_d.B_angle_matrix
+    ham_tri_hf.B_angle_matrix -= ham_d.B_angle_matrix # !!! Hier muss eigentlich ein + hin; Anpassung der VZ-Konvention im händisch aufgestellten Hamiltonoperator nötig, Test ergänzen
 
     # Transfer high-field Hamiltonian to xyz-Basis
     ham_tri_hf.B_angle_matrix = np.conj(
@@ -215,9 +215,6 @@ def set_up_triplet_high_field_hamiltonian(exp: object, opt: object,
     ham_tri_hf = ham_tri_hf.B_angle_matrix
 
     return ham_tri_hf
-
-
-
 
 
 def set_up_rp_hamiltonian(sys: object, exp: object, opt: object, cal: object

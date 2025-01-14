@@ -2,12 +2,12 @@ clear all
 
 Sys.S = 1;
 Sys.g = 2.003;
-Sys.D = [-700, 100];
+Sys.D = [869, -161];
 Sys.lwpp = 1;
-Sys.initState = {[0.3 0.2 0.1], 'zerofield'};
+Sys.initState = {[0.95 0 0.05], 'zerofield'};
 
-Exp.Range = [320, 380];
-Exp.nPoints = 600;
+Exp.Range = [300, 400];
+Exp.nPoints = 1024;
 Exp.mwFreq = 9.75;
 Exp.Harmonic = 0;
 

@@ -22,26 +22,26 @@ Sys.spin_system = "trip"
 Sys.g_tri = [2.003, 2.003, 2.003]
 
 # define triplet ZFS
-Sys.D_tri = -700
-Sys.E_tri = 100
+Sys.D_tri = -869
+Sys.E_tri = 161
 
 # define initial state
 Sys.precursor = "zf"
-Sys.population = [0.3, 0.2, 0.1]
+Sys.population = [0, 0, 1]
 
 # define decay time and line width
 Sys.decay = 1e-6
 Sys.width_gauss = 1
 
 # experimental setup
-Exp.B_z = np.linspace(320, 380, 600)
+Exp.B_z = np.linspace(300, 400, 1024)
 Exp.t_scale = [0, 2e-6]
 Exp.t_points = 2
 Exp.B_mw = 0.001
 Exp.freq_mw = 9.75e9
 
 # simulation options
-SimOpt.grid_points = 25
+SimOpt.grid_points = 40
 
 # do the simulation
 cal = sim.teacups(Sys, Exp, SimOpt, development=True)
