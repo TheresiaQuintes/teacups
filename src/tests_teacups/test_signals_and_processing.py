@@ -3,9 +3,7 @@ sys.path.append("./..")
 
 import numpy as np
 import scipy.linalg as la
-from unittest.mock import Mock
 import teacups.signals_and_processing as sap
-import teacups.relaxation as rlx
 from copy import deepcopy
 import teacups.matrix_tools as mt
 
