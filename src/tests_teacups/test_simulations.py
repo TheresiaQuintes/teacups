@@ -319,4 +319,75 @@ class TestTeacups:
         np.testing.assert_allclose(pop.real, desired_pop, atol=2e-6)
 
 
-# %%
+    def test_psi_rp_early_dynamics(self):
+        Sys = cl.Sys()
+        Exp = cl.Exp()
+        SimOpt = cl.SimOpt()
+
+        Sys.spin_system = 'rp'
+        Sys.g1 = [2.00304, 2.00262, 2.00232]
+        Sys.g2 = [2.00564, 2.00494, 2.00217]
+        Sys.g1_frame = np.array([-15, 28, 27])*(np.pi/180)
+
+        Sys.precursor = 'singlet'
+
+        Sys.decay = 0.75e-7
+        Sys.T_relax_1 = 2e-6
+        Sys.T_relax_2 = 500e-9
+
+        Sys.D = -3.3630*3
+        Sys.D_frame = np.array([0, 58, -1])*(np.pi/180)
+        Sys.J_ex = 0
+
+        Sys.width_gauss = 0.125
+
+        Exp.B_z = np.linspace(350.55, 352.33, 500)
+        Exp.t_scale = [0, 100e-9]
+        Exp.t_points = 11
+        Exp.B_mw = 0.03
+        Exp.freq_mw = 9.8562*1e9
+
+        SimOpt.grid_points = 3
+        SimOpt.space = 'hilbert'
+
+        # do the simulation
+        spec = sim.teacups(Sys, Exp, SimOpt)
+        spec = spec.real/(max(abs(spec[10].real)))
+
+        desired = np.load("./simulations/psi_rp_early_dynamics.npy")
+        np.testing.assert_allclose(spec, desired, atol=2e-6)
+
+
+    def test_doublet_with_hyperfines(self):
+        # initialize classes with default parameters
+        sys = cl.Sys()
+        exp = cl.Exp()
+        opt = cl.SimOpt()
+
+        # set up spin system parameters
+        sys.g = [2, 2, 2]
+        sys.width_gauss = 3
+
+        sys.A1 = [150, 150, 300]
+        sys.I1 = 1
+        sys.n1 = 1
+        sys.A1_frame = [0, 1, 0]
+
+        sys.spin_system = 'doub'
+        sys.precursor = 'eigen'
+        sys.population = [0, 1]
+
+        # set up experimental parameters
+        exp.B_z = np.linspace(320, 380, 600)
+        exp.t_scale = [0, 2e-6]
+        exp.t_points = 2
+
+        # set up simulation option parameters
+        opt.grid_points = 5
+
+        # do simulation
+        spec = sim.teacups(sys, exp, opt)
+        spec = spec[1].real/max(abs(spec[1].real))
+
+        desired = np.load("./simulations/doublet_with_hyperfines.npy")
+        np.testing.assert_allclose(spec, desired, atol=2e-6)
