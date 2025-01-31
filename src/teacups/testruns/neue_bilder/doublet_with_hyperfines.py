@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import teacups.simulations as sim
 
+plt.style.use("stylesheet.mplstyle")
 
 # initialize classes with default parameters
 sys = cl.Sys()

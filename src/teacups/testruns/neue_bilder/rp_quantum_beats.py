@@ -3,6 +3,8 @@ import teacups.classes as cl
 import numpy as np
 import matplotlib.pyplot as plt
 
+plt.style.use("stylesheet.mplstyle")
+
 # initialize classes with default parameters
 Sys = cl.Sys()
 Exp = cl.Exp()

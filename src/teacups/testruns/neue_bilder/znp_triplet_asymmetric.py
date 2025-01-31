@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import teacups.simulations as sim
 import teacups.classes as cl
 
-
+plt.style.use("stylesheet.mplstyle")
 
 
 # %%

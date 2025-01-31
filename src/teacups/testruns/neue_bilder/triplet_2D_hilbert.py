@@ -3,6 +3,8 @@ import teacups.simulations as sim
 import numpy as np
 import matplotlib.pyplot as plt
 
+plt.style.use("stylesheet.mplstyle")
+
 Sys = cl.Sys()
 Exp = cl.Exp()
 SimOpt = cl.SimOpt()
