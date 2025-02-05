@@ -1,26 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Spin System (Sys) &mdash; TEACUPS 2023 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=a4664895"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="_static/copybutton.js?v=f281be69"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -34,18 +32,14 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="index.html" class="icon icon-home">
-            TEACUPS
+            <a href="index.html" class="icon icon-home"> TEACUPS
           </a>
               <div class="version">
                 1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -122,7 +116,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
       <li class="breadcrumb-item active">Spin System (Sys)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/spinsystem.rst.txt" rel="nofollow"> View page source</a>
@@ -137,16 +131,33 @@
            <div itemprop="articleBody">
              
   <section id="spin-system-sys">
-<h1>Spin System (Sys)<a class="headerlink" href="#spin-system-sys" title="Link to this heading"></a></h1>
+<h1>Spin System (Sys)<a class="headerlink" href="#spin-system-sys" title="Permalink to this heading"></a></h1>
 <p>In the class <code class="docutils literal notranslate"><span class="pre">Sys</span></code> all parameters that describe the fundamental spin system are set as attributes. This can be done in the script by typing:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">Attribute</span> <span class="o">=</span> <span class="n">Value</span>
 </pre></div>
 </div>
-<p>In the following all possible attributes are named. For each attribute an explanation, cases where it is needed and an example are given. You can get a quick reference file with all attributes <a class="reference download internal" download="" href="_downloads/8b97ebca44dddf331527d968b829fed2/quickreference.pdf"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a>.</p>
+<p>If the class is initialized by:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">teacups.classes</span> <span class="k">as</span> <span class="nn">cl</span>
+<span class="n">Sys</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">SpinSystem</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>the following attributes are preallocated (but can be newly assigned by the user):</p>
+<ul class="simple">
+<li><p>spin_system: “doub”</p></li>
+<li><p>precursor: “basis”</p></li>
+<li><p>population: [0, 1]</p></li>
+<li><p>g: [1.95, 2, 2.1]</p></li>
+<li><p>width_gauss: 3</p></li>
+<li><p>decay: 1e-6</p></li>
+<li><p>dynamics: None</p></li>
+<li><p>T_relax_1: 1e-6</p></li>
+<li><p>T_relax_2: 1e-6</p></li>
+</ul>
+<p>In the following all possible attributes are named. For each attribute an explanation, cases where it is needed and an example are given. You can get a quick reference file with all attributes <a class="reference download internal" download="" href="_downloads/7d69dfccbf540b0e705373a625109db3/quickreference.pdf"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a>.</p>
 <section id="polarisation">
-<h2>Polarisation<a class="headerlink" href="#polarisation" title="Link to this heading"></a></h2>
+<h2>Polarisation<a class="headerlink" href="#polarisation" title="Permalink to this heading"></a></h2>
 <section id="sys-spin-system">
-<h3>Sys.spin_system<a class="headerlink" href="#sys-spin-system" title="Link to this heading"></a></h3>
+<h3>Sys.spin_system<a class="headerlink" href="#sys-spin-system" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Defines the type of the spin system, set it to</dt><dd><ul class="simple">
@@ -167,7 +178,7 @@
 </ul>
 </section>
 <section id="sys-precursor">
-<h3>Sys.precursor<a class="headerlink" href="#sys-precursor" title="Link to this heading"></a></h3>
+<h3>Sys.precursor<a class="headerlink" href="#sys-precursor" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Defines the initial polarisation of the spin system. Dependent on the chosen system different initial polarisations are available. The precursor attribute defines the basis chosen for the initial polarisation. Set Sys.precursor to</dt><dd><ul class="simple">
@@ -201,7 +212,7 @@
 </div>
 </section>
 <section id="sys-population">
-<h3>Sys.population<a class="headerlink" href="#sys-population" title="Link to this heading"></a></h3>
+<h3>Sys.population<a class="headerlink" href="#sys-population" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Set the initial population vector in the basis that is defined in Sys.precursor.</dt><dd><ul class="simple">
@@ -238,9 +249,9 @@
 </section>
 </section>
 <section id="g-tensors">
-<h2>g-tensors<a class="headerlink" href="#g-tensors" title="Link to this heading"></a></h2>
+<h2>g-tensors<a class="headerlink" href="#g-tensors" title="Permalink to this heading"></a></h2>
 <section id="sys-g">
-<h3>Sys.g<a class="headerlink" href="#sys-g" title="Link to this heading"></a></h3>
+<h3>Sys.g<a class="headerlink" href="#sys-g" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Diagonal elements of the g-tensor of a radical</dt><dd><ul class="simple">
@@ -258,7 +269,7 @@
 </ul>
 </section>
 <section id="sys-g-tri">
-<h3>Sys.g_tri<a class="headerlink" href="#sys-g-tri" title="Link to this heading"></a></h3>
+<h3>Sys.g_tri<a class="headerlink" href="#sys-g-tri" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Diagonal elements of the g_tri-tensor of a triplet</dt><dd><ul class="simple">
@@ -276,7 +287,7 @@
 </ul>
 </section>
 <section id="sys-g1">
-<h3>Sys.g1<a class="headerlink" href="#sys-g1" title="Link to this heading"></a></h3>
+<h3>Sys.g1<a class="headerlink" href="#sys-g1" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Diagonal elements of the g1-tensor of a radical pair</dt><dd><ul class="simple">
@@ -295,7 +306,7 @@
 </ul>
 </section>
 <section id="sys-g2">
-<h3>Sys.g2<a class="headerlink" href="#sys-g2" title="Link to this heading"></a></h3>
+<h3>Sys.g2<a class="headerlink" href="#sys-g2" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Diagonal elements of the g2-tensor of a radical pair</dt><dd><ul class="simple">
@@ -314,7 +325,7 @@
 </ul>
 </section>
 <section id="sys-g-frame">
-<h3>Sys.g_frame<a class="headerlink" href="#sys-g-frame" title="Link to this heading"></a></h3>
+<h3>Sys.g_frame<a class="headerlink" href="#sys-g-frame" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Three euler angles to rotate the g-tensor from molecular to laboratory frame</dt><dd><ul class="simple">
@@ -332,7 +343,7 @@
 </ul>
 </section>
 <section id="sys-g-tri-frame">
-<h3>Sys.g_tri_frame<a class="headerlink" href="#sys-g-tri-frame" title="Link to this heading"></a></h3>
+<h3>Sys.g_tri_frame<a class="headerlink" href="#sys-g-tri-frame" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Three euler angles to rotate the g_tri-tensor from molecular to laboratory frame</dt><dd><ul class="simple">
@@ -350,7 +361,7 @@
 </ul>
 </section>
 <section id="sys-g1-frame">
-<h3>Sys.g1_frame<a class="headerlink" href="#sys-g1-frame" title="Link to this heading"></a></h3>
+<h3>Sys.g1_frame<a class="headerlink" href="#sys-g1-frame" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Three euler angles to rotate the g1-tensor from molecular to laboratory frame</dt><dd><ul class="simple">
@@ -368,7 +379,7 @@
 </ul>
 </section>
 <section id="sys-g2-frame">
-<h3>Sys.g2_frame<a class="headerlink" href="#sys-g2-frame" title="Link to this heading"></a></h3>
+<h3>Sys.g2_frame<a class="headerlink" href="#sys-g2-frame" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Three euler angles to rotate the g2-tensor from molecular to laboratory frame</dt><dd><ul class="simple">
@@ -387,9 +398,9 @@
 </section>
 </section>
 <section id="spin-spin-interactions">
-<h2>Spin-spin interactions<a class="headerlink" href="#spin-spin-interactions" title="Link to this heading"></a></h2>
+<h2>Spin-spin interactions<a class="headerlink" href="#spin-spin-interactions" title="Permalink to this heading"></a></h2>
 <section id="sys-d">
-<h3>Sys.D<a class="headerlink" href="#sys-d" title="Link to this heading"></a></h3>
+<h3>Sys.D<a class="headerlink" href="#sys-d" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl>
 <dt>Dipolar coupling constant <em>D</em> for two interacting spin species</dt><dd><ul class="simple">
@@ -412,7 +423,7 @@
 </ul>
 </section>
 <section id="sys-e">
-<h3>Sys.E<a class="headerlink" href="#sys-e" title="Link to this heading"></a></h3>
+<h3>Sys.E<a class="headerlink" href="#sys-e" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl>
 <dt>Dipolar coupling constant <em>E</em> for two interacting spin species</dt><dd><ul class="simple">
@@ -435,7 +446,7 @@
 </ul>
 </section>
 <section id="sys-d-frame">
-<h3>Sys.D_frame<a class="headerlink" href="#sys-d-frame" title="Link to this heading"></a></h3>
+<h3>Sys.D_frame<a class="headerlink" href="#sys-d-frame" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Three euler angles to rotate the D-tensor for dipolar couplings from molecular to laboratory frame</dt><dd><ul class="simple">
@@ -453,7 +464,7 @@
 </ul>
 </section>
 <section id="sys-j-ex">
-<h3>Sys.J_ex<a class="headerlink" href="#sys-j-ex" title="Link to this heading"></a></h3>
+<h3>Sys.J_ex<a class="headerlink" href="#sys-j-ex" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl>
 <dt>Exchange coupling constant <em>J</em> for two interacting spin species</dt><dd><ul class="simple">
@@ -479,7 +490,7 @@
 </ul>
 </section>
 <section id="sys-d-tri">
-<h3>Sys.D_tri<a class="headerlink" href="#sys-d-tri" title="Link to this heading"></a></h3>
+<h3>Sys.D_tri<a class="headerlink" href="#sys-d-tri" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl>
 <dt>Zero field splitting constant <em>D</em> for triplets</dt><dd><ul class="simple">
@@ -502,7 +513,7 @@
 </ul>
 </section>
 <section id="sys-e-tri">
-<h3>Sys.E_tri<a class="headerlink" href="#sys-e-tri" title="Link to this heading"></a></h3>
+<h3>Sys.E_tri<a class="headerlink" href="#sys-e-tri" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl>
 <dt>Zero field splitting constant <em>E</em> for triplets</dt><dd><ul class="simple">
@@ -525,7 +536,7 @@
 </ul>
 </section>
 <section id="sys-d-tri-frame">
-<h3>Sys.D_tri_frame<a class="headerlink" href="#sys-d-tri-frame" title="Link to this heading"></a></h3>
+<h3>Sys.D_tri_frame<a class="headerlink" href="#sys-d-tri-frame" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Three euler angles to rotate the ZFS tensor of triplets from molecular to laboratory frame</dt><dd><ul class="simple">
@@ -544,13 +555,13 @@
 </section>
 </section>
 <section id="hyperfine-interaction">
-<h2>Hyperfine interaction<a class="headerlink" href="#hyperfine-interaction" title="Link to this heading"></a></h2>
+<h2>Hyperfine interaction<a class="headerlink" href="#hyperfine-interaction" title="Permalink to this heading"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Hyperfine interactions for coupled systems do not work properly until now.</p>
 </div>
 <section id="sys-ai">
-<h3>Sys.Ai<a class="headerlink" href="#sys-ai" title="Link to this heading"></a></h3>
+<h3>Sys.Ai<a class="headerlink" href="#sys-ai" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Diagonal elements of a hyperfine tensor of nucleus i</dt><dd><ul class="simple">
@@ -569,7 +580,7 @@
 </ul>
 </section>
 <section id="sys-ai-frame">
-<h3>Sys.Ai_frame<a class="headerlink" href="#sys-ai-frame" title="Link to this heading"></a></h3>
+<h3>Sys.Ai_frame<a class="headerlink" href="#sys-ai-frame" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Three euler angles to rotate the hyperfine tensor of nucleus i from molecular to laboratory frame</dt><dd><ul class="simple">
@@ -588,7 +599,7 @@
 </ul>
 </section>
 <section id="sys-ii">
-<h3>Sys.Ii<a class="headerlink" href="#sys-ii" title="Link to this heading"></a></h3>
+<h3>Sys.Ii<a class="headerlink" href="#sys-ii" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Spin quantum number of nucleus (-group) i</dt><dd><ul class="simple">
@@ -607,7 +618,7 @@
 </ul>
 </section>
 <section id="sys-ni">
-<h3>Sys.ni<a class="headerlink" href="#sys-ni" title="Link to this heading"></a></h3>
+<h3>Sys.ni<a class="headerlink" href="#sys-ni" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Number of nuclei in core group i</dt><dd><ul class="simple">
@@ -627,9 +638,9 @@
 </section>
 </section>
 <section id="relaxation">
-<h2>Relaxation<a class="headerlink" href="#relaxation" title="Link to this heading"></a></h2>
+<h2>Relaxation<a class="headerlink" href="#relaxation" title="Permalink to this heading"></a></h2>
 <section id="sys-decay">
-<h3>Sys.decay<a class="headerlink" href="#sys-decay" title="Link to this heading"></a></h3>
+<h3>Sys.decay<a class="headerlink" href="#sys-decay" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl>
 <dt>After a simulation in Hilbert space the resulting spectrum is convoluted with an exponential function to simulate an exponential decay of the signal. The exponential decay constant tau (which has no physical meaning) can be set in <code class="docutils literal notranslate"><span class="pre">Sys.decay</span></code>.</dt><dd><ul class="simple">
@@ -650,7 +661,7 @@
 </ul>
 </section>
 <section id="sys-t-relax-1">
-<h3>Sys.T_relax_1<a class="headerlink" href="#sys-t-relax-1" title="Link to this heading"></a></h3>
+<h3>Sys.T_relax_1<a class="headerlink" href="#sys-t-relax-1" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>This is the longitudinal relaxation time for the simulation of a phenomenological relaxation.</dt><dd><ul class="simple">
@@ -671,7 +682,7 @@
 </ul>
 </section>
 <section id="sys-t-relax-2">
-<h3>Sys.T_relax_2<a class="headerlink" href="#sys-t-relax-2" title="Link to this heading"></a></h3>
+<h3>Sys.T_relax_2<a class="headerlink" href="#sys-t-relax-2" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>This is the transversal relaxation time for the simulation of a phenomenological relaxation.</dt><dd><ul class="simple">
@@ -692,7 +703,7 @@
 </ul>
 </section>
 <section id="sys-dynamics">
-<h3>Sys.dynamics<a class="headerlink" href="#sys-dynamics" title="Link to this heading"></a></h3>
+<h3>Sys.dynamics<a class="headerlink" href="#sys-dynamics" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Set your own relaxation matrix for transitions between the systems eigenstates</dt><dd><ul class="simple">
@@ -720,9 +731,9 @@
 </section>
 </section>
 <section id="line-width">
-<h2>Line width<a class="headerlink" href="#line-width" title="Link to this heading"></a></h2>
+<h2>Line width<a class="headerlink" href="#line-width" title="Permalink to this heading"></a></h2>
 <section id="sys-width-gauss">
-<h3>Sys.width_gauss<a class="headerlink" href="#sys-width-gauss" title="Link to this heading"></a></h3>
+<h3>Sys.width_gauss<a class="headerlink" href="#sys-width-gauss" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>After the spectrum is built it is convoluted with a gaussian function. The width of this function can be set in Sys.width_gauss.</dt><dd><ul class="simple">

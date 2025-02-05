@@ -1,25 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="../../">
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>teacups.hamiltonians &mdash; TEACUPS 2023 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=a4664895"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="../../_static/copybutton.js?v=f281be69"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -30,18 +28,14 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="../../index.html" class="icon icon-home">
-            TEACUPS
+            <a href="../../index.html" class="icon icon-home"> TEACUPS
           </a>
               <div class="version">
-                1.0
+                1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -54,6 +48,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../spinsystem.html">Spin System (Sys)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../experimental.html">Experimental (Exp)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../simulation_options.html">Simulation Options (SimOpt)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../limitations_issiues.html">Limitations and known issiues</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../developer.html">Developer</a></li>
 </ul>
 
@@ -70,7 +65,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
       <li class="breadcrumb-item active">teacups.hamiltonians</li>
       <li class="wy-breadcrumbs-aside">
@@ -93,9 +88,7 @@
 <span class="n">FLOAT_TYPE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
 
 
-<div class="viewcode-block" id="set_up_mw_hamiltonian">
-<a class="viewcode-back" href="../../developer.html#teacups.hamiltonians.set_up_mw_hamiltonian">[docs]</a>
-<span class="k">def</span> <span class="nf">set_up_mw_hamiltonian</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span>
+<div class="viewcode-block" id="set_up_mw_hamiltonian"><a class="viewcode-back" href="../../developer.html#teacups.hamiltonians.set_up_mw_hamiltonian">[docs]</a><span class="k">def</span> <span class="nf">set_up_mw_hamiltonian</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span>
                           <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate a Hamiltonian matrix operator for the coupling of a spin system</span>
@@ -156,10 +149,7 @@
     <span class="k">return</span> <span class="n">ham</span><span class="o">.</span><span class="n">B_angle_matrix</span></div>
 
 
-
-<div class="viewcode-block" id="set_up_doublet_hamiltonian">
-<a class="viewcode-back" href="../../developer.html#teacups.hamiltonians.set_up_doublet_hamiltonian">[docs]</a>
-<span class="k">def</span> <span class="nf">set_up_doublet_hamiltonian</span><span class="p">(</span><span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span>
+<div class="viewcode-block" id="set_up_doublet_hamiltonian"><a class="viewcode-back" href="../../developer.html#teacups.hamiltonians.set_up_doublet_hamiltonian">[docs]</a><span class="k">def</span> <span class="nf">set_up_doublet_hamiltonian</span><span class="p">(</span><span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span>
                                <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate a doublet Hamiltonian. The high-field-Hamiltonian is set up as</span>
@@ -191,7 +181,6 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ham</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="o">*</span><span class="n">MU_B</span><span class="p">)</span>
-
     <span class="n">B_z</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="o">*</span><span class="n">MU_B</span>
     <span class="n">B_z</span> <span class="o">=</span> <span class="n">B_z</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
 
@@ -204,10 +193,7 @@
     <span class="k">return</span> <span class="n">ham</span></div>
 
 
-
-<div class="viewcode-block" id="set_up_triplet_hamiltonian">
-<a class="viewcode-back" href="../../developer.html#teacups.hamiltonians.set_up_triplet_hamiltonian">[docs]</a>
-<span class="k">def</span> <span class="nf">set_up_triplet_hamiltonian</span><span class="p">(</span><span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span>
+<div class="viewcode-block" id="set_up_triplet_hamiltonian"><a class="viewcode-back" href="../../developer.html#teacups.hamiltonians.set_up_triplet_hamiltonian">[docs]</a><span class="k">def</span> <span class="nf">set_up_triplet_hamiltonian</span><span class="p">(</span><span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span>
                                <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the triplet Hamiltonian. The high-field-Hamiltonian is set up as</span>
@@ -216,7 +202,9 @@
 <span class="sd">    interaction (=ZFS). The spinfunctions (-1, 0, +1) are used as a basis set.</span>
 <span class="sd">    As the Hamiltonian is set up in the rotating frame, secular approximation</span>
 <span class="sd">    is applied:</span>
-<span class="sd">        H = D_zz * (S_z^2 - 1/3*S^2) + H_zeeman</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        H = D_{zz} * (S_z^2 - 1/3*S^2) + H_\mathrm{Zeeman}</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -254,10 +242,7 @@
     <span class="k">return</span> <span class="n">ham</span></div>
 
 
-
-<div class="viewcode-block" id="set_up_triplet_high_field_hamiltonian">
-<a class="viewcode-back" href="../../developer.html#teacups.hamiltonians.set_up_triplet_high_field_hamiltonian">[docs]</a>
-<span class="k">def</span> <span class="nf">set_up_triplet_high_field_hamiltonian</span><span class="p">(</span><span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span>
+<div class="viewcode-block" id="set_up_triplet_high_field_hamiltonian"><a class="viewcode-back" href="../../developer.html#teacups.hamiltonians.set_up_triplet_high_field_hamiltonian">[docs]</a><span class="k">def</span> <span class="nf">set_up_triplet_high_field_hamiltonian</span><span class="p">(</span><span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span>
                                           <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the hamiltonian of a triplet state in high magnetic field in</span>
@@ -290,16 +275,20 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">s_tri</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">Spinoperator</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
+    <span class="c1"># ZFS-Hamiltonian</span>
     <span class="n">ham_d</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">s_tri</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="o">*</span><span class="n">MU_B</span><span class="p">)</span>
     <span class="n">ham_d</span><span class="o">.</span><span class="n">create_bilinear_operator</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">D_tri_tensor</span><span class="p">,</span> <span class="n">s_tri</span><span class="p">)</span>
     <span class="n">ham_d</span><span class="o">.</span><span class="n">angle_matrix_changed</span><span class="p">()</span>
 
+    <span class="c1"># The eigenbasis of the ZFS-Hamiltonian is the xyz-Basis</span>
     <span class="n">eig_d</span><span class="p">,</span> <span class="n">vec_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">ham_d</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="p">)</span>
 
+    <span class="c1"># Calculate high-field Hamiltonian</span>
     <span class="n">ham_tri_hf</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">s_tri</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="o">*</span><span class="n">MU_B</span><span class="p">)</span>
     <span class="n">ham_tri_hf</span><span class="o">.</span><span class="n">zeeman_coupling</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">g_tri_tensor</span><span class="p">)</span>
-    <span class="n">ham_tri_hf</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">+=</span> <span class="n">ham_d</span><span class="o">.</span><span class="n">B_angle_matrix</span>
+    <span class="n">ham_tri_hf</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">-=</span> <span class="n">ham_d</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="c1"># !!! Hier muss eigentlich ein + hin; Anpassung der VZ-Konvention im händisch aufgestellten Hamiltonoperator nötig, Test ergänzen</span>
 
+    <span class="c1"># Transfer high-field Hamiltonian to xyz-Basis</span>
     <span class="n">ham_tri_hf</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span>
         <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">vec_d</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span> <span class="o">@</span> <span class="n">ham_tri_hf</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">@</span> <span class="n">vec_d</span>
     <span class="n">ham_tri_hf</span> <span class="o">=</span> <span class="n">ham_tri_hf</span><span class="o">.</span><span class="n">B_angle_matrix</span>
@@ -307,50 +296,7 @@
     <span class="k">return</span> <span class="n">ham_tri_hf</span></div>
 
 
-
-<div class="viewcode-block" id="set_up_triplet_zero_field_hamiltonian">
-<a class="viewcode-back" href="../../developer.html#teacups.hamiltonians.set_up_triplet_zero_field_hamiltonian">[docs]</a>
-<span class="k">def</span> <span class="nf">set_up_triplet_zero_field_hamiltonian</span><span class="p">(</span><span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span>
-                                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculate the zero field Hamiltonian matrix of a triplet. It is set up</span>
-<span class="sd">    by multiplication:</span>
-<span class="sd">        H = SDS.</span>
-<span class="sd">    The Hamiltonian is given in the main-axis system of the D-tensor.</span>
-<span class="sd">    It is returned for all magnetic field points and all grid</span>
-<span class="sd">    points as a B_angle_matrix-attribute of the Multioperator class.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    exp : object</span>
-<span class="sd">        Contains experimental parameters. This function uses the attribute</span>
-<span class="sd">        exp.B_z (magnetic field array).</span>
-<span class="sd">    opt : object</span>
-<span class="sd">        Contains simulation options. This function uses opt.grid_points.</span>
-<span class="sd">    cal : object</span>
-<span class="sd">        Container for results of calculations during the simulation. This</span>
-<span class="sd">        function uses the attribute cal.D_tri_tensor (ZFS-tensor).</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    cal.ham_tri_zf : np.ndarray</span>
-<span class="sd">        Triplet zero field hamiltonian. This is a B_angle_matrix attribute from</span>
-<span class="sd">        the class Multioperator.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">s_tri</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">Spinoperator</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">ham_zf</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">s_tri</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">)</span>
-    <span class="n">ham_zf</span><span class="o">.</span><span class="n">create_bilinear_operator</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">D_tri_tensor</span><span class="p">,</span> <span class="n">s_tri</span><span class="p">)</span>
-    <span class="n">ham_zf</span><span class="o">.</span><span class="n">angle_matrix_changed</span><span class="p">()</span>
-    <span class="n">ham_tri_zf</span> <span class="o">=</span> <span class="n">ham_zf</span><span class="o">.</span><span class="n">B_angle_matrix</span>
-
-    <span class="k">return</span> <span class="n">ham_tri_zf</span></div>
-
-
-
-<div class="viewcode-block" id="set_up_rp_hamiltonian">
-<a class="viewcode-back" href="../../developer.html#teacups.hamiltonians.set_up_rp_hamiltonian">[docs]</a>
-<span class="k">def</span> <span class="nf">set_up_rp_hamiltonian</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span>
+<div class="viewcode-block" id="set_up_rp_hamiltonian"><a class="viewcode-back" href="../../developer.html#teacups.hamiltonians.set_up_rp_hamiltonian">[docs]</a><span class="k">def</span> <span class="nf">set_up_rp_hamiltonian</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span>
                           <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate a Hamiltonian matrix operator for a radical pair. Coupling</span>
@@ -415,17 +361,14 @@
     <span class="k">return</span> <span class="n">ham_rp</span></div>
 
 
-
-<div class="viewcode-block" id="set_up_tdp_hamiltonian">
-<a class="viewcode-back" href="../../developer.html#teacups.hamiltonians.set_up_tdp_hamiltonian">[docs]</a>
-<span class="k">def</span> <span class="nf">set_up_tdp_hamiltonian</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span>
+<div class="viewcode-block" id="set_up_tdp_hamiltonian"><a class="viewcode-back" href="../../developer.html#teacups.hamiltonians.set_up_tdp_hamiltonian">[docs]</a><span class="k">def</span> <span class="nf">set_up_tdp_hamiltonian</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span>
                            <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate a Hamiltonian matrix operator for a coupled triplet doublet pair.</span>
 <span class="sd">    Coupling with the static magnetic field of the triplet and the doublet is</span>
 <span class="sd">    included each as well as the ZFS of the triplet and the interactions of the</span>
 <span class="sd">    two spins. The Hamiltonian is calculated for all orientations and magnetic</span>
-<span class="sd">    field points in the singlet-triplet-basis and returned as a</span>
+<span class="sd">    field points in the product basis and returned as a</span>
 <span class="sd">    B_angle_matrix attribute from the class Multioperator. Secular</span>
 <span class="sd">    approximation is presumed.</span>
 
@@ -451,7 +394,7 @@
 <span class="sd">        Triplet-doublet-pair hamiltonian in the shape of a B_angle_matrix from</span>
 <span class="sd">        the class Multioperator. The hamiltonian is given in the product basis</span>
 <span class="sd">        of doublet and triplet:</span>
-<span class="sd">        |a, +1&gt;, |a, 0&gt;, |a, -1&gt;, |b, +1&gt;, |b, 0&gt;, |b, -1&gt;.</span>
+<span class="sd">        \|a, +1\&gt;, \|a, 0\&gt;, \|a, -1\&gt;, \|b, +1\&gt;, \|b, 0\&gt;, \|b, -1\&gt;.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">s</span>
@@ -482,10 +425,93 @@
     <span class="k">return</span> <span class="n">ham_tdp</span></div>
 
 
+<div class="viewcode-block" id="set_up_tdp_full_high_field_hamiltonian"><a class="viewcode-back" href="../../developer.html#teacups.hamiltonians.set_up_tdp_full_high_field_hamiltonian">[docs]</a><span class="k">def</span> <span class="nf">set_up_tdp_full_high_field_hamiltonian</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span>
+                                           <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span>
+                                           <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate a Hamiltonian matrix operator for a coupled triplet doublet pair.</span>
+<span class="sd">    Coupling with the static magnetic field of the triplet and the doublet is</span>
+<span class="sd">    included each as well as the ZFS of the triplet and the interactions of the</span>
+<span class="sd">    two spins. The Hamiltonian is calculated for all orientations and magnetic</span>
+<span class="sd">    field points in the xyz-Basis (basis in which the ZFS-Hamiltonian of the</span>
+<span class="sd">    triplet is diagonal) and returned as a B_angle_matrix</span>
+<span class="sd">    attribute from the class Multioperator. The interaction matrices are</span>
+<span class="sd">    calculated by direct prducts of spin matrices and interaction tensors and</span>
+<span class="sd">    no secular approximation is applied.</span>
 
-<div class="viewcode-block" id="set_up_commutator_superoperator">
-<a class="viewcode-back" href="../../developer.html#teacups.hamiltonians.set_up_commutator_superoperator">[docs]</a>
-<span class="k">def</span> <span class="nf">set_up_commutator_superoperator</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sys : object</span>
+<span class="sd">        Contains spinsystem parameters. This function uses the attributes</span>
+<span class="sd">        sys.J_ex.</span>
+<span class="sd">    exp : object</span>
+<span class="sd">        Contains experimental parameters. This function uses the attribute</span>
+<span class="sd">        exp.B_z (magnetic field array).</span>
+<span class="sd">    opt : object</span>
+<span class="sd">        Contains simulation options. This function uses opt.grid_points.</span>
+<span class="sd">    cal : object</span>
+<span class="sd">        Container for results of calculations during the simulation. This</span>
+<span class="sd">        function uses cal.g_tensor and cal.g_tri_tensor, cal.D_tri_tensor and</span>
+<span class="sd">        cal.D_tensor (e.g. from set_up_tensors).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ham_hf : np.ndarray</span>
+<span class="sd">        Full triplet-doublet-pair high-field hamiltonian in the shape of a</span>
+<span class="sd">        B_angle_matrix from the class Multioperator. The hamiltonian is given</span>
+<span class="sd">        in the xyz-Basis of doublet and triplet:</span>
+<span class="sd">        \|a, x\&gt;, \|b, x\&gt;, \|a, y\&gt;, \|b, y\&gt;, \|a, z\&gt;, \|b, z\&gt;.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">setup_s</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">Spinoperator</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">S_doub</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">Spinoperator</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">S_trip</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">Spinoperator</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">S_doub</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">setup_s</span><span class="o">.</span><span class="n">matrix</span>
+    <span class="n">S_trip</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">setup_s</span><span class="o">.</span><span class="n">matrix_coupling_spins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># ZFS</span>
+    <span class="n">h_zfs</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">S_trip</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="o">*</span><span class="n">MU_B</span><span class="p">)</span>
+    <span class="n">h_zfs</span><span class="o">.</span><span class="n">create_bilinear_operator</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">D_tri_tensor</span><span class="p">,</span> <span class="n">S_trip</span><span class="p">)</span>
+    <span class="n">h_zfs</span><span class="o">.</span><span class="n">angle_matrix_changed</span><span class="p">()</span>
+
+    <span class="c1"># zeeman interactions</span>
+    <span class="n">h_zeeman_doub</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span>
+        <span class="n">S_doub</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="o">*</span><span class="n">MU_B</span><span class="p">)</span>
+    <span class="n">h_zeeman_doub</span><span class="o">.</span><span class="n">zeeman_coupling</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">g_tensor</span><span class="p">)</span>
+
+    <span class="n">h_zeeman_trip</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span>
+        <span class="n">S_trip</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="o">*</span><span class="n">MU_B</span><span class="p">)</span>
+    <span class="n">h_zeeman_trip</span><span class="o">.</span><span class="n">zeeman_coupling</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">g_tri_tensor</span><span class="p">)</span>
+
+    <span class="c1"># dipolar interaction</span>
+    <span class="n">h_dip</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">S_doub</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="o">*</span><span class="n">MU_B</span><span class="p">)</span>
+    <span class="n">h_dip</span><span class="o">.</span><span class="n">create_bilinear_operator</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">D_tensor</span><span class="p">,</span> <span class="n">S_trip</span><span class="p">)</span>
+    <span class="n">h_dip</span><span class="o">.</span><span class="n">angle_matrix_changed</span><span class="p">()</span>
+
+    <span class="c1"># exchange interaction</span>
+    <span class="n">h_ex</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">S_doub</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="o">*</span><span class="n">MU_B</span><span class="p">)</span>
+    <span class="n">h_ex</span><span class="o">.</span><span class="n">exchange_coupling</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">sys</span><span class="o">.</span><span class="n">J_ex</span><span class="p">,</span> <span class="n">S_trip</span><span class="p">)</span>
+
+    <span class="c1"># full high field hamiltonian</span>
+    <span class="n">ham_hf</span> <span class="o">=</span> <span class="n">h_zeeman_doub</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">+</span> <span class="n">h_zeeman_trip</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">+</span>\
+        <span class="n">h_zfs</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">+</span> <span class="n">h_dip</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">+</span> <span class="n">h_ex</span><span class="o">.</span><span class="n">B_angle_matrix</span>
+
+
+    <span class="c1"># the eigenbasis of ham_zfs is xx yy zz (= xyz-basis)</span>
+    <span class="n">eig_zfs</span><span class="p">,</span> <span class="n">vec_zfs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">h_zfs</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="p">)</span>
+
+    <span class="c1"># transform high field hamiltonian to xyz-basis</span>
+    <span class="n">ham_hf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span>
+        <span class="n">vec_zfs</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span> <span class="o">@</span> <span class="n">ham_hf</span> <span class="o">@</span> <span class="n">vec_zfs</span>
+
+
+    <span class="n">ham_hf</span> <span class="o">=</span> <span class="n">ham_hf</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ham_hf</span></div>
+
+
+<div class="viewcode-block" id="set_up_commutator_superoperator"><a class="viewcode-back" href="../../developer.html#teacups.hamiltonians.set_up_commutator_superoperator">[docs]</a><span class="k">def</span> <span class="nf">set_up_commutator_superoperator</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span>
                                     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Build a commutator superoperator from a hilbert space hamiltonian for</span>
@@ -505,7 +531,7 @@
 <span class="sd">        Container for results of calculations during the simulation. This</span>
 <span class="sd">        function uses the attribute cal.ham, a hamiltonian in hilbert space</span>
 <span class="sd">        (B_angle_matrix is required, can be calculated e.g. by the function</span>
-<span class="sd">         set_up_rp_hamiltonian). The hamiltonian is used to set up the</span>
+<span class="sd">        set_up_rp_hamiltonian). The hamiltonian is used to set up the</span>
 <span class="sd">        commutator superoperator.</span>
 
 <span class="sd">    Attributes</span>
@@ -524,10 +550,13 @@
         <span class="k">pass</span>
     <span class="k">elif</span> <span class="n">opt</span><span class="o">.</span><span class="n">space</span> <span class="o">==</span> <span class="s1">&#39;liouville&#39;</span><span class="p">:</span>
         <span class="n">ham_adj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="p">),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
-        <span class="n">ham_superop</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span>
-            <span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">),</span> <span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="p">[:,</span> <span class="p">:])</span> <span class="o">-</span> \
-            <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">ham_adj</span><span class="p">[:,</span> <span class="p">:],</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">))</span>
+        <span class="n">ham_superop</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="p">[:,</span> <span class="p">:],</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span>
+            <span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">))</span> <span class="o">-</span> \
+            <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">),</span> <span class="n">ham_adj</span><span class="p">[:,</span> <span class="p">:])</span>
 
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        https://physics.stackexchange.com/questions/163546/finding-the-matrix-representation-of-a-superoperator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">relax</span> <span class="o">=</span> <span class="n">rlx</span><span class="o">.</span><span class="n">create_relaxation_superoperator</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
 
         <span class="n">ham_superop</span> <span class="o">=</span> <span class="n">ham_superop</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">relax</span>
@@ -536,7 +565,6 @@
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;opt.space has to be either hilbert or liouville&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="kc">None</span></div>
-
 </pre></div>
 
            </div>

@@ -1,25 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="../../">
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>teacups.density_matrices &mdash; TEACUPS 2023 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=a4664895"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="../../_static/copybutton.js?v=f281be69"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -30,18 +28,14 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="../../index.html" class="icon icon-home">
-            TEACUPS
+            <a href="../../index.html" class="icon icon-home"> TEACUPS
           </a>
               <div class="version">
-                1.0
+                1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -54,6 +48,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../spinsystem.html">Spin System (Sys)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../experimental.html">Experimental (Exp)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../simulation_options.html">Simulation Options (SimOpt)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../limitations_issiues.html">Limitations and known issiues</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../developer.html">Developer</a></li>
 </ul>
 
@@ -70,7 +65,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
       <li class="breadcrumb-item active">teacups.density_matrices</li>
       <li class="wy-breadcrumbs-aside">
@@ -88,6 +83,7 @@
 <span class="kn">import</span> <span class="nn">teacups.matrix_tools</span> <span class="k">as</span> <span class="nn">mt</span>
 <span class="kn">import</span> <span class="nn">teacups.creators</span> <span class="k">as</span> <span class="nn">cr</span>
 <span class="kn">import</span> <span class="nn">teacups.hamiltonians</span> <span class="k">as</span> <span class="nn">ham</span>
+<span class="kn">import</span> <span class="nn">teacups.memory</span> <span class="k">as</span> <span class="nn">mem</span>
 
 <span class="kn">import</span> <span class="nn">scipy.constants</span> <span class="k">as</span> <span class="nn">const</span>
 <span class="n">MU_B</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">physical_constants</span><span class="p">[</span><span class="s2">&quot;Bohr magneton in Hz/T&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -96,9 +92,7 @@
 <span class="n">FLOAT_TYPE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
 
 
-<div class="viewcode-block" id="set_up_density_matrix">
-<a class="viewcode-back" href="../../developer.html#teacups.density_matrices.set_up_density_matrix">[docs]</a>
-<span class="k">def</span> <span class="nf">set_up_density_matrix</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span>
+<div class="viewcode-block" id="set_up_density_matrix"><a class="viewcode-back" href="../../developer.html#teacups.density_matrices.set_up_density_matrix">[docs]</a><span class="k">def</span> <span class="nf">set_up_density_matrix</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span>
                           <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the density matrix in the basis and shape of the systems</span>
@@ -115,11 +109,7 @@
 <span class="sd">        zero-field levels), &#39;eigen&#39; (population of eigenvalues of the system),</span>
 <span class="sd">        &#39;singlet&#39; (a radical pair in pure singlet state), &#39;triplet-zf&#39; (a</span>
 <span class="sd">        triplet precursor populated in the triplets zero-field basis of a</span>
-<span class="sd">        radical pair or a triplet doublet pair), &#39;triplet-eigen&#39; (a</span>
-<span class="sd">        triplet precursor populated in the triplets eigen basis of a</span>
-<span class="sd">        radical pair or a triplet doublet pair), &#39;coupled&#39; (a triplet doublet</span>
-<span class="sd">        pair in the coupled basis), &#39;basis&#39; (basis of the population input</span>
-<span class="sd">        is not changed)</span>
+<span class="sd">        radical pair or a triplet doublet pair)</span>
 <span class="sd">        sys.spin_system: The spin system attribute has to be set to a string</span>
 <span class="sd">        defining the spin system. This may be &#39;rp&#39; (radical pair), &#39;trip&#39;</span>
 <span class="sd">        (triplet), &#39;doub&#39; (doublet), or &#39;tdp&#39; (triplet doublet pair).</span>
@@ -171,7 +161,7 @@
             <span class="c1"># basistransformation to the high field functions</span>
             <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="n">vec_hf</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
-                <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">population</span><span class="p">)</span>
+                <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">population</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">))</span>
                 <span class="o">@</span> <span class="n">vec_hf</span>
             <span class="p">)</span>
 
@@ -237,124 +227,117 @@
             <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">cal_tri</span><span class="o">.</span><span class="n">rho</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
 
         <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s2">&quot;tdp&quot;</span><span class="p">:</span>
-            <span class="n">cal_tri</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">cal</span><span class="p">)</span>
-            <span class="n">sys_tri</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>
-            <span class="n">opt_tri</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
-            <span class="n">opt_tri</span><span class="o">.</span><span class="n">space</span> <span class="o">=</span> <span class="s2">&quot;hilbert&quot;</span>
-            <span class="n">sys_tri</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">cr</span><span class="o">.</span><span class="n">set_up_spinoperator</span><span class="p">(</span><span class="n">sys_tri</span><span class="p">,</span> <span class="n">cal_tri</span><span class="p">)</span>
-            <span class="n">sys_tri</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">=</span> <span class="s2">&quot;trip&quot;</span>
-            <span class="n">sys_tri</span><span class="o">.</span><span class="n">precursor</span> <span class="o">=</span> <span class="s2">&quot;zf&quot;</span>
-            <span class="n">sys_tri</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">population</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
-            <span class="n">set_up_density_matrix</span><span class="p">(</span><span class="n">sys_tri</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">opt_tri</span><span class="p">,</span> <span class="n">cal_tri</span><span class="p">)</span>
+            <span class="c1"># set up the full high field hamiltonian of the coupled system</span>
+            <span class="c1"># in the xyz-Basis: xxyyzz</span>
+            <span class="n">ham_xyz</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_tdp_full_high_field_hamiltonian</span><span class="p">(</span>
+                <span class="n">sys</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
+            <span class="c1"># !!! Kontrolle hat ergeben, dass sich die Eigenwerte von ham_hf</span>
+            <span class="c1"># und ham_sys nur um einen Offset von J/4 unterscheiden. Das liegt</span>
+            <span class="c1"># an der unterschiedlichen Definition von H_ex (siehe Doku) von</span>
+            <span class="c1"># RP (verwendet in multioperator_tools) und TDP. Fürs Spektrum</span>
+            <span class="c1"># gibt es keinen Unterschied, allerdings könnte man das beim</span>
+            <span class="c1"># Aufräumen vom Code angleichen (z.B. indem H_ex für alle Systeme</span>
+            <span class="c1"># identisch aufgestellt wird)</span>
+
+            <span class="c1"># define rho in xyz-basis using populations for triplet-zf levels</span>
+            <span class="n">rho_trip</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">population</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">))</span>
+            <span class="n">rho_trip</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">rho_trip</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">))</span>
 
             <span class="n">rho</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">)</span>
-            <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">population</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
-                        <span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">))</span> <span class="o">+</span>\
-                <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">),</span> <span class="n">cal_tri</span><span class="o">.</span><span class="n">rho</span><span class="p">)</span>
+            <span class="n">rho</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">rho_trip</span>
 
+            <span class="n">CUPY</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">CUPY</span>
+            <span class="k">if</span> <span class="n">CUPY</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">cupy</span> <span class="k">as</span> <span class="nn">cp</span>
+
+                <span class="n">chunk_size</span> <span class="o">=</span> <span class="n">mem</span><span class="o">.</span><span class="n">chunk_size_for_gpu</span><span class="p">(</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">),</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">)</span><span class="o">*</span><span class="mi">4</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">)</span>
+
+                <span class="n">ham_xyz_split</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">ham_xyz</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">)</span>
+                <span class="n">ham_sys_split</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham_sys</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">)</span>
+
+                <span class="n">rho_split</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="kn">from</span> <span class="nn">pynvml</span> <span class="kn">import</span> <span class="p">(</span>
+                    <span class="n">nvmlInit</span><span class="p">,</span>
+                    <span class="n">nvmlDeviceGetHandleByIndex</span><span class="p">,</span>
+                    <span class="n">nvmlDeviceGetMemoryInfo</span><span class="p">,</span>
+                <span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ham_xyz_split</span><span class="p">)):</span>
+                    <span class="n">ham_xyz</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ham_xyz_split</span><span class="p">[</span><span class="n">chunk</span><span class="p">])</span>
+
+                    <span class="n">eig_hf</span><span class="p">,</span> <span class="n">vec_hf</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">ham_xyz</span><span class="p">)</span>
+                    <span class="k">del</span> <span class="n">eig_hf</span><span class="p">,</span> <span class="n">ham_xyz</span>
+
+                    <span class="n">cal_ham_sys</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ham_sys_split</span><span class="p">[</span><span class="n">chunk</span><span class="p">])</span>
+                    <span class="n">eig_sys</span><span class="p">,</span> <span class="n">vec_sys</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">cal_ham_sys</span><span class="p">)</span>
+                    <span class="k">del</span> <span class="n">eig_sys</span><span class="p">,</span> <span class="n">cal_ham_sys</span>
+
+                    <span class="n">rho_matrix</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">rho</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+                    <span class="n">rho_B_angle_matrix</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">cp</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="n">vec_hf</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+                        <span class="o">@</span> <span class="n">rho_matrix</span>
+                        <span class="o">@</span> <span class="n">vec_hf</span>
+                    <span class="p">)</span>
+                    <span class="k">del</span> <span class="n">rho_matrix</span><span class="p">,</span> <span class="n">vec_hf</span>
+                    <span class="n">rho_B_angle_matrix</span> <span class="o">*=</span> <span class="n">cp</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
+
+                    <span class="n">rho_B_angle_matrix</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">vec_sys</span>
+                        <span class="o">@</span> <span class="n">rho_B_angle_matrix</span>
+                        <span class="o">@</span> <span class="n">cp</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="n">vec_sys</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+                    <span class="p">)</span>
+                    <span class="k">del</span> <span class="n">vec_sys</span>
+                    <span class="n">rho_B_angle_matrix</span> <span class="o">*=</span> <span class="n">cp</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
+
+                    <span class="n">rho_split</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rho_B_angle_matrix</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+                    <span class="k">del</span> <span class="n">rho_B_angle_matrix</span>
+                <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">rho_split</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># diagonalise high field hamiltonian to get the eigenvectors for</span>
+                <span class="c1"># transformation xyz-basis &lt;-&gt; TDP-eigenbasis</span>
+                <span class="n">eig_hf</span><span class="p">,</span> <span class="n">vec_hf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">ham_xyz</span><span class="p">)</span>
+
+                <span class="c1"># diagonalise the spin system hamiltonian to get the eigenvectors</span>
+                <span class="c1"># for the transformation product basis &lt;-&gt; TDP-eigenbasis</span>
+                <span class="n">eig_sys</span><span class="p">,</span> <span class="n">vec_sys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham_sys</span><span class="p">)</span>
+
+                <span class="c1"># basistransformation rho: xyz-basis -&gt; TDP-eigenbasis</span>
+                <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="n">vec_hf</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+                    <span class="o">@</span> <span class="n">rho</span><span class="o">.</span><span class="n">matrix</span>
+                    <span class="o">@</span> <span class="n">vec_hf</span>
+                <span class="p">)</span>
+                <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
+
+                <span class="c1"># basistransformation rho: TDP-eigenbasis -&gt; product basis</span>
+                <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">vec_sys</span>
+                    <span class="o">@</span> <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span>
+                    <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="n">vec_sys</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+                <span class="p">)</span>
+
+                <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
+
+            <span class="c1"># add density matrix for the doublet in product basis</span>
+            <span class="n">rho_doub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">population</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">))</span>
+            <span class="n">rho_doub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">rho_doub</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">))</span>
+            <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">+=</span> <span class="n">rho_doub</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
                 <span class="s1">&#39;The spin_system attribute only accpets </span><span class="se">\</span>
 <span class="s1">                                 &quot;rp&quot; or &quot;tdp&quot; as a value for a triplet</span><span class="se">\</span>
 <span class="s1">                                  precursor.&#39;</span>
-            <span class="p">)</span>
-
-    <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">precursor</span> <span class="o">==</span> <span class="s2">&quot;triplet-eigen&quot;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s2">&quot;rp&quot;</span><span class="p">:</span>
-            <span class="n">cal_tri</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">cal</span><span class="p">)</span>
-            <span class="n">sys_tri</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>
-            <span class="n">opt_tri</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
-            <span class="n">opt_tri</span><span class="o">.</span><span class="n">space</span> <span class="o">=</span> <span class="s2">&quot;hilbert&quot;</span>
-            <span class="n">sys_tri</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">cr</span><span class="o">.</span><span class="n">set_up_spinoperator</span><span class="p">(</span><span class="n">sys_tri</span><span class="p">,</span> <span class="n">cal_tri</span><span class="p">)</span>
-            <span class="n">sys_tri</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">=</span> <span class="s2">&quot;trip&quot;</span>
-            <span class="n">sys_tri</span><span class="o">.</span><span class="n">precursor</span> <span class="o">=</span> <span class="s2">&quot;eigen&quot;</span>
-            <span class="n">cal_tri</span><span class="o">.</span><span class="n">ham_sys</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_triplet_hamiltonian</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal_tri</span><span class="p">)</span>
-            <span class="n">set_up_density_matrix</span><span class="p">(</span><span class="n">sys_tri</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">opt_tri</span><span class="p">,</span> <span class="n">cal_tri</span><span class="p">)</span>
-
-            <span class="n">rho</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">)</span>
-            <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">cal_tri</span><span class="o">.</span><span class="n">rho</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-            <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">cal_tri</span><span class="o">.</span><span class="n">rho</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-            <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">cal_tri</span><span class="o">.</span><span class="n">rho</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-
-        <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s2">&quot;tdp&quot;</span><span class="p">:</span>
-            <span class="n">cal_tri</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">cal</span><span class="p">)</span>
-            <span class="n">sys_tri</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>
-            <span class="n">opt_tri</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
-            <span class="n">opt_tri</span><span class="o">.</span><span class="n">space</span> <span class="o">=</span> <span class="s2">&quot;hilbert&quot;</span>
-            <span class="n">sys_tri</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">cr</span><span class="o">.</span><span class="n">set_up_spinoperator</span><span class="p">(</span><span class="n">sys_tri</span><span class="p">,</span> <span class="n">cal_tri</span><span class="p">)</span>
-            <span class="n">sys_tri</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">=</span> <span class="s2">&quot;trip&quot;</span>
-            <span class="n">sys_tri</span><span class="o">.</span><span class="n">precursor</span> <span class="o">=</span> <span class="s2">&quot;eigen&quot;</span>
-            <span class="n">cal_tri</span><span class="o">.</span><span class="n">ham_sys</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_triplet_hamiltonian</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal_tri</span><span class="p">)</span>
-            <span class="n">sys_tri</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">population</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
-            <span class="n">set_up_density_matrix</span><span class="p">(</span><span class="n">sys_tri</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">opt_tri</span><span class="p">,</span> <span class="n">cal_tri</span><span class="p">)</span>
-
-            <span class="n">rho</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">)</span>
-            <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">population</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
-                        <span class="p">),</span> <span class="n">cal_tri</span><span class="o">.</span><span class="n">rho</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                <span class="s1">&#39;The spin_system attribute only accpets </span><span class="se">\</span>
-<span class="s1">                                 &quot;rp&quot; or &quot;tdp&quot; as a value for a triplet</span><span class="se">\</span>
-<span class="s1">                                  precursor.&#39;</span>
-            <span class="p">)</span>
-
-    <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">precursor</span> <span class="o">==</span> <span class="s2">&quot;coupled&quot;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s2">&quot;tdp&quot;</span><span class="p">:</span>
-            <span class="n">s13</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
-            <span class="n">s23</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
-            <span class="n">trans</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                <span class="p">[</span>
-                    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">s23</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">s13</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">s13</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">s23</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">s13</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">s23</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">s23</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">s13</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="p">],</span>
-                <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">,</span>
-            <span class="p">)</span>
-
-            <span class="n">rho</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">)</span>
-            <span class="n">rho</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">population</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">))</span>
-            <span class="n">rho</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span> <span class="o">@</span> <span class="n">rho</span><span class="o">.</span><span class="n">matrix</span> <span class="o">@</span> <span class="n">trans</span>
-            <span class="n">rho</span><span class="o">.</span><span class="n">matrix</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
-            <span class="n">rho</span><span class="o">.</span><span class="n">matrix_changed</span><span class="p">()</span>
-
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                <span class="s1">&#39;The spin_system attribute only accpets </span><span class="se">\</span>
-<span class="s1">                                 &quot;tdp&quot; as a value for a coupled precursor.&#39;</span>
-            <span class="p">)</span>
-
-    <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">precursor</span> <span class="o">==</span> <span class="s2">&quot;basis&quot;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s2">&quot;rp&quot;</span>
-            <span class="ow">or</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s2">&quot;trip&quot;</span>
-            <span class="ow">or</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s2">&quot;doub&quot;</span>
-            <span class="ow">or</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s2">&quot;tdp&quot;</span>
-        <span class="p">):</span>
-            <span class="n">rho</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">)</span>
-            <span class="n">rho</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">population</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">))</span>
-            <span class="n">rho</span><span class="o">.</span><span class="n">matrix_changed</span><span class="p">()</span>
-
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                <span class="s1">&#39;The spin_system attribute only accepts </span><span class="se">\</span>
-<span class="s1">                                  the following values: &quot;rp&quot;, &quot;trip&quot;, &quot;doub&quot; </span><span class="se">\</span>
-<span class="s1">                                  or &quot;tdp&quot;.&#39;</span>
             <span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
             <span class="s1">&#39;The precursor attribute of the Spinsystem-class </span><span class="se">\</span>
 <span class="s1">                             only accepts the following values: &quot;zf&quot;, &quot;eigen&quot;,</span><span class="se">\</span>
-<span class="s1">                            &quot;singlet&quot;, &quot;triplet-zf&quot;, &quot;triplet-eigen&quot;, </span><span class="se">\</span>
-<span class="s1">                            &quot;coupled&quot; or basis&quot;.</span><span class="se">\</span>
+<span class="s1">                            &quot;singlet&quot; or &quot;triplet-zf&quot;,</span><span class="se">\</span>
 <span class="s1">                            For more details see the documentation.&#39;</span>
         <span class="p">)</span>
 
@@ -367,7 +350,6 @@
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;opt.space has to be either hilbert or liouville&quot;</span><span class="p">)</span>
 
     <span class="k">return</span></div>
-
 </pre></div>
 
            </div>

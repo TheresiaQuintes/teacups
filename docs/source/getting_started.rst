@@ -45,5 +45,5 @@ Installation
 	
    .. note::
    
-      You can add the path e.g. in a IDE like Spyder in which you want to run the code.
+      You can add the path e.g. in an IDE like Spyder in which you want to run the code.
 

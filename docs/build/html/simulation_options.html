@@ -1,26 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Simulation Options (SimOpt) &mdash; TEACUPS 2023 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=a4664895"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="_static/copybutton.js?v=f281be69"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -33,18 +31,14 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="index.html" class="icon icon-home">
-            TEACUPS
+            <a href="index.html" class="icon icon-home"> TEACUPS
           </a>
               <div class="version">
                 1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -93,7 +87,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
       <li class="breadcrumb-item active">Simulation Options (SimOpt)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/simulation_options.rst.txt" rel="nofollow"> View page source</a>
@@ -108,12 +102,12 @@
            <div itemprop="articleBody">
              
   <section id="simulation-options-simopt">
-<h1>Simulation Options (SimOpt)<a class="headerlink" href="#simulation-options-simopt" title="Link to this heading"></a></h1>
+<h1>Simulation Options (SimOpt)<a class="headerlink" href="#simulation-options-simopt" title="Permalink to this heading"></a></h1>
 <p>In the class <code class="docutils literal notranslate"><span class="pre">SimOpt</span></code> all parameters that set options for the simulation are set as attributes. This can be done in the script by typing:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">Attribute</span> <span class="o">=</span> <span class="n">Value</span>
 </pre></div>
 </div>
-<p>In the following all possible attributes are named. For each attribute an explanation, cases where it is needed and an example are given. You can get a quick reference file with all attributes <a class="reference download internal" download="" href="_downloads/8b97ebca44dddf331527d968b829fed2/quickreference.pdf"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a>.</p>
+<p>In the following all possible attributes are named. For each attribute an explanation, cases where it is needed and an example are given. You can get a quick reference file with all attributes <code class="xref download docutils literal notranslate"><span class="pre">here</span></code>.</p>
 <p>If you use the class provided by teacups.classes, the (recommended) default attributes are defined, so that you only have to define the values that you would like to change  from default in your skript:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">teacups.classes</span> <span class="k">as</span> <span class="nn">cl</span>
 
@@ -129,9 +123,9 @@
 </pre></div>
 </div>
 <section id="grid">
-<h2>Grid<a class="headerlink" href="#grid" title="Link to this heading"></a></h2>
+<h2>Grid<a class="headerlink" href="#grid" title="Permalink to this heading"></a></h2>
 <section id="simopt-grid">
-<h3>SimOpt.grid<a class="headerlink" href="#simopt-grid" title="Link to this heading"></a></h3>
+<h3>SimOpt.grid<a class="headerlink" href="#simopt-grid" title="Permalink to this heading"></a></h3>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The sophe-grid uses interpolation between the angle points. This does not work properly for narrow spectra. It is useful for fast calculation of very broad spectra with a small number of angle points to get a quick overview. To get a smooth spectrum the fibonacci grid is still recommended.</p>
@@ -154,7 +148,7 @@
 </ul>
 </section>
 <section id="simopt-grid-points">
-<h3>SimOpt.grid_points<a class="headerlink" href="#simopt-grid-points" title="Link to this heading"></a></h3>
+<h3>SimOpt.grid_points<a class="headerlink" href="#simopt-grid-points" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Number of points between theta = 0 and theta = pi/2 on the orientational sphere</dt><dd><ul class="simple">
@@ -175,7 +169,7 @@
 </ul>
 </section>
 <section id="simopt-theta-simopt-phi">
-<h3>SimOpt.theta / SimOpt.phi<a class="headerlink" href="#simopt-theta-simopt-phi" title="Link to this heading"></a></h3>
+<h3>SimOpt.theta / SimOpt.phi<a class="headerlink" href="#simopt-theta-simopt-phi" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Lists with orientation angles chosen by the user</dt><dd><ul class="simple">
@@ -196,7 +190,7 @@
 </ul>
 </section>
 <section id="simopt-width-intp">
-<h3>SimOpt.width_intp<a class="headerlink" href="#simopt-width-intp" title="Link to this heading"></a></h3>
+<h3>SimOpt.width_intp<a class="headerlink" href="#simopt-width-intp" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>If the grid is a sophe grid points between the grid points will be interpolated. To get the desired peaks a interpolation width in mT has to be set</dt><dd><ul class="simple">
@@ -215,9 +209,9 @@
 </section>
 </section>
 <section id="simulation-modes">
-<h2>Simulation modes<a class="headerlink" href="#simulation-modes" title="Link to this heading"></a></h2>
+<h2>Simulation modes<a class="headerlink" href="#simulation-modes" title="Permalink to this heading"></a></h2>
 <section id="simopt-space">
-<h3>SimOpt.space<a class="headerlink" href="#simopt-space" title="Link to this heading"></a></h3>
+<h3>SimOpt.space<a class="headerlink" href="#simopt-space" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Choose the space for the simulation</dt><dd><ul class="simple">
@@ -239,7 +233,7 @@
 </div>
 </section>
 <section id="simopt-pop-evolution">
-<h3>SimOpt.pop_evolution<a class="headerlink" href="#simopt-pop-evolution" title="Link to this heading"></a></h3>
+<h3>SimOpt.pop_evolution<a class="headerlink" href="#simopt-pop-evolution" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Decides wether the population evolution shall be calculated</dt><dd><ul class="simple">
@@ -264,7 +258,7 @@
 </ul>
 </section>
 <section id="simopt-eigval-mode">
-<h3>SimOpt.eigval_mode<a class="headerlink" href="#simopt-eigval-mode" title="Link to this heading"></a></h3>
+<h3>SimOpt.eigval_mode<a class="headerlink" href="#simopt-eigval-mode" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Calculate only the eigenvalues of the spin system dependent on the magnetic field</dt><dd><ul class="simple">
@@ -284,9 +278,9 @@
 </section>
 </section>
 <section id="calculation-settings">
-<h2>Calculation settings<a class="headerlink" href="#calculation-settings" title="Link to this heading"></a></h2>
+<h2>Calculation settings<a class="headerlink" href="#calculation-settings" title="Permalink to this heading"></a></h2>
 <section id="simopt-cpu-cores">
-<h3>SimOpt.cpu_cores<a class="headerlink" href="#simopt-cpu-cores" title="Link to this heading"></a></h3>
+<h3>SimOpt.cpu_cores<a class="headerlink" href="#simopt-cpu-cores" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Number of CPU cores used for time propagation</dt><dd><ul class="simple">

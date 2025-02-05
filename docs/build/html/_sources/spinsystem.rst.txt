@@ -7,7 +7,24 @@ In the class ``Sys`` all parameters that describe the fundamental spin system ar
 	
 	Sys.Attribute = Value
 
-In the following all possible attributes are named. For each attribute an explanation, cases where it is needed and an example are given. You can get a quick reference file with all attributes :download:`here </quickreference.pdf>`.
+If the class is initialized by::
+
+	import teacups.classes as cl
+	Sys = cl.SpinSystem()
+
+the following attributes are preallocated (but can be newly assigned by the user):
+
+* spin_system: "doub"
+* precursor: "basis"
+* population: [0, 1]
+* g: [1.95, 2, 2.1]
+* width_gauss: 3
+* decay: 1e-6
+* dynamics: None
+* T_relax_1: 1e-6
+* T_relax_2: 1e-6
+
+In the following all possible attributes are named. For each attribute an explanation, cases where it is needed and an example are given. You can get a quick reference file with all attributes :download:`here <./../quickreference/quickreference.pdf>`.
 
 
 Polarisation
