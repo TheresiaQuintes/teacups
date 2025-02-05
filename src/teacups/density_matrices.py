@@ -30,11 +30,7 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
         zero-field levels), 'eigen' (population of eigenvalues of the system),
         'singlet' (a radical pair in pure singlet state), 'triplet-zf' (a
         triplet precursor populated in the triplets zero-field basis of a
-        radical pair or a triplet doublet pair), 'triplet-eigen' (a
-        triplet precursor populated in the triplets eigen basis of a
-        radical pair or a triplet doublet pair), 'coupled' (a triplet doublet
-        pair in the coupled basis), 'basis' (basis of the population input
-        is not changed)
+        radical pair or a triplet doublet pair)
         sys.spin_system: The spin system attribute has to be set to a string
         defining the spin system. This may be 'rp' (radical pair), 'trip'
         (triplet), 'doub' (doublet), or 'tdp' (triplet doublet pair).

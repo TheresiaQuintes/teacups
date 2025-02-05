@@ -97,7 +97,7 @@ def create_hf_hamiltonian(spins: list, coupling_nucs: list, hf_tensors: list
         the diagonal elements of the hyperfine interaction in the product
         basis. The shape of the arrays is
         gridpoints x (multiplicity_spin*product of
-                      multiplicity_of_all_coupling_nucs).
+        multiplicity_of_all_coupling_nucs).
 
     Examples
     --------

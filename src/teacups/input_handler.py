@@ -304,28 +304,28 @@ def hyperfine_converter(sys: object) -> None:
     Allow flexible input of hyperfine parameters. Function has the following
     possibilities for handling hyperfine parameters:
 
-    - No hyperfines are given: Only sys.I is set as an empty list. No further
-    hyperfine correlated attributes are added to the sys object.
+    * No hyperfines are given: Only sys.I is set as an empty list.
+      No further hyperfine correlated attributes are added to the sys object.
 
-    - Hyperfines are given in the spinsystem attributes sys.I, sys.A and
-    sys.A_frame as lists (like the lists like needed by
-    set_up_hyperfine_tensors and create_hf_hamiltonian): Function just returns;
-    it does not change the attributes.
+    * Hyperfines are given in the spinsystem attributes sys.I, sys.A and
+      sys.A_frame as lists (like the lists like needed by
+      set_up_hyperfine_tensors and create_hf_hamiltonian): Function just returns;
+      it does not change the attributes.
 
-    - Hyperfines are given as numbered attributes of sys, e.g. sys.I1, sys.I2
-    etc., the spin_system is not 'rp': Attributes sys.A, sys.I and sys.A_frame
-    are build as lists (like needed by set_up_hyperfine_tensors and
-    create_hf_hamiltonian) and filled with all n numbered attributes. If no
-    sys.A_frame_i is given the values in sys.A_frame are set to [0, 0, 0]. The
-    attribute sys.n_i determines the number of times the type of core is added
-    to sys.A/I/A_frame.
+    * Hyperfines are given as numbered attributes of sys, e.g. sys.I1, sys.I2
+      etc., the spin_system is not 'rp': Attributes sys.A, sys.I and sys.A_frame
+      are build as lists (like needed by set_up_hyperfine_tensors and
+      create_hf_hamiltonian) and filled with all n numbered attributes. If no
+      sys.A_frame_i is given the values in sys.A_frame are set to [0, 0, 0]. The
+      attribute sys.n_i determines the number of times the type of core is added
+      to sys.A/I/A_frame.
 
-    - Hyperfines are given as numbered attributes of sys, e.g. sys.I1, sys.I2
-    etc. and the spin_system is 'rp': The attributes are created as if
-    spin_sytem would not be 'rp' but the resulting lists contain two instead
-    of one list of hyperfine parameters, one for each electron. The place where
-    the numbered elements shall be placed is defined by the attributes
-    donor_list and acceptor list.
+    * Hyperfines are given as numbered attributes of sys, e.g. sys.I1, sys.I2
+      etc. and the spin_system is 'rp': The attributes are created as if
+      spin_sytem would not be 'rp' but the resulting lists contain two instead
+      of one list of hyperfine parameters, one for each electron. The place where
+      the numbered elements shall be placed is defined by the attributes
+      donor_list and acceptor list.
 
     Parameters
     ----------

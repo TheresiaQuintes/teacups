@@ -45,13 +45,11 @@ Sys.spin_system
 Sys.precursor
 ^^^^^^^^^^^^^
 * Defines the initial polarisation of the spin system. Dependent on the chosen system different initial polarisations are available. The precursor attribute defines the basis chosen for the initial polarisation. Set Sys.precursor to
-	* ``'basis'`` to give the polarisation vector in the basis of the hamiltonian. |rarr| possible for all spin systems
-	* ``'eigen'`` to give the polarisation vector in the eigenbasis of the system. |rarr| possible for all spin systems
-	* ``'zf'`` to give the poalrisation vector in the basis of the zero field states. |rarr| possible for triplet spin systems
-	* ``'singlet'`` to initialize a pure singlet polarisation. |rarr| possible for radical pair spin systems
-	* ``'triplet-zf'`` to give the polarisation vector as a trplet precursor in the zero field basis |rarr| possible for radical pairs (with triplet precursor) and triplet doublet pairs (consisting of the triplet precursor and a radical precursor
-	* ``'triplet-eigen'`` to give the polarisation vector as a trplet precursor in the eigenbasis |rarr| possible for radical pairs (with triplet precursor) and triplet doublet pairs (consisting of the triplet precursor and a radical precursor
-	* ``'coupled'`` to give the polarisation vector in the basis of doublet and quartet states. |rarr| possible for triplet doublet pair spin systems (does not work properly until now)
+	- ``'eigen'`` to give the polarisation vector in the eigenbasis of the system. |rarr| possible for all spin systems
+	- ``'zf'`` to give the poalrisation vector in the basis of the zero field states. |rarr| possible for triplet spin systems
+	- ``'singlet'`` to initialize a pure singlet polarisation. |rarr| possible for radical pair spin systems
+	- ``'triplet-zf'`` to give the polarisation vector as a trplet precursor in the zero field basis |rarr| possible for radical pairs (with triplet precursor) and triplet doublet pairs (consisting of the triplet precursor and a radical precursor
+	
 * Obligatory for all simulations
 * e.g.::
 
@@ -59,19 +57,20 @@ Sys.precursor
 
 .. hint:: Some bases are especially recommended for special spin systems:
 	
-	- for ``'doub'`` use ``'basis'``
-	- for ``'trip'`` use ``'zf'`` for ISC triplets (populate :math:`T_x`, :math:`T_y` and :math:`T_z`) and ``'eigen'`` for recombination triplets (populate :math:`T_-`, :math:`T_0` and :math:`T_+`)
+	- for ``'doub'`` use ``'eigen'`` for the population of the alpha and beta states in ascending energetic order 
+	- for ``'trip'`` use ``'zf'`` for ISC triplets (populate :math:`T_x`, :math:`T_y` and :math:`T_z` in ascending energetic order) and ``'eigen'`` for recombination triplets (populate :math:`T_-`, :math:`T_0` and :math:`T_+` in ascending energetic order)
 	- for ``'rp'`` use ``'singlet'`` for a singlet precursor and ``'triplet-zf'`` for a triplet precursor
-	- for ``'tdp'`` use ``'triplet-zf'`` to populate the zerofield levels and ``'eigen'`` to populate the highfield levels
+	- for ``'tdp'`` use ``'triplet-zf'`` to populate the zerofield levels of an ISC-triplet perecursor and a radical precursor and ``'eigen'`` to populate the highfield levels of the coupled system
 	
 Sys.population
 ^^^^^^^^^^^^^^
 * Set the initial population vector in the basis that is defined in Sys.precursor.
-	* Given as a list of floats
+	* List of floats
+	* In general the populations are given in ascending order of the energy levels.
 * Obligatory for all simulations
 * e.g.::
 	
-	# doublet, basis: populate the alpha and beta spinstates
+	# doublet, eigen: populate the alpha and beta spinstates
 	Sys.population = [0.5, 0.505]
 	
 	# triplet, zf: populate the three zerofield states of a triplet Tx, Ty and Tz
@@ -84,19 +83,31 @@ Sys.population
 	# no Sys.population is needed
 	
 	# triplet doublet pair, eigen: populate the six eigenstates of the triplet doublet pair
-	Sys.population = [0.3, 0, 0, 0.3, 0.1, 0.1]
+	Sys.population = [0.3, 0, 0, 0.3, 0.1, 0.1]  
 	
 	# triplet doublet pair, triplet-zf:
-	# populate the two doublet precursor levels alpha and beta and the three triplet precursor zero field levels
+	# populate the two doublet precursor levels alpha and beta
+	# and the three triplet precursor zero field levels
 	# [alpha, beta, Tx, Ty, Tz]
 	Sys.population = [0.2, 0.2, 0.3, 0.2, 0.1]
 
+
 g-tensors
----------	
+---------
+.. math:: 
+   \mathbf{g} &= \begin{pmatrix} g_{xx} & 0 & 0\\ 0 & g_{yy} & 0 \\ 0 & 0 & g_{zz} \end{pmatrix} \\
+   &\text{}\\
+      \mathbf{rot}_{z,y',z''} &=  \begin{pmatrix}
+                                \cos \phi \cos \vartheta \cos \psi - \sin \phi \sin \psi & -\cos \phi \cos \vartheta \sin \psi -\sin \phi \cos \psi & \cos \phi \sin \vartheta \\
+                                \sin \phi \cos \vartheta \cos \psi + \cos \phi \sin \psi & -\sin \phi \cos \vartheta \sin \psi + \cos \phi \cos \psi & \sin \phi \sin \vartheta \\
+                                -\sin \vartheta \cos\psi & \sin \vartheta \sin \psi & \cos \vartheta \\
+             \end{pmatrix}
+	   	   
 Sys.g
 ^^^^^
-* Diagonal elements of the g-tensor of a radical
-	* Given as a list of float with three members (gx, gy and gz)
+* Principal elements of the g-tensor of a doublet spin
+	* List of floats with three members (:math:`g_{xx}`, :math:`g_{yy}`, :math:`g_{zz}`)
+	
 * Obligatory for doublet systems and triplet doublet pairs
 * e.g.::
 	
@@ -104,9 +115,10 @@ Sys.g
 
 Sys.g_tri
 ^^^^^^^^^
-* Diagonal elements of the g_tri-tensor of a triplet
-	* Given as a list of float with three members (gx, gy and gz)
-* Obligatory for triplet systems, triplet doublet pairs and radical pairs with triplet precursor
+* Diagonal elements of the g-tensor of a triplet spin
+	* List of floats with three members (:math:`g_{xx}`, :math:`g_{yy}`, :math:`g_{zz}`)
+	  
+* Obligatory for triplet systems and triplet doublet pairs and radical pairs with triplet precursor
 * e.g.::
 	
 	Sys.g_tri = [2.01, 2.05, 1.99] 
@@ -114,7 +126,7 @@ Sys.g_tri
 Sys.g1
 ^^^^^^
 * Diagonal elements of the g1-tensor of a radical pair
-	* Given as a list of float with three members (gx, gy and gz)
+	* List of floats with three members (:math:`g_{xx}`, :math:`g_{yy}`, :math:`g_{zz}`)
 	* Acceptor
 * Obligatory for radical pair simulation
 * e.g.::
@@ -124,7 +136,7 @@ Sys.g1
 Sys.g2
 ^^^^^^
 * Diagonal elements of the g2-tensor of a radical pair
-	* Given as a list of floats with three members (gx, gy and gz)
+	* List of floats with three members (:math:`g_{xx}`, :math:`g_{yy}`, :math:`g_{zz}`)
 	* Donor
 * Obligatory for radical pair simulation
 * e.g.::
@@ -133,17 +145,17 @@ Sys.g2
 
 Sys.g_frame
 ^^^^^^^^^^^
-* Three euler angles to rotate the g-tensor from molecular to laboratory frame
-	* Given as a list of floats with three members (phi, theta, psi)
-* Optional for doublet systems and triplet doublet pairs
+* Three euler angles to rotate the doublet g-tensor from molecular to laboratory frame
+	* List of floats with three members (:math:`\phi`, :math:`\vartheta`, :math:`\psi`)
+* Optional for doublet and triplet doublet pair systems
 * e.g.::
 	
 	Sys.g_frame = [0, np.pi/2, 0]  # rad
 
 Sys.g_tri_frame
 ^^^^^^^^^^^^^^^
-* Three euler angles to rotate the g_tri-tensor from molecular to laboratory frame
-	* Given as a list of floats with three members (phi, theta, psi)
+* Three euler angles to rotate the triplet g-tensor from molecular to laboratory frame
+	* List of floats with three members (:math:`\phi`, :math:`\vartheta`, :math:`\psi`)
 * Optional for triplet systems, triplet doublet pairs and radical pairs with triplet precursor
 * e.g.::
 	
@@ -151,8 +163,8 @@ Sys.g_tri_frame
 		
 Sys.g1_frame
 ^^^^^^^^^^^^
-* Three euler angles to rotate the g1-tensor from molecular to laboratory frame
-	* Given as a list of floats with three members (phi, theta, psi)
+* Three euler angles to rotate the g1-tensor of a radical pair from molecular to laboratory frame
+	* List of floats with three members (:math:`\phi`, :math:`\vartheta`, :math:`\psi`)
 * Optional for radical pair simulation
 * e.g.::
 	
@@ -160,8 +172,8 @@ Sys.g1_frame
    
 Sys.g2_frame
 ^^^^^^^^^^^^
-* Three euler angles to rotate the g2-tensor from molecular to laboratory frame
-	* Given as a list of floats with three members (phi, theta, psi)
+* Three euler angles to rotate the g2-tensor of a radical pair from molecular to laboratory frame
+	* List of floats with three members (:math:`\phi`, :math:`\vartheta`, :math:`\psi`)
 * Optional for radical pair simulation
 * e.g.::
 	
@@ -200,7 +212,7 @@ Sys.E
 Sys.D_frame
 ^^^^^^^^^^^
 * Three euler angles to rotate the D-tensor for dipolar couplings from molecular to laboratory frame
-	* Given as a list of floats with three members (phi, theta, psi)
+	* List of floats with three members (phi, theta, psi)
 * Optional for radical pair and tripled douplet pair simulations if a dipolar coupling is given
 * e.g.::
 	
@@ -252,7 +264,7 @@ Sys.E_tri
 Sys.D_tri_frame
 ^^^^^^^^^^^^^^^
 * Three euler angles to rotate the ZFS tensor of triplets from molecular to laboratory frame
-	* Given as a list of floats with three members (phi, theta, psi)
+	* List of floats with three members (phi, theta, psi)
 * Optional for triplets, radical pairs with triplet precursor and triplet doublet pairs if a ZFS is defined
 * e.g.::
 	
@@ -268,7 +280,7 @@ Sys.Ai
 ^^^^^^
 * Diagonal elements of a hyperfine tensor of nucleus i
 	* i ranges from 1-5
-	* Given as a list of floats with three members (Ax, Ay and Az)
+	* List of floats with three members (Ax, Ay and Az)
 * Optional for doublet and triplet simulations
 * e.g.::
 	
@@ -278,7 +290,7 @@ Sys.Ai_frame
 ^^^^^^^^^^^^
 * Three euler angles to rotate the hyperfine tensor of nucleus i from molecular to laboratory frame
 	* i ranges from 1-5
-	* Given as a list of floats with three members (phi, theta, psi)
+	* List of floats with three members (phi, theta, psi)
 * Optional for doublets and triplets where a hyperfine tensor A is given
 * e.g.::
 	

@@ -284,7 +284,7 @@ def set_up_rp_hamiltonian(sys: object, exp: object, opt: object, cal: object
 
 def set_up_tdp_hamiltonian(sys: object, exp: object, opt: object, cal: object
                            ) -> 'np.ndarray':
-    """
+    r"""
     Calculate a Hamiltonian matrix operator for a coupled triplet doublet pair.
     Coupling with the static magnetic field of the triplet and the doublet is
     included each as well as the ZFS of the triplet and the interactions of the
@@ -315,7 +315,7 @@ def set_up_tdp_hamiltonian(sys: object, exp: object, opt: object, cal: object
         Triplet-doublet-pair hamiltonian in the shape of a B_angle_matrix from
         the class Multioperator. The hamiltonian is given in the product basis
         of doublet and triplet:
-        |a, +1>, |a, 0>, |a, -1>, |b, +1>, |b, 0>, |b, -1>.
+        \|a, +1\>, \|a, 0\>, \|a, -1\>, \|b, +1\>, \|b, 0\>, \|b, -1\>.
 
     """
     s = cal.s
@@ -349,7 +349,7 @@ def set_up_tdp_hamiltonian(sys: object, exp: object, opt: object, cal: object
 def set_up_tdp_full_high_field_hamiltonian(sys: object, exp: object,
                                            opt: object, cal: object
                                            ) -> 'np.ndarray':
-    """
+    r"""
     Calculate a Hamiltonian matrix operator for a coupled triplet doublet pair.
     Coupling with the static magnetic field of the triplet and the doublet is
     included each as well as the ZFS of the triplet and the interactions of the
@@ -381,7 +381,7 @@ def set_up_tdp_full_high_field_hamiltonian(sys: object, exp: object,
         Full triplet-doublet-pair high-field hamiltonian in the shape of a
         B_angle_matrix from the class Multioperator. The hamiltonian is given
         in the xyz-Basis of doublet and triplet:
-        |a, x>, |b, x>, |a, y>, |b, y>, |a, z>, |b, z>.
+        \|a, x\>, \|b, x\>, \|a, y\>, \|b, y\>, \|a, z\>, \|b, z\>.
 
     """
     setup_s = mt.Spinoperator(0.5, 1)
@@ -452,7 +452,7 @@ def set_up_commutator_superoperator(sys: object, opt: object, cal: object
         Container for results of calculations during the simulation. This
         function uses the attribute cal.ham, a hamiltonian in hilbert space
         (B_angle_matrix is required, can be calculated e.g. by the function
-         set_up_rp_hamiltonian). The hamiltonian is used to set up the
+        set_up_rp_hamiltonian). The hamiltonian is used to set up the
         commutator superoperator.
 
     Attributes

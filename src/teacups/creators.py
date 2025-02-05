@@ -83,14 +83,14 @@ def set_up_tensors(sys: object, cal: object) -> None:
     sys : object
         Contains parameters concerning the spin system. This function can use
         the following arguments and returns the tensors:
-            g1, g2 (g-tensors of a radical pair) + g1_frame/g2_frame [lists]
-            g (g-tensor of a radical) + g_frame [lists]
-            g_tri (g-tensor of a triplet) + g_tri_frame [lists]
-            D, E (dipole coupling parameters of a coupled spin system) [floats]
-            + D_frame [list], if D, E are not given, they will be set to zero
-            D_tri, E_tri (ZFS parameters of a triplet) [floats]
-            + D_tr_frame [list], if D, E are not given, they will be set
-            to zero
+        g1, g2 (g-tensors of a radical pair) + g1_frame/g2_frame [lists]
+        g (g-tensor of a radical) + g_frame [lists]
+        g_tri (g-tensor of a triplet) + g_tri_frame [lists]
+        D, E (dipole coupling parameters of a coupled spin system) [floats]
+        + D_frame [list], if D, E are not given, they will be set to zero
+        D_tri, E_tri (ZFS parameters of a triplet) [floats]
+        + D_tr_frame [list], if D, E are not given, they will be set
+        to zero
     cal : object
         Container for calculated tensors. The attributes cal.phi and cal.theta
         (arrays with the angle points on a sphere for rotations) are needed.
