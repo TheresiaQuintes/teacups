@@ -153,10 +153,10 @@ def set_up_triplet_hamiltonian(exp: object, opt: object, cal: object
     B_z = B_z[:, np.newaxis]
 
     ham.B_angle_matrix[:, :, 0, 0] = B_z*cal.g_tri_tensor.multirot[:, 2, 2] \
-        + (1/2)*cal.D_tri_tensor.multirot[:, 2, 2]
-    ham.B_angle_matrix[:, :, 1, 1] = -1*cal.D_tri_tensor.multirot[:, 2, 2]
+        - (1/2)*cal.D_tri_tensor.multirot[:, 2, 2]
+    ham.B_angle_matrix[:, :, 1, 1] = 1*cal.D_tri_tensor.multirot[:, 2, 2]
     ham.B_angle_matrix[:, :, 2, 2] = -B_z*cal.g_tri_tensor.multirot[:, 2, 2]\
-        + (1/2)*cal.D_tri_tensor.multirot[:, 2, 2]
+        - (1/2)*cal.D_tri_tensor.multirot[:, 2, 2]
 
     ham = ham.B_angle_matrix
 
@@ -207,7 +207,7 @@ def set_up_triplet_high_field_hamiltonian(exp: object, opt: object,
     # Calculate high-field Hamiltonian
     ham_tri_hf = mut.Multioperator(s_tri, opt.grid_points, exp.B_z*MU_B)
     ham_tri_hf.zeeman_coupling(cal.g_tri_tensor)
-    ham_tri_hf.B_angle_matrix -= ham_d.B_angle_matrix # !!! Hier muss eigentlich ein + hin; Anpassung der VZ-Konvention im händisch aufgestellten Hamiltonoperator nötig, Test ergänzen
+    ham_tri_hf.B_angle_matrix += ham_d.B_angle_matrix
 
     # Transfer high-field Hamiltonian to xyz-Basis
     ham_tri_hf.B_angle_matrix = np.conj(

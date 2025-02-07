@@ -24,12 +24,12 @@ class TestTeacups:
         Sys.g_tri = [2.003, 2.003, 2.003]
 
         # define triplet ZFS
-        Sys.D_tri = -700
-        Sys.E_tri = 100
+        Sys.D_tri = 700
+        Sys.E_tri = -100
 
         # define initial state
         Sys.precursor = "zf"
-        Sys.population = [0, 0, 1]
+        Sys.population = [1, 0, 0]
 
         # define decay time and line width
         Sys.decay = 1e-6
@@ -69,14 +69,14 @@ class TestTeacups:
         Sys.g_tri = [2.003, 2.003, 2.003]
 
         # define triplet ZFS
-        Sys.D_tri = 500
-        Sys.E_tri = -50
+        Sys.D_tri = -500
+        Sys.E_tri = 50
 
         # define couplings of the radical and the triplet
         Sys.J_ex = -400000
 
         Sys.precursor = "triplet-zf"
-        Sys.population = [0.2, 0.205, 0.1, 0.1, 0.2]
+        Sys.population = [0.2, 0.205, 0.2, 0.1, 0.1]
 
         # define decay time and line width
         Sys.decay = 1e-6
@@ -153,9 +153,9 @@ class TestTeacups:
         # Triplet precursor
         Sys.precursor = 'triplet-zf'
         Sys.g_tri = [2.00370, 2.00285, 2.00246]
-        Sys.population = [1, 0, 0]
-        Sys.D_tri = -1.9217e+03
-        Sys.E_tri = +525.4678
+        Sys.population = [0, 0, 1]
+        Sys.D_tri = +1.9217e+03
+        Sys.E_tri = -525.4678
 
         Sys.decay = 1e-6
         Sys.T_relax_1 = 1e-6
@@ -197,7 +197,7 @@ class TestTeacups:
         Sys.g_tri = [2.003, 2.003, 2.003]
 
         # define triplet ZFS
-        Sys.D_tri = 700
+        Sys.D_tri = -700
 
         # define couplings of the radical and the triplet
         Sys.J_ex = -20000
@@ -281,12 +281,12 @@ class TestTeacups:
 
         # set up spin System parameters
         Sys.g_tri = [2.008, 2.008, 2.008]
-        Sys.D_tri = -898
-        Sys.E_tri = 161
+        Sys.D_tri = 898
+        Sys.E_tri = -161
 
         Sys.spin_system = 'trip'
         Sys.precursor = 'zf'
-        Sys.population = [0.05, 0, 0.95]
+        Sys.population = [0.95, 0, 0.05]
 
         Sys.decay = 1e-6
         Sys.dynamics = np.array([[0, 0.01e6, 0],

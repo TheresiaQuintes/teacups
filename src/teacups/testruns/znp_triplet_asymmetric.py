@@ -19,7 +19,7 @@ Sys.E_tri = 161
 
 Sys.spin_system = 'trip'
 Sys.precursor = 'zf'
-Sys.population = [0.05, 0, 0.95]
+Sys.population = [0.95, 0, 0.05]
 
 Sys.decay = 1e-6
 Sys.dynamics = np.array([[0, 0.01e6, 0],

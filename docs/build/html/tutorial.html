@@ -325,12 +325,12 @@
 <span class="n">Sys</span><span class="o">.</span><span class="n">g_tri</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.003</span><span class="p">,</span> <span class="mf">2.003</span><span class="p">,</span> <span class="mf">2.003</span><span class="p">]</span>
 
 <span class="c1"># define triplet ZFS</span>
-<span class="n">Sys</span><span class="o">.</span><span class="n">D_tri</span> <span class="o">=</span> <span class="o">-</span><span class="mi">700</span>
-<span class="n">Sys</span><span class="o">.</span><span class="n">E_tri</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">D_tri</span> <span class="o">=</span> <span class="mi">700</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">E_tri</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span>
 
 <span class="c1"># define initial state</span>
 <span class="n">Sys</span><span class="o">.</span><span class="n">precursor</span> <span class="o">=</span> <span class="s2">&quot;zf&quot;</span>
-<span class="n">Sys</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
 
 <span class="c1"># define decay time and line width</span>
 <span class="n">Sys</span><span class="o">.</span><span class="n">decay</span> <span class="o">=</span> <span class="mf">1e-6</span>
@@ -387,7 +387,7 @@
 
 <span class="n">Sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">=</span> <span class="s1">&#39;trip&#39;</span>
 <span class="n">Sys</span><span class="o">.</span><span class="n">precursor</span> <span class="o">=</span> <span class="s1">&#39;zf&#39;</span>
-<span class="n">Sys</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">]</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.95</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">]</span>
 
 <span class="n">Sys</span><span class="o">.</span><span class="n">decay</span> <span class="o">=</span> <span class="mf">1e-6</span>
 <span class="n">Sys</span><span class="o">.</span><span class="n">dynamics</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.01e6</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
@@ -466,9 +466,9 @@
 <span class="c1"># Triplet precursor</span>
 <span class="n">Sys</span><span class="o">.</span><span class="n">precursor</span> <span class="o">=</span> <span class="s1">&#39;triplet-zf&#39;</span>
 <span class="n">Sys</span><span class="o">.</span><span class="n">g_tri</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.00370</span><span class="p">,</span> <span class="mf">2.00285</span><span class="p">,</span> <span class="mf">2.00246</span><span class="p">]</span>
-<span class="n">Sys</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="n">Sys</span><span class="o">.</span><span class="n">D_tri</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.9217e+03</span>
-<span class="n">Sys</span><span class="o">.</span><span class="n">E_tri</span> <span class="o">=</span> <span class="o">+</span><span class="mf">525.4678</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">D_tri</span> <span class="o">=</span> <span class="mf">1.9217e+03</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">E_tri</span> <span class="o">=</span> <span class="o">-</span><span class="mf">525.4678</span>
 
 <span class="n">Sys</span><span class="o">.</span><span class="n">decay</span> <span class="o">=</span> <span class="mf">1e-6</span>
 <span class="n">Sys</span><span class="o">.</span><span class="n">T_relax_1</span> <span class="o">=</span> <span class="mf">1e-6</span>
@@ -598,14 +598,14 @@
 <span class="n">Sys</span><span class="o">.</span><span class="n">g_tri</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.003</span><span class="p">,</span> <span class="mf">2.003</span><span class="p">,</span> <span class="mf">2.003</span><span class="p">]</span>
 
 <span class="c1"># define triplet ZFS</span>
-<span class="n">Sys</span><span class="o">.</span><span class="n">D_tri</span> <span class="o">=</span> <span class="mi">500</span>
-<span class="n">Sys</span><span class="o">.</span><span class="n">E_tri</span> <span class="o">=</span> <span class="o">-</span><span class="mi">50</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">D_tri</span> <span class="o">=</span> <span class="o">-</span><span class="mi">500</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">E_tri</span> <span class="o">=</span> <span class="mi">50</span>
 
 <span class="c1"># define couplings of the radical and the triplet</span>
 <span class="n">Sys</span><span class="o">.</span><span class="n">J_ex</span> <span class="o">=</span> <span class="o">-</span><span class="mi">400000</span>
 
 <span class="n">Sys</span><span class="o">.</span><span class="n">precursor</span> <span class="o">=</span> <span class="s2">&quot;triplet-zf&quot;</span>
-<span class="n">Sys</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.205</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.205</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
 
 <span class="c1"># define decay time and line width</span>
 <span class="n">Sys</span><span class="o">.</span><span class="n">decay</span> <span class="o">=</span> <span class="mf">1e-6</span>
@@ -661,7 +661,7 @@
 <span class="n">Sys</span><span class="o">.</span><span class="n">g_tri</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.003</span><span class="p">,</span> <span class="mf">2.003</span><span class="p">,</span> <span class="mf">2.003</span><span class="p">]</span>
 
 <span class="c1"># define triplet ZFS</span>
-<span class="n">Sys</span><span class="o">.</span><span class="n">D_tri</span> <span class="o">=</span> <span class="mi">700</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">D_tri</span> <span class="o">=</span> <span class="o">-</span><span class="mi">700</span>
 
 <span class="c1"># define couplings of the radical and the triplet</span>
 <span class="n">Sys</span><span class="o">.</span><span class="n">J_ex</span> <span class="o">=</span> <span class="o">-</span><span class="mi">20000</span>
@@ -854,7 +854,7 @@
 <span class="n">Sys</span><span class="o">.</span><span class="n">g_tri</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.003</span><span class="p">,</span> <span class="mf">2.003</span><span class="p">,</span> <span class="mf">2.003</span><span class="p">]</span>
 
 <span class="c1"># define triplet ZFS</span>
-<span class="n">Sys</span><span class="o">.</span><span class="n">D_tri</span> <span class="o">=</span> <span class="mi">700</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">D_tri</span> <span class="o">=</span> <span class="o">-</span><span class="mi">700</span>
 
 <span class="c1"># define couplings of the radical and the triplet</span>
 <span class="n">Sys</span><span class="o">.</span><span class="n">J_ex</span> <span class="o">=</span> <span class="o">-</span><span class="mi">20000</span>

@@ -16,7 +16,7 @@ Sys.g = [2.0059, 2.0059, 2.0059]
 Sys.g_tri = [2.003, 2.003, 2.003]
 
 # define triplet ZFS
-Sys.D_tri = 700
+Sys.D_tri = -700
 
 # define couplings of the radical and the triplet
 Sys.J_ex = -20000

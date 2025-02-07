@@ -89,6 +89,7 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
             # kill all off-diagonal elements
             rho.B_angle_matrix *= np.eye(3, dtype=FLOAT_TYPE)
 
+
         else:
             raise AttributeError(
                 'The spin_system attribute has to be "trip" \

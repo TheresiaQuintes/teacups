@@ -17,14 +17,14 @@ Sys.g = [2.0059, 2.0059, 2.0059]
 Sys.g_tri = [2.003, 2.003, 2.003]
 
 # define triplet ZFS
-Sys.D_tri = 500
-Sys.E_tri = -50
+Sys.D_tri = -500
+Sys.E_tri = 50
 
 # define couplings of the radical and the triplet
 Sys.J_ex = -400000
 
 Sys.precursor = "triplet-zf"
-Sys.population = [0.2, 0.205, 0.1, 0.1, 0.2]
+Sys.population = [0.2, 0.205, 0.2, 0.1, 0.1]
 
 # define decay time and line width
 Sys.decay = 1e-6

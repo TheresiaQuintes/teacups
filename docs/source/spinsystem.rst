@@ -181,6 +181,12 @@ Sys.g2_frame
 
 Spin-spin interactions
 ----------------------
+.. math:: 
+      \mathbf{rot}_{z,y',z''} &=  \begin{pmatrix}
+                                \cos \phi \cos \vartheta \cos \psi - \sin \phi \sin \psi & -\cos \phi \cos \vartheta \sin \psi -\sin \phi \cos \psi & \cos \phi \sin \vartheta \\
+                                \sin \phi \cos \vartheta \cos \psi + \cos \phi \sin \psi & -\sin \phi \cos \vartheta \sin \psi + \cos \phi \cos \psi & \sin \phi \sin \vartheta \\
+                                -\sin \vartheta \cos\psi & \sin \vartheta \sin \psi & \cos \vartheta \\
+             \end{pmatrix}
 Sys.D
 ^^^^^
 * Dipolar coupling constant *D* for two interacting spin species
@@ -233,38 +239,30 @@ Sys.J_ex
 	
 	Sys.J = -20000  # MHz
 
-Sys.D_tri
-^^^^^^^^^
-* Zero field splitting constant *D* for triplets
+Sys.D_tri & Sys.E_tri
+^^^^^^^^^^^^^^^^^^^^^
+* Zero field splitting constants *D* and *E* of a triplet spin
 	* Float in MHz
 	* The ZFS Hamiltonian is defined as:
 	.. math::
-	   \hat{H}_{\mathrm{ZFS}} &= \mathbf{S} \mathbf{D} \mathbf{S} \\
-	   &\text{ }\\
-	   \mathbf{D} &= \begin{pmatrix} -1/3 D+E & 0 & 0\\ 0 & -1/3 D-E & 0 \\ 0 & 0 & 2/3 D \end{pmatrix}	   
-* Optional for triplets, radical pairs with triplet precursor and triplet doublet pairs
-* e.g.::
-	
-	Sys.D_tri = 700  # MHz
-
-Sys.E_tri
-^^^^^^^^^
-* Zero field splitting constant *E* for triplets
-	* Float in MHz
-	* The ZFS Hamiltonian is defined as:
+	   \hat{H}_{\mathrm{ZFS}} = \mathbf{S} \mathbf{D} \mathbf{S}
+	* The ZFS Hamiltonian is defined in the secular approximation as:
 	.. math::
-	   \hat{H}_{\mathrm{ZFS}} &= \mathbf{S} \mathbf{D} \mathbf{S}  \\
-	   &\text{ }\\
-	   \mathbf{D} &= \begin{pmatrix} -1/3 D+E & 0 & 0\\ 0 & -1/3 D-E & 0 \\ 0 & 0 & 2/3 D \end{pmatrix}	   
+	   \hat{H}_{\mathrm{ZFS}} = \mathbf{D}_{zz} (\mathbf{S}_z^2 - 1/3\mathbf{S}^2) 
+	* The ZFS-tensor is defined as:
+	.. math::
+	   \mathbf{D} &= \begin{pmatrix} -1/3 D+E & 0 & 0\\ 0 & -1/3 D-E & 0 \\ 0 & 0 & 2/3 D \end{pmatrix}
 * Optional for triplets, radical pairs with triplet precursor and triplet doublet pairs
 * e.g.::
 	
+	Sys.D_tri = 700   # MHz
 	Sys.E_tri = -100  # MHz
+
 
 Sys.D_tri_frame
 ^^^^^^^^^^^^^^^
-* Three euler angles to rotate the ZFS tensor of triplets from molecular to laboratory frame
-	* List of floats with three members (phi, theta, psi)
+* Three euler angles to rotate the ZFS tensor of a triplet spin from molecular to laboratory frame
+	* List of floats with three members (:math:`\phi`, :math:`\vartheta`, :math:`\psi`)
 * Optional for triplets, radical pairs with triplet precursor and triplet doublet pairs if a ZFS is defined
 * e.g.::
 	

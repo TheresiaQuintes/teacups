@@ -145,7 +145,7 @@ class TestSetUpTensorsRp:
     def test_no_Ds(self):
         cr.set_up_tensors(self.sys, self.cal)
         D_tensor = cr.create_tensor(cr.create_dipol_tensor_diagonals(
-            0, 0), self.cal.phi, self.cal.theta)
+            0, 0.01), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(D_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
@@ -201,7 +201,7 @@ class TestSetUpTensorsRp:
         self.sys.precursor = 'triplet'
         self.sys.D_tri = 5
         DT_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(5, 0), self.cal.phi, self.cal.theta)
+            cr.create_dipol_tensor_diagonals(5, 0.01), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(DT_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
@@ -270,7 +270,7 @@ class TestSetUpTensorsTriplet:
     def test_dipole_tensor_only_D(self):
         self.sys.D_tri = 5
         D_tri_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(5, 0), self.cal.phi, self.cal.theta)
+            cr.create_dipol_tensor_diagonals(5, 0.01), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(D_tri_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
@@ -304,7 +304,7 @@ class TestSetUpTensorsTriplet:
 
     def test_dipole_tensor_no_D_and_E(self):
         D_tri_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(0, 0), self.cal.phi, self.cal.theta)
+            cr.create_dipol_tensor_diagonals(0, 0.01), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(D_tri_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)

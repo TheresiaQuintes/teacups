@@ -16,12 +16,12 @@ Sys.spin_system = "trip"
 Sys.g_tri = [2.003, 2.003, 2.003]
 
 # define triplet ZFS
-Sys.D_tri = -700
-Sys.E_tri = 100
+Sys.D_tri = 700
+Sys.E_tri = -100
 
 # define initial state
 Sys.precursor = "zf"
-Sys.population = [0, 0, 1]
+Sys.population = [1, 0, 0]
 
 # define decay time and line width
 Sys.decay = 1e-6

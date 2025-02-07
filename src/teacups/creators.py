@@ -124,7 +124,7 @@ def set_up_tensors(sys: object, cal: object) -> None:
     if not hasattr(sys, 'D_tri'):
         sys.D_tri = 0
     if not hasattr(sys, 'E_tri'):
-        sys.E_tri = 0
+        sys.E_tri = 0.01
 
     for attr in vars(sys):
         if attr == 'g':

@@ -72,8 +72,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#sys-e">Sys.E</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sys-d-frame">Sys.D_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sys-j-ex">Sys.J_ex</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#sys-d-tri">Sys.D_tri</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#sys-e-tri">Sys.E_tri</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-d-tri-sys-e-tri">Sys.D_tri &amp; Sys.E_tri</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sys-d-tri-frame">Sys.D_tri_frame</a></li>
 </ul>
 </li>
@@ -406,6 +405,12 @@
 </section>
 <section id="spin-spin-interactions">
 <h2>Spin-spin interactions<a class="headerlink" href="#spin-spin-interactions" title="Permalink to this heading"></a></h2>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{rot}_{z,y',z''} &amp;=  \begin{pmatrix}
+                          \cos \phi \cos \vartheta \cos \psi - \sin \phi \sin \psi &amp; -\cos \phi \cos \vartheta \sin \psi -\sin \phi \cos \psi &amp; \cos \phi \sin \vartheta \\
+                          \sin \phi \cos \vartheta \cos \psi + \cos \phi \sin \psi &amp; -\sin \phi \cos \vartheta \sin \psi + \cos \phi \cos \psi &amp; \sin \phi \sin \vartheta \\
+                          -\sin \vartheta \cos\psi &amp; \sin \vartheta \sin \psi &amp; \cos \vartheta \\
+       \end{pmatrix}\end{split}\]</div>
 <section id="sys-d">
 <h3>Sys.D<a class="headerlink" href="#sys-d" title="Permalink to this heading"></a></h3>
 <ul>
@@ -496,47 +501,33 @@
 </li>
 </ul>
 </section>
-<section id="sys-d-tri">
-<h3>Sys.D_tri<a class="headerlink" href="#sys-d-tri" title="Permalink to this heading"></a></h3>
+<section id="sys-d-tri-sys-e-tri">
+<h3>Sys.D_tri &amp; Sys.E_tri<a class="headerlink" href="#sys-d-tri-sys-e-tri" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl>
-<dt>Zero field splitting constant <em>D</em> for triplets</dt><dd><ul class="simple">
+<dt>Zero field splitting constants <em>D</em> and <em>E</em> of a triplet spin</dt><dd><ul class="simple">
 <li><p>Float in MHz</p></li>
 <li><p>The ZFS Hamiltonian is defined as:</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[\begin{split}\hat{H}_{\mathrm{ZFS}} &amp;= \mathbf{S} \mathbf{D} \mathbf{S} \\
-&amp;\text{ }\\
-\mathbf{D} &amp;= \begin{pmatrix} -1/3 D+E &amp; 0 &amp; 0\\ 0 &amp; -1/3 D-E &amp; 0 \\ 0 &amp; 0 &amp; 2/3 D \end{pmatrix}\end{split}\]</div>
+\[\hat{H}_{\mathrm{ZFS}} = \mathbf{S} \mathbf{D} \mathbf{S}\]</div>
+<ul class="simple">
+<li><p>The ZFS Hamiltonian is defined in the secular approximation as:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\hat{H}_{\mathrm{ZFS}} = \mathbf{D}_{zz} (\mathbf{S}_z^2 - 1/3\mathbf{S}^2)\]</div>
+<ul class="simple">
+<li><p>The ZFS-tensor is defined as:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{D} &amp;= \begin{pmatrix} -1/3 D+E &amp; 0 &amp; 0\\ 0 &amp; -1/3 D-E &amp; 0 \\ 0 &amp; 0 &amp; 2/3 D \end{pmatrix}\end{split}\]</div>
 </dd>
 </dl>
 </li>
 <li><p>Optional for triplets, radical pairs with triplet precursor and triplet doublet pairs</p></li>
 <li><p>e.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">D_tri</span> <span class="o">=</span> <span class="mi">700</span>  <span class="c1"># MHz</span>
-</pre></div>
-</div>
-</li>
-</ul>
-</section>
-<section id="sys-e-tri">
-<h3>Sys.E_tri<a class="headerlink" href="#sys-e-tri" title="Permalink to this heading"></a></h3>
-<ul>
-<li><dl>
-<dt>Zero field splitting constant <em>E</em> for triplets</dt><dd><ul class="simple">
-<li><p>Float in MHz</p></li>
-<li><p>The ZFS Hamiltonian is defined as:</p></li>
-</ul>
-<div class="math notranslate nohighlight">
-\[\begin{split}\hat{H}_{\mathrm{ZFS}} &amp;= \mathbf{S} \mathbf{D} \mathbf{S}  \\
-&amp;\text{ }\\
-\mathbf{D} &amp;= \begin{pmatrix} -1/3 D+E &amp; 0 &amp; 0\\ 0 &amp; -1/3 D-E &amp; 0 \\ 0 &amp; 0 &amp; 2/3 D \end{pmatrix}\end{split}\]</div>
-</dd>
-</dl>
-</li>
-<li><p>Optional for triplets, radical pairs with triplet precursor and triplet doublet pairs</p></li>
-<li><p>e.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">E_tri</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span>  <span class="c1"># MHz</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">D_tri</span> <span class="o">=</span> <span class="mi">700</span>   <span class="c1"># MHz</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">E_tri</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span>  <span class="c1"># MHz</span>
 </pre></div>
 </div>
 </li>
@@ -546,8 +537,8 @@
 <h3>Sys.D_tri_frame<a class="headerlink" href="#sys-d-tri-frame" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
-<dt>Three euler angles to rotate the ZFS tensor of triplets from molecular to laboratory frame</dt><dd><ul class="simple">
-<li><p>List of floats with three members (phi, theta, psi)</p></li>
+<dt>Three euler angles to rotate the ZFS tensor of a triplet spin from molecular to laboratory frame</dt><dd><ul class="simple">
+<li><p>List of floats with three members (<span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\vartheta\)</span>, <span class="math notranslate nohighlight">\(\psi\)</span>)</p></li>
 </ul>
 </dd>
 </dl>
