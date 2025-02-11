@@ -104,7 +104,7 @@ plt.legend()
 plt.figure()
 plt.ylabel("population")
 plt.xlabel("$t$ / $\mu$s")
-a = [5, 4, 3, 2, 1, 0]
+a = [0, 1, 2, 3, 4, 5]
 labels = ["Q$_{-3/2}$", "Q$_{-1/2}$", "Q$_{+1/2}$",
           "Q$_{+3/2}$", "D$_{-1/2}$", "D$_{+1/2}$"]
 

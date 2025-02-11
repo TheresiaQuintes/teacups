@@ -289,9 +289,9 @@ class TestTeacups:
         Sys.population = [0.95, 0, 0.05]
 
         Sys.decay = 1e-6
-        Sys.dynamics = np.array([[0, 0.01e6, 0],
-                                 [0.01e6, 0, 0.25e6],
-                                 [0, 0.25e6, 0]])
+        Sys.dynamics = np.array([[0, 0.25e6, 0],
+                                 [0.25e6, 0, 0.01e6],
+                                 [0, 0.01e6, 0]])
 
         Sys.width_gauss = 2
 
@@ -307,8 +307,6 @@ class TestTeacups:
         SimOpt.sym = "D2h"
         SimOpt.space = 'liouville'
         SimOpt.pop_evolution = True
-
-
 
         # do simulation
         spec, pop = sim.teacups(Sys, Exp, SimOpt)

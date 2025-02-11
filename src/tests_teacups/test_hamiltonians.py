@@ -806,8 +806,8 @@ class TestSetUpCommutatorSuperoperator:
         self.sys.dynamics = np.zeros((3, 3))
 
         ham_adj = np.conjugate(self.hamiltonian.T)
-        superop = np.kron(self.hamiltonian, np.eye(3))\
-            - np.kron(np.eye(3), ham_adj)
+        superop = np.kron(np.eye(3), self.hamiltonian)\
+            - np.kron(ham_adj, np.eye(3))
         superop_3d = np.broadcast_to(superop, (2, 2, 9, 9))
 
         ham.set_up_commutator_superoperator(self.sys, self.opt, self.cal)

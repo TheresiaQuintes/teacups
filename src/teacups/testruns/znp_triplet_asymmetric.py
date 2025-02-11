@@ -22,11 +22,9 @@ Sys.precursor = 'zf'
 Sys.population = [0.95, 0, 0.05]
 
 Sys.decay = 1e-6
-Sys.dynamics = np.array([[0, 0.01e6, 0],
-                         [0.01e6, 0, 0.25e6],
-                         [0, 0.25e6, 0]])
-# Muss hier die Matrix andersherum besetzen, für tdp-rqm-Bsp ebenfalls. Überprüfen, wo sich
-# die Reihenfolge umgekehrt hat, warum und welches die richtige Variante ist
+Sys.dynamics = np.array([[0, 0.25e6, 0],
+                         [0.25e6, 0, 0.01e6],
+                         [0, 0.01e6, 0]])
 
 Sys.width_gauss = 2
 
