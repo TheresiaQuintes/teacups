@@ -14,8 +14,8 @@ SimOpt = cl.SimOpt()
 
 # set up spin System parameters
 Sys.g_tri = [2.008, 2.008, 2.008]
-Sys.D_tri = -898
-Sys.E_tri = 161
+Sys.D_tri = 898
+Sys.E_tri = -161
 
 Sys.spin_system = 'trip'
 Sys.precursor = 'zf'
@@ -25,6 +25,8 @@ Sys.decay = 1e-6
 Sys.dynamics = np.array([[0, 0.01e6, 0],
                          [0.01e6, 0, 0.25e6],
                          [0, 0.25e6, 0]])
+# Muss hier die Matrix andersherum besetzen, für tdp-rqm-Bsp ebenfalls. Überprüfen, wo sich
+# die Reihenfolge umgekehrt hat, warum und welches die richtige Variante ist
 
 Sys.width_gauss = 2
 

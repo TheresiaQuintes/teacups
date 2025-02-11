@@ -49,7 +49,7 @@ def propagation(sys: object, opt: object, cal: object) -> None:
         propagation = np.zeros(cal.ham.shape, dtype=COMPLEX_TYPE)
 
         eigval, vec = np.linalg.eigh(cal.ham)
-        exp_arg = -1j*eigval
+        exp_arg = 1j*eigval
 
         n = propagation.shape[-1]
         propagation[:, :, range(n), range(n)] = np.exp(exp_arg*step)

@@ -25,7 +25,7 @@ sys.A1_frame = [0, 1, 0]
 
 sys.spin_system = 'doub'
 sys.precursor = 'eigen'
-sys.population = [0, 1]
+sys.population = [1, 0]
 
 # set up experimental parameters
 exp.B_z = np.linspace(320, 380, 600)

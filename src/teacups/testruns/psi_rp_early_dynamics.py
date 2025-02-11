@@ -21,7 +21,7 @@ Sys.decay = 0.75e-7
 Sys.T_relax_1 = 2e-6
 Sys.T_relax_2 = 500e-9
 
-Sys.D = -3.3630*3
+Sys.D = 3.3630*3
 Sys.D_frame = np.array([0, 58, -1])*(np.pi/180)
 Sys.J_ex = 0
 

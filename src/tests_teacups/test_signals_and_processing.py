@@ -61,9 +61,9 @@ class TestPropagationHilbert:
         assert self.cal.propagation.dtype == "complex64"
 
     def test_value(self):
-        comp1 = la.expm(-1j*np.array([[0, 1], [1, 0]], dtype=np.complex64))
-        comp2 = la.expm(-1j*np.array([[1, 2], [2, 1]], dtype=np.complex64))
-        comp3 = la.expm(-1j*np.array([[2, 3], [3, 2]], dtype=np.complex64))
+        comp1 = la.expm(1j*np.array([[0, 1], [1, 0]], dtype=np.complex64))
+        comp2 = la.expm(1j*np.array([[1, 2], [2, 1]], dtype=np.complex64))
+        comp3 = la.expm(1j*np.array([[2, 3], [3, 2]], dtype=np.complex64))
         np.testing.assert_allclose(comp1, self.cal.propagation[0, 0], atol=2e-6)
         np.testing.assert_allclose(comp2, self.cal.propagation[0, 2], atol=2e-6)
         np.testing.assert_allclose(comp3, self.cal.propagation[1, 1], atol=2e-6)

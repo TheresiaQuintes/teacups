@@ -18,7 +18,7 @@ Sys.decay = 5e-6
 
 Sys.spin_system = 'doub'
 Sys.precursor = 'eigen'
-Sys.population = [0, 1]
+Sys.population = [1, 0]
 
 # set up Experimental parameters
 Exp.B_z = np.linspace(320, 380, 3000)

@@ -20,15 +20,15 @@ Sys.g2 = [2.00564, 2.00494, 2.00217]
 # Triplet precursor
 Sys.precursor = 'triplet-zf'
 Sys.g_tri = [2.00370, 2.00285, 2.00246]
-Sys.population = [0, 0, 1]
-Sys.D_tri = 1.9217e+03
-Sys.E_tri = -525.4678
+Sys.population = [1, 0, 0]
+Sys.D_tri = -1.9217e+03
+Sys.E_tri = 525.4678
 
 Sys.decay = 1e-6
 Sys.T_relax_1 = 1e-6
 Sys.T_relax_2 = 1e-6
 
-Sys.D = 3.3630
+Sys.D = -3.3630
 Sys.D_frame = [0, 1.012, -0.017]
 Sys.J_ex = 0
 

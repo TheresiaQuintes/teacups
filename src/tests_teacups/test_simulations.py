@@ -24,12 +24,12 @@ class TestTeacups:
         Sys.g_tri = [2.003, 2.003, 2.003]
 
         # define triplet ZFS
-        Sys.D_tri = 700
-        Sys.E_tri = -100
+        Sys.D_tri = -700
+        Sys.E_tri = 100
 
         # define initial state
         Sys.precursor = "zf"
-        Sys.population = [1, 0, 0]
+        Sys.population = [0, 0, 1]
 
         # define decay time and line width
         Sys.decay = 1e-6
@@ -51,7 +51,7 @@ class TestTeacups:
         spec = sim.teacups(Sys, Exp, SimOpt)
         spec = spec.real[1]/max(abs(spec.real[1]))
 
-        desired = np.load("./simulations/triplet_2D_hilbert.npy")
+        desired = -1*np.load("./simulations/triplet_2D_hilbert.npy")
 
         np.testing.assert_allclose(spec, desired, atol=2e-6)
 
@@ -116,7 +116,7 @@ class TestTeacups:
 
         Sys.spin_system = 'doub'
         Sys.precursor = 'eigen'
-        Sys.population = [0, 1]
+        Sys.population = [1, 0]
 
         # set up Experimental parameters
         Exp.B_z = np.linspace(320, 380, 3000)
@@ -153,15 +153,15 @@ class TestTeacups:
         # Triplet precursor
         Sys.precursor = 'triplet-zf'
         Sys.g_tri = [2.00370, 2.00285, 2.00246]
-        Sys.population = [0, 0, 1]
-        Sys.D_tri = +1.9217e+03
-        Sys.E_tri = -525.4678
+        Sys.population = [1, 0, 0]
+        Sys.D_tri = -1.9217e+03
+        Sys.E_tri = 525.4678
 
         Sys.decay = 1e-6
         Sys.T_relax_1 = 1e-6
         Sys.T_relax_2 = 1e-6
 
-        Sys.D = 3.3630
+        Sys.D = -3.3630
         Sys.D_frame = [0, 1.012, -0.017]
         Sys.J_ex = 0
 
@@ -197,14 +197,14 @@ class TestTeacups:
         Sys.g_tri = [2.003, 2.003, 2.003]
 
         # define triplet ZFS
-        Sys.D_tri = -700
+        Sys.D_tri = 700
 
         # define couplings of the radical and the triplet
         Sys.J_ex = -20000
 
         # define initial state
         Sys.precursor = "eigen"
-        Sys.population = [0.3, 0.225, 0.2, 0.3, 0.5, 0.48]
+        Sys.population = [0.3, 0.225, 0.2, 0.3, 0.5, 0.5]
 
         # define line width
         Sys.width_gauss = 1
@@ -335,7 +335,7 @@ class TestTeacups:
         Sys.T_relax_1 = 2e-6
         Sys.T_relax_2 = 500e-9
 
-        Sys.D = -3.3630*3
+        Sys.D = 3.3630*3
         Sys.D_frame = np.array([0, 58, -1])*(np.pi/180)
         Sys.J_ex = 0
 
@@ -375,7 +375,7 @@ class TestTeacups:
 
         sys.spin_system = 'doub'
         sys.precursor = 'eigen'
-        sys.population = [0, 1]
+        sys.population = [1, 0]
 
         # set up experimental parameters
         exp.B_z = np.linspace(320, 380, 600)

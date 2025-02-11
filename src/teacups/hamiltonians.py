@@ -153,10 +153,10 @@ def set_up_triplet_hamiltonian(exp: object, opt: object, cal: object
     B_z = B_z[:, np.newaxis]
 
     ham.B_angle_matrix[:, :, 0, 0] = B_z*cal.g_tri_tensor.multirot[:, 2, 2] \
-        - (1/2)*cal.D_tri_tensor.multirot[:, 2, 2]
-    ham.B_angle_matrix[:, :, 1, 1] = 1*cal.D_tri_tensor.multirot[:, 2, 2]
+        + (1/2)*cal.D_tri_tensor.multirot[:, 2, 2]
+    ham.B_angle_matrix[:, :, 1, 1] = -1*cal.D_tri_tensor.multirot[:, 2, 2]
     ham.B_angle_matrix[:, :, 2, 2] = -B_z*cal.g_tri_tensor.multirot[:, 2, 2]\
-        - (1/2)*cal.D_tri_tensor.multirot[:, 2, 2]
+        + (1/2)*cal.D_tri_tensor.multirot[:, 2, 2]
 
     ham = ham.B_angle_matrix
 
@@ -207,7 +207,7 @@ def set_up_triplet_high_field_hamiltonian(exp: object, opt: object,
     # Calculate high-field Hamiltonian
     ham_tri_hf = mut.Multioperator(s_tri, opt.grid_points, exp.B_z*MU_B)
     ham_tri_hf.zeeman_coupling(cal.g_tri_tensor)
-    ham_tri_hf.B_angle_matrix += ham_d.B_angle_matrix
+    ham_tri_hf.B_angle_matrix -= ham_d.B_angle_matrix
 
     # Transfer high-field Hamiltonian to xyz-Basis
     ham_tri_hf.B_angle_matrix = np.conj(
@@ -472,7 +472,7 @@ def set_up_commutator_superoperator(sys: object, opt: object, cal: object
     elif opt.space == 'liouville':
         ham_adj = np.transpose(np.conjugate(cal.ham), [0, 1, 3, 2])
         ham_superop = np.kron(cal.ham[:, :], np.eye(
-            cal.ham.shape[-1], dtype=FLOAT_TYPE)) - \
+            cal.ham.shape[-1], dtype=FLOAT_TYPE) ) - \
             np.kron(np.eye(cal.ham.shape[-1], dtype=FLOAT_TYPE), ham_adj[:, :])
 
         """

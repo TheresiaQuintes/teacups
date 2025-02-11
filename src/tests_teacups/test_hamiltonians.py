@@ -264,17 +264,17 @@ class TestSetUpTripletHamiltonian:
         d_zz = self.cal.D_tri_tensor.multirot[:, 2, 2]
 
         ham_dip = np.zeros((3, 3, 3), dtype=np.complex64)
-        ham_dip[0, 0, 0] = -0.5*d_zz[0]
-        ham_dip[0, 1, 1] = +1*d_zz[0]
-        ham_dip[0, 2, 2] = -0.5*d_zz[0]
+        ham_dip[0, 0, 0] = 0.5*d_zz[0]
+        ham_dip[0, 1, 1] = -1*d_zz[0]
+        ham_dip[0, 2, 2] = +0.5*d_zz[0]
 
-        ham_dip[1, 0, 0] = -0.5*d_zz[1]
-        ham_dip[1, 1, 1] = +1*d_zz[1]
-        ham_dip[1, 2, 2] = -0.5*d_zz[1]
+        ham_dip[1, 0, 0] = 0.5*d_zz[1]
+        ham_dip[1, 1, 1] = -1*d_zz[1]
+        ham_dip[1, 2, 2] = 0.5*d_zz[1]
 
-        ham_dip[2, 0, 0] = -0.5*d_zz[2]
-        ham_dip[2, 1, 1] = +1*d_zz[2]
-        ham_dip[2, 2, 2] = -0.5*d_zz[2]
+        ham_dip[2, 0, 0] = 0.5*d_zz[2]
+        ham_dip[2, 1, 1] = -1*d_zz[2]
+        ham_dip[2, 2, 2] = 0.5*d_zz[2]
 
         assert np.array_equal(ham_dip, self.cal.ham[0])
         assert np.array_equal(ham_dip, self.cal.ham[1])
@@ -518,7 +518,7 @@ class TestSetUpTdpHamiltonianIsotrope:
         np.testing.assert_allclose(ham_tdp[0, 0], ham_comp)
 
     def test_zfs(self):
-        ham_comp = np.array([-5, 10, -5, -5, 10, -5])
+        ham_comp = np.array([5, -10, 5, 5, -10, 5])
         ham_comp = np.diag(ham_comp)/2
         self.cal.D_tri_tensor = cr.create_tensor(
             [5, 5, 5], self.cal.phi, self.cal.theta)

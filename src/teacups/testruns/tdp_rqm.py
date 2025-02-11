@@ -17,14 +17,14 @@ Sys.g = [2.0059, 2.0059, 2.0059]
 Sys.g_tri = [2.003, 2.003, 2.003]
 
 # define triplet ZFS
-Sys.D_tri = -700
+Sys.D_tri = 700
 
 # define couplings of the radical and the triplet
 Sys.J_ex = -20000
 
 # define initial state
 Sys.precursor = "eigen"
-Sys.population = [0.3, 0.225, 0.2, 0.3, 0.5, 0.48]
+Sys.population = [0.3, 0.225, 0.2, 0.3, 0.5, 0.5]
 
 # define line width
 Sys.width_gauss = 1
@@ -105,8 +105,8 @@ plt.figure()
 plt.ylabel("population")
 plt.xlabel("$t$ / $\mu$s")
 a = [5, 4, 3, 2, 1, 0]
-labels = ["D$_{+1/2}$", "D$_{-1/2}$", "Q$_{+3/2}$",
-          "Q$_{+1/2}$", "Q$_{-1/2}$", "Q$_{-3/2}$"]
+labels = ["Q$_{-3/2}$", "Q$_{-1/2}$", "Q$_{+1/2}$",
+          "Q$_{+3/2}$", "D$_{-1/2}$", "D$_{+1/2}$"]
 
 time = np.linspace(Exp.t_scale[0], Exp.t_scale[1], Exp.t_points)*1e6
 for val in a:
