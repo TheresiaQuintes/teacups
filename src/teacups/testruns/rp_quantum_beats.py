@@ -28,7 +28,7 @@ Sys.decay = 1e-6
 Sys.T_relax_1 = 1e-6
 Sys.T_relax_2 = 1e-6
 
-Sys.D = -3.3630
+Sys.D = 1/3*3.3630
 Sys.D_frame = [0, 1.012, -0.017]
 Sys.J_ex = 0
 

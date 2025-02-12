@@ -66,13 +66,30 @@ class TestCreateTensor:
             comp2.multirot, self.ten2.multirot, atol=1e-7)
 
 
-class TestCreateDipolTensorDiagonals:
+class TestCreateZfsTensorDiagonals:
     def setup(self):
         D = 3
         E = 1
         self.a = -1/3*D+E
         self.b = -1/3*D-E
         self.c = 2/3*D
+        self.dig = cr.create_zfs_tensor_diagonals(D, E)
+
+    def test_type(self):
+        assert self.dig.dtype == "float32"
+
+    def test_values(self):
+        comp = np.array([self.a, self.b, self.c])
+        assert np.array_equal(comp, self.dig)
+
+
+class TestCreateDipolTensorDiagonals:
+    def setup(self):
+        D = 3
+        E = 1
+        self.a = D+E
+        self.b = D-E
+        self.c = -2*D
         self.dig = cr.create_dipol_tensor_diagonals(D, E)
 
     def test_type(self):
@@ -81,6 +98,7 @@ class TestCreateDipolTensorDiagonals:
     def test_values(self):
         comp = np.array([self.a, self.b, self.c])
         assert np.array_equal(comp, self.dig)
+
 
 
 class TestSetUpTensorsDoublet:
@@ -144,7 +162,7 @@ class TestSetUpTensorsRp:
 
     def test_no_Ds(self):
         cr.set_up_tensors(self.sys, self.cal)
-        D_tensor = cr.create_tensor(cr.create_dipol_tensor_diagonals(
+        D_tensor = cr.create_tensor(cr.create_zfs_tensor_diagonals(
             0, 0.01), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(D_tensor.multirot,
@@ -201,7 +219,7 @@ class TestSetUpTensorsRp:
         self.sys.precursor = 'triplet'
         self.sys.D_tri = 5
         DT_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(5, 0.01), self.cal.phi, self.cal.theta)
+            cr.create_zfs_tensor_diagonals(5, 0.01), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(DT_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
@@ -210,7 +228,7 @@ class TestSetUpTensorsRp:
         self.sys.precursor = 'triplet'
         self.sys.E_tri = 5
         DT_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(0, 5), self.cal.phi, self.cal.theta)
+            cr.create_zfs_tensor_diagonals(0, 5), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(DT_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
@@ -220,7 +238,7 @@ class TestSetUpTensorsRp:
         self.sys.D_tri = 5
         self.sys.E_tri = 1
         DT_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(5, 1), self.cal.phi, self.cal.theta)
+            cr.create_zfs_tensor_diagonals(5, 1), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(DT_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
@@ -231,7 +249,7 @@ class TestSetUpTensorsRp:
         self.sys.E_tri = 1
         self.sys.D_tri_frame = [1, 2, 3]
         DT_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(5, 1), self.cal.phi, self.cal.theta, [1, 2, 3])
+            cr.create_zfs_tensor_diagonals(5, 1), self.cal.phi, self.cal.theta, [1, 2, 3])
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(DT_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
@@ -270,7 +288,7 @@ class TestSetUpTensorsTriplet:
     def test_dipole_tensor_only_D(self):
         self.sys.D_tri = 5
         D_tri_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(5, 0.01), self.cal.phi, self.cal.theta)
+            cr.create_zfs_tensor_diagonals(5, 0.01), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(D_tri_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
@@ -278,7 +296,7 @@ class TestSetUpTensorsTriplet:
     def test_dipole_tensor_only_E(self):
         self.sys.E_tri = 5
         D_tri_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(0, 5), self.cal.phi, self.cal.theta)
+            cr.create_zfs_tensor_diagonals(0, 5), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(D_tri_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
@@ -287,7 +305,7 @@ class TestSetUpTensorsTriplet:
         self.sys.D_tri = 5
         self.sys.E_tri = 1
         D_tri_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(5, 1), self.cal.phi, self.cal.theta)
+            cr.create_zfs_tensor_diagonals(5, 1), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(D_tri_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
@@ -297,14 +315,14 @@ class TestSetUpTensorsTriplet:
         self.sys.E_tri = 1
         self.sys.D_tri_frame = [1, 2, 3]
         D_tri_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(5, 1), self.cal.phi, self.cal.theta, [1, 2, 3])
+            cr.create_zfs_tensor_diagonals(5, 1), self.cal.phi, self.cal.theta, [1, 2, 3])
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(D_tri_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
 
     def test_dipole_tensor_no_D_and_E(self):
         D_tri_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(0, 0.01), self.cal.phi, self.cal.theta)
+            cr.create_zfs_tensor_diagonals(0, 0.01), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(D_tri_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
@@ -350,7 +368,7 @@ class TestSetUpTensorsTdp:
 
     def test_D_tri(self):
         D_tri_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(5, 1), self.cal.phi, self.cal.theta)
+            cr.create_zfs_tensor_diagonals(5, 1), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(D_tri_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)

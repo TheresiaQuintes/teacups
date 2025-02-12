@@ -68,10 +68,9 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#spin-spin-interactions">Spin-spin interactions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#sys-d">Sys.D</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#sys-e">Sys.E</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#sys-d-frame">Sys.D_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sys-j-ex">Sys.J_ex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-d-sys-e">Sys.D &amp; Sys.E</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-d-frame">Sys.D_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sys-d-tri-sys-e-tri">Sys.D_tri &amp; Sys.E_tri</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sys-d-tri-frame">Sys.D_tri_frame</a></li>
 </ul>
@@ -411,70 +410,6 @@
                           \sin \phi \cos \vartheta \cos \psi + \cos \phi \sin \psi &amp; -\sin \phi \cos \vartheta \sin \psi + \cos \phi \cos \psi &amp; \sin \phi \sin \vartheta \\
                           -\sin \vartheta \cos\psi &amp; \sin \vartheta \sin \psi &amp; \cos \vartheta \\
        \end{pmatrix}\end{split}\]</div>
-<section id="sys-d">
-<h3>Sys.D<a class="headerlink" href="#sys-d" title="Permalink to this heading"></a></h3>
-<ul>
-<li><dl>
-<dt>Dipolar coupling constant <em>D</em> for two interacting spin species</dt><dd><ul class="simple">
-<li><p>Float in MHz</p></li>
-<li><p>The dipolar coupling Hamiltonian is defined as:</p></li>
-</ul>
-<div class="math notranslate nohighlight">
-\[\begin{split}\hat{H}_{\mathrm{dip}} &amp;= \mathbf{S}_1 \mathbf{D} \mathbf{S}_2  \\
-&amp;\text{ }\\
-\mathbf{D} &amp;= \begin{pmatrix} -1/3 D+E &amp; 0 &amp; 0\\ 0 &amp; -1/3 D-E &amp; 0 \\ 0 &amp; 0 &amp; 2/3 D \end{pmatrix}\end{split}\]</div>
-</dd>
-</dl>
-</li>
-<li><p>Optional for radical pairs and triplet doublet pairs</p></li>
-<li><p>e.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">D</span> <span class="o">=</span> <span class="mi">300</span>  <span class="c1"># MHz</span>
-</pre></div>
-</div>
-</li>
-</ul>
-</section>
-<section id="sys-e">
-<h3>Sys.E<a class="headerlink" href="#sys-e" title="Permalink to this heading"></a></h3>
-<ul>
-<li><dl>
-<dt>Dipolar coupling constant <em>E</em> for two interacting spin species</dt><dd><ul class="simple">
-<li><p>Float in MHz</p></li>
-<li><p>The dipolar coupling Hamiltonian is defined as:</p></li>
-</ul>
-<div class="math notranslate nohighlight">
-\[\begin{split}\hat{H}_{\mathrm{dip}} &amp;= \mathbf{S}_1 \mathbf{D} \mathbf{S}_2  \\
-&amp;\text{ }\\
-\mathbf{D} &amp;= \begin{pmatrix} -1/3 D+E &amp; 0 &amp; 0\\ 0 &amp; -1/3 D-E &amp; 0 \\ 0 &amp; 0 &amp; 2/3 D \end{pmatrix}\end{split}\]</div>
-</dd>
-</dl>
-</li>
-<li><p>Optional for radical pairs and triplet doublet pairs</p></li>
-<li><p>e.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">E</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span>  <span class="c1"># MHz</span>
-</pre></div>
-</div>
-</li>
-</ul>
-</section>
-<section id="sys-d-frame">
-<h3>Sys.D_frame<a class="headerlink" href="#sys-d-frame" title="Permalink to this heading"></a></h3>
-<ul>
-<li><dl class="simple">
-<dt>Three euler angles to rotate the D-tensor for dipolar couplings from molecular to laboratory frame</dt><dd><ul class="simple">
-<li><p>List of floats with three members (phi, theta, psi)</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p>Optional for radical pair and tripled douplet pair simulations if a dipolar coupling is given</p></li>
-<li><p>e.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">D_frame</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># rad</span>
-</pre></div>
-</div>
-</li>
-</ul>
-</section>
 <section id="sys-j-ex">
 <h3>Sys.J_ex<a class="headerlink" href="#sys-j-ex" title="Permalink to this heading"></a></h3>
 <ul>
@@ -491,6 +426,48 @@
 <li><p>Optional for radical pairs and triplet doublet pairs</p></li>
 <li><p>e.g.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">J</span> <span class="o">=</span> <span class="o">-</span><span class="mi">20000</span>  <span class="c1"># MHz</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-d-sys-e">
+<h3>Sys.D &amp; Sys.E<a class="headerlink" href="#sys-d-sys-e" title="Permalink to this heading"></a></h3>
+<ul>
+<li><dl>
+<dt>Axial dipolar coupling (D) and rhombic dipolar coupling (E) for two interacting spin species</dt><dd><ul class="simple">
+<li><p>Float in MHz</p></li>
+<li><p>The dipolar coupling Hamiltonian is defined as:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\hat{H}_{\mathrm{dip}} &amp;= \mathbf{S}_1 \mathbf{D} \mathbf{S}_2  \\
+&amp;\text{ }\\
+\mathbf{D} &amp;= \begin{pmatrix} D+E &amp; 0 &amp; 0\\ 0 &amp; D-E &amp; 0 \\ 0 &amp; 0 &amp; -2 D \end{pmatrix}\end{split}\]</div>
+</dd>
+</dl>
+</li>
+<li><p>Optional for radical pairs and triplet doublet pairs</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">D</span> <span class="o">=</span> <span class="mf">3.5</span>  <span class="c1"># MHz</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">E</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># MHz</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-d-frame">
+<h3>Sys.D_frame<a class="headerlink" href="#sys-d-frame" title="Permalink to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Three euler angles to rotate the D-tensor for dipolar couplings from molecular to laboratory frame</dt><dd><ul class="simple">
+<li><p>List of floats with three members (<span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\vartheta\)</span>, <span class="math notranslate nohighlight">\(\psi\)</span>)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Optional for radical pair and tripled douplet pair simulations if a dipolar coupling is given</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">D_frame</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># rad</span>
 </pre></div>
 </div>
 </li>

@@ -125,18 +125,20 @@
 <span class="target" id="module-teacups.creators"></span><dl class="py function">
 <dt class="sig sig-object py" id="teacups.creators.create_dipol_tensor_diagonals">
 <span class="sig-prename descclassname"><span class="pre">teacups.creators.</span></span><span class="sig-name descname"><span class="pre">create_dipol_tensor_diagonals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">D</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/teacups/creators.html#create_dipol_tensor_diagonals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#teacups.creators.create_dipol_tensor_diagonals" title="Permalink to this definition"></a></dt>
-<dd><p>Create an array with three diagonal elements of the dipol tensor. Calculate
-this values from the zero-field-splitting parameters D and E by:
--1/3*D+E, -1/3*D-E, 2/3*D.</p>
+<dd><p>Create an array with three diagonal elements of the dipolar interaction
+tensor of two spin species. Calculate this values from the
+axial dipolar coupling $D$ and the rhombic dipolar coupling $E$ by:</p>
+<div class="math notranslate nohighlight">
+\[D+E; D-E; -2D.\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>D</strong> (<em>float</em>) – Zero-field-splitting parameter D.</p></li>
-<li><p><strong>E</strong> (<em>float</em>) – Zero-field-splitting parameter E.</p></li>
+<li><p><strong>D</strong> (<em>float</em>) – Axial dipolar coupling.</p></li>
+<li><p><strong>E</strong> (<em>float</em>) – Rhombic dipolar coupling.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>diag</strong> – The three diagonal elements of a dipol tensor (-1/3*D+E, -1/3*D-E, 2/3*D).
+<dd class="field-even"><p><strong>diag</strong> – The three diagonal elements of a dipol tensor (D+E, -D-E, -2D).
 This is a 1D-array.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -170,6 +172,31 @@ carried out. Default is an empty list.</p></li>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="teacups.creators.create_zfs_tensor_diagonals">
+<span class="sig-prename descclassname"><span class="pre">teacups.creators.</span></span><span class="sig-name descname"><span class="pre">create_zfs_tensor_diagonals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">D</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/teacups/creators.html#create_zfs_tensor_diagonals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#teacups.creators.create_zfs_tensor_diagonals" title="Permalink to this definition"></a></dt>
+<dd><p>Create an array with three diagonal elements of the zero-field splitting
+(ZFS) tensor. Calculate this values from the zero-field-splitting
+parameters D and E by:</p>
+<div class="math notranslate nohighlight">
+\[-1/3*D+E; -1/3*D-E; 2/3*D.\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>D</strong> (<em>float</em>) – Zero-field-splitting parameter D.</p></li>
+<li><p><strong>E</strong> (<em>float</em>) – Zero-field-splitting parameter E.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>diag</strong> – The three diagonal elements of a ZFS tensor (-1/3*D+E, -1/3*D-E, 2/3*D).
+This is a 1D-array.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
 </dd>
 </dl>
 </dd></dl>

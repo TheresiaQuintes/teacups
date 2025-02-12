@@ -47,11 +47,14 @@ def create_tensor(diag: list, phi: 'np.ndarray', theta: 'np.ndarray',
     return tensor
 
 
-def create_dipol_tensor_diagonals(D: float, E: float) -> 'np.ndarray':
+def create_zfs_tensor_diagonals(D: float, E: float) -> 'np.ndarray':
     """
-    Create an array with three diagonal elements of the dipol tensor. Calculate
-    this values from the zero-field-splitting parameters D and E by:
-    -1/3*D+E, -1/3*D-E, 2/3*D.
+    Create an array with three diagonal elements of the zero-field splitting
+    (ZFS) tensor. Calculate this values from the zero-field-splitting
+    parameters D and E by:
+
+    .. math::
+       -1/3*D+E; -1/3*D-E; 2/3*D.
 
     Parameters
     ----------
@@ -63,11 +66,38 @@ def create_dipol_tensor_diagonals(D: float, E: float) -> 'np.ndarray':
     Returns
     -------
     diag : np.ndarray
-        The three diagonal elements of a dipol tensor (-1/3*D+E, -1/3*D-E, 2/3*D).
+        The three diagonal elements of a ZFS tensor (-1/3*D+E, -1/3*D-E, 2/3*D).
         This is a 1D-array.
 
     """
     diag = np.array([-1/3*D+E, -1/3*D-E, 2/3*D], dtype=FLOAT_TYPE)
+    return diag
+
+
+def create_dipol_tensor_diagonals(D: float, E: float) -> 'np.ndarray':
+    """
+    Create an array with three diagonal elements of the dipolar interaction
+    tensor of two spin species. Calculate this values from the
+    axial dipolar coupling $D$ and the rhombic dipolar coupling $E$ by:
+
+    .. math::
+       D+E; D-E; -2D.
+
+    Parameters
+    ----------
+    D : float
+        Axial dipolar coupling.
+    E : float
+        Rhombic dipolar coupling.
+
+    Returns
+    -------
+    diag : np.ndarray
+        The three diagonal elements of a dipol tensor (D+E, -D-E, -2D).
+        This is a 1D-array.
+
+    """
+    diag = np.array([D+E, D-E, -2*D], dtype=FLOAT_TYPE)
     return diag
 
 
@@ -164,7 +194,7 @@ def set_up_tensors(sys: object, cal: object) -> None:
                 cal.g_iso = 1/3*np.sum(sys.g_tri)
 
         elif attr == 'D_tri':
-            diag = create_dipol_tensor_diagonals(sys.D_tri, sys.E_tri)
+            diag = create_zfs_tensor_diagonals(sys.D_tri, sys.E_tri)
             if hasattr(sys, 'D_tri_frame'):
                 cal.D_tri_tensor = create_tensor(
                     diag, cal.phi, cal.theta, sys.D_tri_frame)

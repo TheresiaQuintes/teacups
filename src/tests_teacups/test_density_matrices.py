@@ -177,7 +177,7 @@ class TestRps:
         self.sys.g1 = [1.98, 2., 2.01]
         self.sys.g2 = [2.0, 2.0, 1.999]
         self.sys.J_ex = -4
-        self.sys.D = 20
+        self.sys.D = -60
         self.sys.E = -5
         self.sys.g_tri = [2, 2, 2]
         self.sys.D_tri = 1000
@@ -249,7 +249,7 @@ class TestTdps:
 
         self.sys.g = [2.0, 2.0, 1.999]
         self.sys.J_ex = 20000
-        self.sys.D = 20
+        self.sys.D = -60
         self.sys.E = -5
         self.sys.g_tri = [2, 2, 2]
         self.sys.D_tri = 1000

@@ -187,43 +187,7 @@ Spin-spin interactions
                                 \sin \phi \cos \vartheta \cos \psi + \cos \phi \sin \psi & -\sin \phi \cos \vartheta \sin \psi + \cos \phi \cos \psi & \sin \phi \sin \vartheta \\
                                 -\sin \vartheta \cos\psi & \sin \vartheta \sin \psi & \cos \vartheta \\
              \end{pmatrix}
-Sys.D
-^^^^^
-* Dipolar coupling constant *D* for two interacting spin species
-	* Float in MHz
-	* The dipolar coupling Hamiltonian is defined as:
-	.. math::
-	   \hat{H}_{\mathrm{dip}} &= \mathbf{S}_1 \mathbf{D} \mathbf{S}_2  \\
-	   &\text{ }\\
-	   \mathbf{D} &= \begin{pmatrix} -1/3 D+E & 0 & 0\\ 0 & -1/3 D-E & 0 \\ 0 & 0 & 2/3 D \end{pmatrix}	   
-* Optional for radical pairs and triplet doublet pairs
-* e.g.::
-	
-	Sys.D = 300  # MHz
 
-Sys.E
-^^^^^
-* Dipolar coupling constant *E* for two interacting spin species
-	* Float in MHz
-	* The dipolar coupling Hamiltonian is defined as:
-	.. math::
-	   \hat{H}_{\mathrm{dip}} &= \mathbf{S}_1 \mathbf{D} \mathbf{S}_2  \\
-	   &\text{ }\\
-	   \mathbf{D} &= \begin{pmatrix} -1/3 D+E & 0 & 0\\ 0 & -1/3 D-E & 0 \\ 0 & 0 & 2/3 D \end{pmatrix}	   
-* Optional for radical pairs and triplet doublet pairs
-* e.g.::
-	
-	Sys.E = -100  # MHz
-
-Sys.D_frame
-^^^^^^^^^^^
-* Three euler angles to rotate the D-tensor for dipolar couplings from molecular to laboratory frame
-	* List of floats with three members (phi, theta, psi)
-* Optional for radical pair and tripled douplet pair simulations if a dipolar coupling is given
-* e.g.::
-	
-	Sys.D_frame = [0, np.pi/2, 0]  # rad
-	
 Sys.J_ex
 ^^^^^^^^
 * Exchange coupling constant *J* for two interacting spin species
@@ -235,6 +199,32 @@ Sys.J_ex
 * e.g.::
 	
 	Sys.J = -20000  # MHz
+	
+	
+Sys.D & Sys.E
+^^^^^^^^^^^^^
+* Axial dipolar coupling (D) and rhombic dipolar coupling (E) for two interacting spin species
+	* Float in MHz
+	* The dipolar coupling Hamiltonian is defined as:
+	.. math::
+	   \hat{H}_{\mathrm{dip}} &= \mathbf{S}_1 \mathbf{D} \mathbf{S}_2  \\
+	   &\text{ }\\
+	   \mathbf{D} &= \begin{pmatrix} D+E & 0 & 0\\ 0 & D-E & 0 \\ 0 & 0 & -2 D \end{pmatrix}	   
+* Optional for radical pairs and triplet doublet pairs
+* e.g.::
+	
+	Sys.D = 3.5  # MHz
+	Sys.E = 0  # MHz
+
+Sys.D_frame
+^^^^^^^^^^^
+* Three euler angles to rotate the D-tensor for dipolar couplings from molecular to laboratory frame
+	* List of floats with three members (:math:`\phi`, :math:`\vartheta`, :math:`\psi`)
+* Optional for radical pair and tripled douplet pair simulations if a dipolar coupling is given
+* e.g.::
+	
+	Sys.D_frame = [0, np.pi/2, 0]  # rad
+	
 
 Sys.D_tri & Sys.E_tri
 ^^^^^^^^^^^^^^^^^^^^^
