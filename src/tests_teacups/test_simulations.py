@@ -183,6 +183,39 @@ class TestTeacups:
         desired = np.load("./simulations/rp_quantum_beats.npy")
         np.testing.assert_allclose(spec, desired, atol=2e-6)
 
+    def test_rp_isotrope(self):
+        Sys = cl.Sys()
+        Exp = cl.Exp()
+        SimOpt = cl.SimOpt()
+
+
+        Sys.spin_system = 'rp'
+        Sys.g1 = np.array([2.005, 2.005, 2.005])
+        Sys.g2 = np.array([2.000, 2.000, 2.000])  # - 0.003
+        Sys.width_gauss = 0.08
+        Sys.J_ex = 8
+        Sys.D = 0
+        Sys.E = 0
+
+        Sys.precursor = "singlet"
+        Sys.decay = 1e-6
+
+        Exp.B_z = np.linspace(337.3, 341.05, 800)
+        Exp.t_scale = [0, 1e-6]
+        Exp.t_points = 20
+        Exp.B_mw = 0.00001
+        Exp.freq_mw = 9.5*1e9
+
+        SimOpt.grid_points = 1
+        SimOpt.space = 'hilbert'
+
+        # do simulation
+        spec = sim.teacups(Sys, Exp, SimOpt)
+        spec = spec[8].real/abs(spec[8]).real.max()
+
+        desired = np.load("./simulations/rp_isotrope.npy")
+        np.testing.assert_allclose(spec, desired, atol=2e-6)
+
 
     def test_tdp_rqm(self):
         Sys = cl.Sys()

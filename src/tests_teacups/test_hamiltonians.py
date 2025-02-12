@@ -356,7 +356,7 @@ class TestSetUpRpHamiltonian:
         self.sys.g2 = [3, 3, 3]
         self.sys.D = 0/(2*np.pi)
         self.sys.E = 0/(2*np.pi)
-        self.sys.J_ex = 3/(2*np.pi)
+        self.sys.J_ex = -6/(2*np.pi)
 
         self.exp.B_z = np.linspace(1, 3, 3)/(MU_B*2*np.pi)
         self.cal.s = mt.Spinoperator(1/2, 1/2)

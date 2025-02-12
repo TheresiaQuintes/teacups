@@ -270,12 +270,12 @@ def set_up_rp_hamiltonian(sys: object, exp: object, opt: object, cal: object
     delta_omega = B_z*difference_g
 
     ham = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
-    ham.B_angle_matrix[:, :, 0, 0] = omega - J_ex - 1/2*D
-    ham.B_angle_matrix[:, :, 1, 1] = J_ex
+    ham.B_angle_matrix[:, :, 0, 0] = omega + 1/2*J_ex - 1/2*D
+    ham.B_angle_matrix[:, :, 1, 1] = -1/2*J_ex
     ham.B_angle_matrix[:, :, 1, 2] = delta_omega
     ham.B_angle_matrix[:, :, 2, 1] = delta_omega
-    ham.B_angle_matrix[:, :, 2, 2] = -J_ex + D
-    ham.B_angle_matrix[:, :, 3, 3] = -omega - J_ex - 1/2*D
+    ham.B_angle_matrix[:, :, 2, 2] = +1/2*J_ex + D
+    ham.B_angle_matrix[:, :, 3, 3] = -omega + 1/2*J_ex - 1/2*D
 
     ham_rp = ham.B_angle_matrix
 

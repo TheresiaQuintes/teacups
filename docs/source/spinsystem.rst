@@ -228,10 +228,7 @@ Sys.J_ex
 ^^^^^^^^
 * Exchange coupling constant *J* for two interacting spin species
 	* Float in MHz
-	* For radical pairs the exchange coupling Hamiltonian is set up as:
-	.. math::
-	   \hat{H}_{\mathrm{ex}} = -J\left(1/2+2\mathbf{S}_1\mathbf{S}_2\right)
-	* For triplet doublet pairs the exchange coupling Hamiltonian is set up as:
+	* The exchange coupling Hamiltonian is defined as:
 	.. math::
 	   \hat{H}_{\mathrm{ex}} = J\mathbf{S}_1\mathbf{S}_2
 * Optional for radical pairs and triplet doublet pairs
