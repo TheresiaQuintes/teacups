@@ -15,7 +15,7 @@ Be aware that TEACUPS at the current state can only simulate models with transit
 
 Secular approximation
 ^^^^^^^^^^^^^^^^^^^^^
-Be aware that the secular approximation is used. For systems with large anisotropies the signal may not be appropriate.
+Be aware that the secular approximation is used. For systems with large anisotropies the signal may become inaccurate.
 
 
 Known issiues
@@ -28,10 +28,3 @@ Hyperfine coupling in coupled systems
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The hyperfine coupling does not work for coupled systems (i.e. radical pairs and triplet doublet pairs) until now. This issiue shall be removed in future versions.
 
-Precursor states
-^^^^^^^^^^^^^^^^
-The precursor states ``triplet-eigen`` and ``coupled`` do not necessarily work properly until now. This issue shall be removed in further versions.
-
-SOPHE-grid interpolation
-^^^^^^^^^^^^^^^^^^^^^^^^
-If ``SimOpt.grid = 'sophe'`` The spectra are interpolated to use less angle points. This does not work properly as no stick-spectra are calculated but a routine for peak-finding is applied. This leads to mistakes especially for narrow specra. It is recommended to use the SOPHE-grid in case you want to roughly simulate broad spectra with only a few angle-points. This simulation should be followed by a simulation with ``SimOpt.grid = 'fibonacci'``

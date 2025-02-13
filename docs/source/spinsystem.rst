@@ -12,11 +12,11 @@ If the class is initialized by::
 	import teacups.classes as cl
 	Sys = cl.SpinSystem()
 
-the following attributes are preallocated (but can be newly assigned by the user):
+the following attributes are preallocated (but can/should be newly assigned by the user):
 
 * spin_system: "doub"
-* precursor: "basis"
-* population: [0, 1]
+* precursor: "eigen"
+* population: [1, 0]
 * g: [1.95, 2, 2.1]
 * width_gauss: 3
 * decay: 1e-6
@@ -254,12 +254,82 @@ Sys.D_tri_frame
 * e.g.::
 	
 	Sys.D_tri_frame = [0, np.pi/2, 0]  # rad
+	
+Relaxation
+----------
+Sys.decay
+^^^^^^^^^
+* After a simulation in Hilbert space the resulting spectrum is convoluted with an exponential function to simulate an exponential decay of the signal. The exponential decay constant :math:`\tau` (which has no physical meaning!) can be set in ``Sys.decay``.
+	* Float in s
+	* The convolution is done by:
+	.. math::
+	   S_{\mathrm{decay}} = S * \exp\left[-\tau t\right]
+* Obligatory for all simulations in Hilbert space
+* e.g.::
+	
+	Sys.decay = 1e-6  # s
 
+Sys.T_relax_1
+^^^^^^^^^^^^^
+.. important::
+   Choose ``Sys.dynamics = None`` if you want to use ``Sys.T_relax_1`` and ``Sys.T_relax_2``.
+   
+* Longitudinal relaxation time for the simulation of a phenomenological relaxation.
+	* Float in s
+	* Describes the relaxation time that drives the populations to equilibrium
+* Optional for all simulations in Liouville space 
+* e.g.::
+	
+	Sys.dynamics = None
+	Sys.T_relax_1 = 1e-6  # s
+	Sys.T_relax_2 = 1e-7  # s
+
+Sys.T_relax_2
+^^^^^^^^^^^^^
+* Transversal relaxation time for the simulation of a phenomenological relaxation.
+	* Float in s
+	* Describes the relaxation time that describes the decay of the coherences
+* Optional for all simulations in Liouville space 
+* e.g.::
+	
+	Sys.dynamics = None
+	Sys.T_relax_1 = 1e-6  # s
+	Sys.T_relax_2 = 1e-7  # s
+
+Sys.dynamics
+^^^^^^^^^^^^
+* Set your own relaxation matrix for transitions between the systems eigenstates
+	* The rateconstants are set in 1/s
+	* The matrix has the dimension of the spin system (if the spin system e.g. has 4 eigenfunctions, its dimension is 4x4)
+	* The diagonal elements describe the decay of populations to states "outside" of the spin system (e.g. ground state)
+	* The off-diagonal elements describe transitions between the eigenstates of the system
+	* The order of the eigenstates is ascending
+* Optional for all simulations in Liouville space
+* e.g.::
+
+	# System with three eigenstates
+	# Population of eigenstate 1 (lowest energy) decays with -1/5s^-1
+	# Transition between state 1 <-> 3 with a rate of 1/2s^-1
+	Sys.dynamics = np.array([[-1/5, 0, 1/2],
+	                         [   0, 0,   0],
+	                         [ 1/2, 0,   0]])
+
+Line width
+----------
+Sys.width_gauss
+^^^^^^^^^^^^^^^
+* After the spectrum is generated, it is convoluted with a gaussian function. The width of this function can be set in Sys.width_gauss.
+	* Float in mT
+* Obligatory for all simulations
+* e.g.::
+	
+	Sys.width_gauss = 1  # mT	            
+	
 
 Hyperfine interaction
 ---------------------
-.. note::
-   Hyperfine interactions for coupled systems do not work properly until now.
+.. warning::
+   Hyperfine interactions for radical pairs and triplet-doublet pairs are not yet fully implemented and do not yet work properly.
    
 Sys.Ai
 ^^^^^^
@@ -300,70 +370,3 @@ Sys.ni
 * e.g.::
 
 	Sys.n1 = 3
-	
-Relaxation
-----------
-Sys.decay
-^^^^^^^^^
-* After a simulation in Hilbert space the resulting spectrum is convoluted with an exponential function to simulate an exponential decay of the signal. The exponential decay constant tau (which has no physical meaning) can be set in ``Sys.decay``.
-	* Given as a float in s
-	* The convolution is done by:
-	.. math::
-	   S_{\mathrm{decay}} = S * \exp\left[-\tau t\right]
-* Obligatory for all simulations in Hilbert space
-* e.g.::
-	
-	Sys.decay = 1e-6  # s
-
-Sys.T_relax_1
-^^^^^^^^^^^^^
-* This is the longitudinal relaxation time for the simulation of a phenomenological relaxation.
-	* Given as a float in s
-	* Describes the relaxation time that drives the populations to equilibrium
-* Optional for all simulations in Liouville space (choose ``Sys.dynamics = None`` if you want to use ``Sys.T_relax_1`` and ``Sys.T_relax_2``)
-* e.g.::
-	
-	Sys.dynamics = None
-	Sys.T_relax_1 = 1e-6  # s
-	Sys.T_relax_2 = 1e-7  # s
-
-Sys.T_relax_2
-^^^^^^^^^^^^^
-* This is the transversal relaxation time for the simulation of a phenomenological relaxation.
-	* Given as a float in s
-	* Describes the relaxation time that describes the decay of the coherences
-* Optional for all simulations in Liouville space (choose ``Sys.dynamics = None`` if you want to use ``Sys.T_relax_1`` and ``Sys.T_relax_2``)
-* e.g.::
-	
-	Sys.dynamics = None
-	Sys.T_relax_1 = 1e-6  # s
-	Sys.T_relax_2 = 1e-7  # s
-
-Sys.dynamics
-^^^^^^^^^^^^
-* Set your own relaxation matrix for transitions between the systems eigenstates
-	* The rateconstants are given in 1/s
-	* The matrix has the dimension of the spin system (if the spin system e.g. has 4 eigenfunctions, its dimension is 4x4)
-	* The diagonal elements describe the decay of populations to states "outside" of the spin system
-	* The off-diagonal elements describe transitions between the eigenstates
-	* The order of the eigenstates is ascending
-* Optional for all simulations in Liouville space
-* e.g.::
-
-	# System with three eigenstates
-	# Population of eigenstate 1 (lowest energy) decays with -1/5s^-1
-	# Transition between state 1 <-> 3 with a rate of 1/2s^-1
-	Sys.dynamics = np.array([[-1/5, 0, 1/2],
-	                         [   0, 0,   0],
-	                         [ 1/2, 0,   0]])
-
-Line width
-----------
-Sys.width_gauss
-^^^^^^^^^^^^^^^
-* After the spectrum is built it is convoluted with a gaussian function. The width of this function can be set in Sys.width_gauss.
-	* Float in mT
-* Obligatory for all simulations
-* e.g.::
-	
-	Sys.width_gauss = 1  # mT	            

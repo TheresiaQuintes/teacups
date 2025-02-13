@@ -46,6 +46,9 @@ You will need the following installed on your system to run a TEACUPS-simulation
 * matplotlib
 * tqdm
 
+.. note::
+   So far, the programme package has been run under an Ubuntu Linux distribution.
+
 
 Literature
 ==========

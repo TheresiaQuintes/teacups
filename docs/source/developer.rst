@@ -8,11 +8,12 @@ TEACUPS consists of 13 Python modules, which contain classes and functions. They
 
 Specific simulation modules
 ---------------------------
-These modules include all functions that are specific for the simulation of transient EPR spectra. The main file simulations.py calls all functions in the right order to obtain the wanted spectrum. The other modules are used to set up and transform the explicit matrices as desired by the :download:`theory </teacups_paper.pdf>`. The functions of the specific simulation modules use a four-class system as input and output, which consists of ``Sys``, ``Exp``, ``SimOpt`` and ``Cal``. All information needed for the simulation is provided and sorted in these four classes as attributes:
-* ``Sys`` contains all spin system parameters including relaxation times.
-* ``Exp`` contains all experimental parameters.
-* ``SimOpt`` contains simulations options, e.g. the choice of the space, the number of grid points, and the simulation mode.
-* ``Cal`` is at the beginning an empty class, but it is filled with the results of the calculations during the simulation. These results are fed to further functions later.
+These modules include all functions that are specific for the simulation of transient EPR spectra. The main file simulations.py calls all functions in the right order to obtain the spectrum. The other modules are used to set up and transform the explicit matrices as described by the :download:`theory </_static/teacups_main.pdf>`. The functions of the specific simulation modules use a four-class system as input and output, which consists of ``Sys``, ``Exp``, ``SimOpt`` and ``Cal``. All information needed for the simulation is provided and sorted in these four classes as attributes:
+
+*  ``Sys`` contains all spin system parameters including relaxation times.
+*  ``Exp`` contains all experimental parameters.
+*  ``SimOpt`` contains simulations options, e.g. the choice of the space, the number of grid points, and the simulation mode.
+*  ``Cal`` is at the beginning an empty class, but it is filled with the results of the calculations during the simulation. These results are fed to further functions later.
 
 
 creators.py
@@ -24,7 +25,7 @@ In the creators-module functions for creating matrix-objects like tensors, detec
 
 density_matrices.py
 ^^^^^^^^^^^^^^^^^^^
-For each spin-system a function that sets up an initial density matrix is provided in this module.
+A function that sets up an initial density matrix (dependent on precursor and spin system) is provided in this module.
 
 .. automodule:: teacups.density_matrices
    :members:
@@ -111,7 +112,7 @@ This module provides classes for basic matrices that are needed for calculations
 
 multioperator_tools.py
 ^^^^^^^^^^^^^^^^^^^^^^
-The Multioperator class in introduced here together with all its methods. This class is usable for fast array calculations as loops are not longer necessary. A Multioperator consists of a 3D-array: The outest dimension is the magnetic field, followed by the angle combinations. In the innest dimension quadratic operators can be found. This are e.g. Hamiltonians. The Multioperaor provides the same methods as the classes from matrix_tools but they a applied for all quadratic matrices in the Multioperator.
+The Multioperator class is introduced here together with all its methods. This class is usable for fast array calculations as loops are not longer necessary. A Multioperator consists of a 3D-array: The outest dimension is the magnetic field, followed by the angle combinations. In the innerst dimension quadratic operators can be found. This are e.g. Hamiltonians. The Multioperaor provides the same methods as the classes from matrix_tools but they a applied for all quadratic matrices in the Multioperator.
 
 .. automodule:: teacups.multioperator_tools
    :members:

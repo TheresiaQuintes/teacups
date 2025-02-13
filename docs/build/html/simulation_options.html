@@ -55,7 +55,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#simopt-grid">SimOpt.grid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#simopt-grid-points">SimOpt.grid_points</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#simopt-theta-simopt-phi">SimOpt.theta / SimOpt.phi</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#simopt-width-intp">SimOpt.width_intp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#simopt-sym">SimOpt.sym</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#simulation-modes">Simulation modes</a><ul>
@@ -66,6 +66,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#calculation-settings">Calculation settings</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#simopt-cpu-cores">SimOpt.cpu_cores</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#simopt-cupy">SimOpt.CUPY</a></li>
 </ul>
 </li>
 </ul>
@@ -103,33 +104,33 @@
              
   <section id="simulation-options-simopt">
 <h1>Simulation Options (SimOpt)<a class="headerlink" href="#simulation-options-simopt" title="Permalink to this heading"></a></h1>
-<p>In the class <code class="docutils literal notranslate"><span class="pre">SimOpt</span></code> all parameters that set options for the simulation are set as attributes. This can be done in the script by typing:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">Attribute</span> <span class="o">=</span> <span class="n">Value</span>
+<p>In the class <code class="docutils literal notranslate"><span class="pre">SimOpt</span></code> all parameters that define the options for the simulation are set as attributes. This can be done in the script by typing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SimOpt</span><span class="o">.</span><span class="n">Attribute</span> <span class="o">=</span> <span class="n">Value</span>
 </pre></div>
 </div>
-<p>In the following all possible attributes are named. For each attribute an explanation, cases where it is needed and an example are given. You can get a quick reference file with all attributes <code class="xref download docutils literal notranslate"><span class="pre">here</span></code>.</p>
-<p>If you use the class provided by teacups.classes, the (recommended) default attributes are defined, so that you only have to define the values that you would like to change  from default in your skript:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">teacups.classes</span> <span class="k">as</span> <span class="nn">cl</span>
-
-<span class="gp">&gt;&gt;&gt; </span><span class="n">SimOpt</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">SimOpt</span><span class="p">()</span>
-
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">vars</span><span class="p">(</span><span class="n">SimOpt</span><span class="p">)</span>
-<span class="go">{&#39;grid_points&#39;: 10,</span>
-<span class="go"> &#39;grid&#39;: &#39;fibonacci&#39;,</span>
-<span class="go"> &#39;space&#39;: &#39;hilbert&#39;,</span>
-<span class="go"> &#39;pop_evolution&#39;: False,</span>
-<span class="go"> &#39;eigval_mode&#39;: False,</span>
-<span class="go"> &#39;cpu_cores&#39;: 0}</span>
+<p>If the class is initialized by:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">teacups.classes</span> <span class="k">as</span> <span class="nn">cl</span>
+<span class="n">SimOpt</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">SimOpt</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>the following attributes are preallocated and can be used as a starting point, which should be adapted by the user:</p>
+<ul class="simple">
+<li><p>grid_points: 15</p></li>
+<li><p>grid: “fibonacci”</p></li>
+<li><p>theta: [np.pi]</p></li>
+<li><p>phi: [0]</p></li>
+<li><p>sym: “D2h”</p></li>
+<li><p>space: “hilbert”</p></li>
+<li><p>pop_evolution: False</p></li>
+<li><p>eigval_mode: False</p></li>
+<li><p>cpu_cores: 1</p></li>
+<li><p>CUPY: False</p></li>
+</ul>
+<p>In the following all possible attributes are named. For each attribute an explanation, cases where it is needed and an example are given. You can get a quick reference file with all attributes <a class="reference download internal" download="" href="_downloads/7d69dfccbf540b0e705373a625109db3/quickreference.pdf"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a>.</p>
 <section id="grid">
 <h2>Grid<a class="headerlink" href="#grid" title="Permalink to this heading"></a></h2>
 <section id="simopt-grid">
 <h3>SimOpt.grid<a class="headerlink" href="#simopt-grid" title="Permalink to this heading"></a></h3>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The sophe-grid uses interpolation between the angle points. This does not work properly for narrow spectra. It is useful for fast calculation of very broad spectra with a small number of angle points to get a quick overview. To get a smooth spectrum the fibonacci grid is still recommended.</p>
-</div>
 <ul>
 <li><dl class="simple">
 <dt>Type of the grid that is chosen to distribute points equally on a hemisphere</dt><dd><ul class="simple">
@@ -146,15 +147,19 @@
 </div>
 </li>
 </ul>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>If you know the point group of your spin system it is more efficient to choose <code class="docutils literal notranslate"><span class="pre">SimOpt.grid</span> <span class="pre">=</span> <span class="pre">'sophe'</span></code>. You have to add <code class="docutils literal notranslate"><span class="pre">SimOpt.sym</span></code>.</p>
+</div>
 </section>
 <section id="simopt-grid-points">
 <h3>SimOpt.grid_points<a class="headerlink" href="#simopt-grid-points" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
 <dt>Number of points between theta = 0 and theta = pi/2 on the orientational sphere</dt><dd><ul class="simple">
-<li><p>Given as a integer</p></li>
+<li><p>Integer</p></li>
 <li><p>From this value the grid with points distributed equally on a hemisphere is created</p></li>
-<li><p>Typical values range from 1-20 points dependent on the anisotropy of the system, the more anisotrope a system is, the more points are needed</p></li>
+<li><p>Typical values range from 1-30 points dependent on the anisotropy of the system, the more anisotrope a system is, the more points are needed</p></li>
 </ul>
 </dd>
 </dl>
@@ -172,9 +177,9 @@
 <h3>SimOpt.theta / SimOpt.phi<a class="headerlink" href="#simopt-theta-simopt-phi" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
-<dt>Lists with orientation angles chosen by the user</dt><dd><ul class="simple">
+<dt>Lists with angles to choose one or multiple special orientations</dt><dd><ul class="simple">
 <li><p>Both lists have to have the same length</p></li>
-<li><p>Angles are given in rad</p></li>
+<li><p>Angles are set in rad</p></li>
 </ul>
 </dd>
 </dl>
@@ -189,19 +194,22 @@
 </li>
 </ul>
 </section>
-<section id="simopt-width-intp">
-<h3>SimOpt.width_intp<a class="headerlink" href="#simopt-width-intp" title="Permalink to this heading"></a></h3>
+<section id="simopt-sym">
+<h3>SimOpt.sym<a class="headerlink" href="#simopt-sym" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
-<dt>If the grid is a sophe grid points between the grid points will be interpolated. To get the desired peaks a interpolation width in mT has to be set</dt><dd><ul class="simple">
-<li><p>Width in mT</p></li>
+<dt>Point group of the spin system</dt><dd><ul class="simple">
+<li><p>String</p></li>
+<li><p>The following symmetries are possible: “C1”, “Ci”, “C2h”, “S6”, “C4h”, “C6h”, “D2h”, “Th”, “D3d”, “D4h”, “Oh”, “D6h”, “Dooh”, “O3”</p></li>
+<li><p>Many spin systems have the symmetry “D2h”</p></li>
 </ul>
 </dd>
 </dl>
 </li>
-<li><p>Obligatory, if <code class="docutils literal notranslate"><span class="pre">SimOpt.grid</span> <span class="pre">=</span> <span class="pre">'sophe'</span></code></p></li>
+<li><p>Obligatory for all simulations with SimOpt.grid = ‘sophe’</p></li>
 <li><p>e.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SimOpt</span><span class="o">.</span><span class="n">widthintp</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># mT</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SimOpt</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="s2">&quot;sophe&quot;</span>
+<span class="n">SimOpt</span><span class="o">.</span><span class="n">sym</span> <span class="o">=</span> <span class="s2">&quot;D2h&quot;</span>
 </pre></div>
 </div>
 </li>
@@ -216,6 +224,8 @@
 <li><dl class="simple">
 <dt>Choose the space for the simulation</dt><dd><ul class="simple">
 <li><p>Either <code class="docutils literal notranslate"><span class="pre">'hilbert'</span></code> or <code class="docutils literal notranslate"><span class="pre">'liouville'</span></code></p></li>
+<li><p>Choose the Hilbert-space if you are interested in coherent dynamics</p></li>
+<li><p>Choose the Liouville-space if you would like to include incoherent dynamics</p></li>
 </ul>
 </dd>
 </dl>
@@ -227,9 +237,9 @@
 </div>
 </li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>For quick simulations you should use the Hilbert space. It is recommended to do a Hilbert space simulation for your system first to determine the minimal sufficient number of grid-points and magnetic field/time-points for your spin system to get a smooth graph. If you are interested in relaxation and intend to use <code class="docutils literal notranslate"><span class="pre">Sys.T_relax_1/2</span></code> or <code class="docutils literal notranslate"><span class="pre">Sys.dynamics</span></code> you have to choose the liouville space. This will be more expensive but you can take all (other) parameters from the initial Hilbert space simulation.</p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>As a starting point you should do a Hilbert space simulation (which is less expensive) to determine the minimal sufficient number of grid-points and magnetic field/time-points to get a satisfying smooth spectrum. If you are then intrested in incoherent dynamics you have to switch to Liouville space but are now able to take over all other parameters from the Hilbert space simulation.</p>
 </div>
 </section>
 <section id="simopt-pop-evolution">
@@ -262,7 +272,7 @@
 <ul>
 <li><dl class="simple">
 <dt>Calculate only the eigenvalues of the spin system dependent on the magnetic field</dt><dd><ul class="simple">
-<li><p>Set to <code class="docutils literal notranslate"><span class="pre">True</span></code> if you do like get only the eigenvalues and stop the simulation after. Set to <code class="docutils literal notranslate"><span class="pre">False</span></code> if you would like to run the full simulation.</p></li>
+<li><p>Set to <code class="docutils literal notranslate"><span class="pre">True</span></code> if you do like to get only the eigenvalues and stop the simulation after. Set to <code class="docutils literal notranslate"><span class="pre">False</span></code> if you would like to run the full simulation.</p></li>
 </ul>
 </dd>
 </dl>
@@ -273,6 +283,11 @@
 <span class="n">eigvals</span> <span class="o">=</span> <span class="n">teacups</span><span class="p">(</span><span class="n">Sys</span><span class="p">,</span> <span class="n">Exp</span><span class="p">,</span> <span class="n">SimOpt</span><span class="p">)</span>
 </pre></div>
 </div>
+</li>
+<li><dl class="simple">
+<dt>The shape of the returned eigval-array is::</dt><dd><p>B-points x grid-points x eigenvalues</p>
+</dd>
+</dl>
 </li>
 </ul>
 </section>
@@ -298,6 +313,25 @@
 
 <span class="c1"># use all available cores</span>
 <span class="n">SimOpt</span><span class="o">.</span><span class="n">cpu_cores</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="simopt-cupy">
+<h3>SimOpt.CUPY<a class="headerlink" href="#simopt-cupy" title="Permalink to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>For some time consuming functionalities GPU-support is availabe</dt><dd><ul class="simple">
+<li><p>Set to True, if you want to calculate some parts on your (nvidia) GPU</p></li>
+<li><p>Set to False, if you do not want to calculate on your GPU</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Obligatory for all simulations</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SimOpt</span><span class="o">.</span><span class="n">CUPY</span> <span class="o">=</span> <span class="kc">False</span>
 </pre></div>
 </div>
 </li>

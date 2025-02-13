@@ -62,8 +62,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#known-issiues">Known issiues</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#bends-in-the-spectrum-for-long-times">Bends in the spectrum for long times</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#hyperfine-coupling-in-coupled-systems">Hyperfine coupling in coupled systems</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#precursor-states">Precursor states</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#sophe-grid-interpolation">SOPHE-grid interpolation</a></li>
 </ul>
 </li>
 </ul>
@@ -112,7 +110,7 @@
 </section>
 <section id="secular-approximation">
 <h3>Secular approximation<a class="headerlink" href="#secular-approximation" title="Permalink to this heading"></a></h3>
-<p>Be aware that the secular approximation is used. For systems with large anisotropies the signal may not be appropriate.</p>
+<p>Be aware that the secular approximation is used. For systems with large anisotropies the signal may become inaccurate.</p>
 </section>
 </section>
 <section id="known-issiues">
@@ -124,14 +122,6 @@
 <section id="hyperfine-coupling-in-coupled-systems">
 <h3>Hyperfine coupling in coupled systems<a class="headerlink" href="#hyperfine-coupling-in-coupled-systems" title="Permalink to this heading"></a></h3>
 <p>The hyperfine coupling does not work for coupled systems (i.e. radical pairs and triplet doublet pairs) until now. This issiue shall be removed in future versions.</p>
-</section>
-<section id="precursor-states">
-<h3>Precursor states<a class="headerlink" href="#precursor-states" title="Permalink to this heading"></a></h3>
-<p>The precursor states <code class="docutils literal notranslate"><span class="pre">triplet-eigen</span></code> and <code class="docutils literal notranslate"><span class="pre">coupled</span></code> do not necessarily work properly until now. This issue shall be removed in further versions.</p>
-</section>
-<section id="sophe-grid-interpolation">
-<h3>SOPHE-grid interpolation<a class="headerlink" href="#sophe-grid-interpolation" title="Permalink to this heading"></a></h3>
-<p>If <code class="docutils literal notranslate"><span class="pre">SimOpt.grid</span> <span class="pre">=</span> <span class="pre">'sophe'</span></code> The spectra are interpolated to use less angle points. This does not work properly as no stick-spectra are calculated but a routine for peak-finding is applied. This leads to mistakes especially for narrow specra. It is recommended to use the SOPHE-grid in case you want to roughly simulate broad spectra with only a few angle-points. This simulation should be followed by a simulation with <code class="docutils literal notranslate"><span class="pre">SimOpt.grid</span> <span class="pre">=</span> <span class="pre">'fibonacci'</span></code></p>
 </section>
 </section>
 </section>

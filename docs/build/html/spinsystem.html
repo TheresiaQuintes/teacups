@@ -75,13 +75,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#sys-d-tri-frame">Sys.D_tri_frame</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#hyperfine-interaction">Hyperfine interaction</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#sys-ai">Sys.Ai</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#sys-ai-frame">Sys.Ai_frame</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#sys-ii">Sys.Ii</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#sys-ni">Sys.ni</a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="#relaxation">Relaxation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#sys-decay">Sys.decay</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sys-t-relax-1">Sys.T_relax_1</a></li>
@@ -91,6 +84,13 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#line-width">Line width</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#sys-width-gauss">Sys.width_gauss</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#hyperfine-interaction">Hyperfine interaction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sys-ai">Sys.Ai</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-ai-frame">Sys.Ai_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-ii">Sys.Ii</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-ni">Sys.ni</a></li>
 </ul>
 </li>
 </ul>
@@ -139,11 +139,11 @@
 <span class="n">Sys</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">SpinSystem</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>the following attributes are preallocated (but can be newly assigned by the user):</p>
+<p>the following attributes are preallocated (but can/should be newly assigned by the user):</p>
 <ul class="simple">
 <li><p>spin_system: “doub”</p></li>
-<li><p>precursor: “basis”</p></li>
-<li><p>population: [0, 1]</p></li>
+<li><p>precursor: “eigen”</p></li>
+<li><p>population: [1, 0]</p></li>
 <li><p>g: [1.95, 2, 2.1]</p></li>
 <li><p>width_gauss: 3</p></li>
 <li><p>decay: 1e-6</p></li>
@@ -524,11 +524,129 @@
 </ul>
 </section>
 </section>
+<section id="relaxation">
+<h2>Relaxation<a class="headerlink" href="#relaxation" title="Permalink to this heading"></a></h2>
+<section id="sys-decay">
+<h3>Sys.decay<a class="headerlink" href="#sys-decay" title="Permalink to this heading"></a></h3>
+<ul>
+<li><dl>
+<dt>After a simulation in Hilbert space the resulting spectrum is convoluted with an exponential function to simulate an exponential decay of the signal. The exponential decay constant <span class="math notranslate nohighlight">\(\tau\)</span> (which has no physical meaning!) can be set in <code class="docutils literal notranslate"><span class="pre">Sys.decay</span></code>.</dt><dd><ul class="simple">
+<li><p>Float in s</p></li>
+<li><p>The convolution is done by:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[S_{\mathrm{decay}} = S * \exp\left[-\tau t\right]\]</div>
+</dd>
+</dl>
+</li>
+<li><p>Obligatory for all simulations in Hilbert space</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">decay</span> <span class="o">=</span> <span class="mf">1e-6</span>  <span class="c1"># s</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-t-relax-1">
+<h3>Sys.T_relax_1<a class="headerlink" href="#sys-t-relax-1" title="Permalink to this heading"></a></h3>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Choose <code class="docutils literal notranslate"><span class="pre">Sys.dynamics</span> <span class="pre">=</span> <span class="pre">None</span></code> if you want to use <code class="docutils literal notranslate"><span class="pre">Sys.T_relax_1</span></code> and <code class="docutils literal notranslate"><span class="pre">Sys.T_relax_2</span></code>.</p>
+</div>
+<ul>
+<li><dl class="simple">
+<dt>Longitudinal relaxation time for the simulation of a phenomenological relaxation.</dt><dd><ul class="simple">
+<li><p>Float in s</p></li>
+<li><p>Describes the relaxation time that drives the populations to equilibrium</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Optional for all simulations in Liouville space</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">dynamics</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">T_relax_1</span> <span class="o">=</span> <span class="mf">1e-6</span>  <span class="c1"># s</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">T_relax_2</span> <span class="o">=</span> <span class="mf">1e-7</span>  <span class="c1"># s</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-t-relax-2">
+<h3>Sys.T_relax_2<a class="headerlink" href="#sys-t-relax-2" title="Permalink to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Transversal relaxation time for the simulation of a phenomenological relaxation.</dt><dd><ul class="simple">
+<li><p>Float in s</p></li>
+<li><p>Describes the relaxation time that describes the decay of the coherences</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Optional for all simulations in Liouville space</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">dynamics</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">T_relax_1</span> <span class="o">=</span> <span class="mf">1e-6</span>  <span class="c1"># s</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">T_relax_2</span> <span class="o">=</span> <span class="mf">1e-7</span>  <span class="c1"># s</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-dynamics">
+<h3>Sys.dynamics<a class="headerlink" href="#sys-dynamics" title="Permalink to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>Set your own relaxation matrix for transitions between the systems eigenstates</dt><dd><ul class="simple">
+<li><p>The rateconstants are set in 1/s</p></li>
+<li><p>The matrix has the dimension of the spin system (if the spin system e.g. has 4 eigenfunctions, its dimension is 4x4)</p></li>
+<li><p>The diagonal elements describe the decay of populations to states “outside” of the spin system (e.g. ground state)</p></li>
+<li><p>The off-diagonal elements describe transitions between the eigenstates of the system</p></li>
+<li><p>The order of the eigenstates is ascending</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Optional for all simulations in Liouville space</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># System with three eigenstates</span>
+<span class="c1"># Population of eigenstate 1 (lowest energy) decays with -1/5s^-1</span>
+<span class="c1"># Transition between state 1 &lt;-&gt; 3 with a rate of 1/2s^-1</span>
+<span class="n">Sys</span><span class="o">.</span><span class="n">dynamics</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span>
+                         <span class="p">[</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">],</span>
+                         <span class="p">[</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">]])</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+</section>
+<section id="line-width">
+<h2>Line width<a class="headerlink" href="#line-width" title="Permalink to this heading"></a></h2>
+<section id="sys-width-gauss">
+<h3>Sys.width_gauss<a class="headerlink" href="#sys-width-gauss" title="Permalink to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>After the spectrum is generated, it is convoluted with a gaussian function. The width of this function can be set in Sys.width_gauss.</dt><dd><ul class="simple">
+<li><p>Float in mT</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Obligatory for all simulations</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">width_gauss</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># mT</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+</section>
 <section id="hyperfine-interaction">
 <h2>Hyperfine interaction<a class="headerlink" href="#hyperfine-interaction" title="Permalink to this heading"></a></h2>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Hyperfine interactions for coupled systems do not work properly until now.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Hyperfine interactions for radical pairs and triplet-doublet pairs are not yet fully implemented and do not yet work properly.</p>
 </div>
 <section id="sys-ai">
 <h3>Sys.Ai<a class="headerlink" href="#sys-ai" title="Permalink to this heading"></a></h3>
@@ -601,120 +719,6 @@
 <li><p>Optional for doublets and triplets where a hyperfine tensor A is given</p></li>
 <li><p>e.g.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">n1</span> <span class="o">=</span> <span class="mi">3</span>
-</pre></div>
-</div>
-</li>
-</ul>
-</section>
-</section>
-<section id="relaxation">
-<h2>Relaxation<a class="headerlink" href="#relaxation" title="Permalink to this heading"></a></h2>
-<section id="sys-decay">
-<h3>Sys.decay<a class="headerlink" href="#sys-decay" title="Permalink to this heading"></a></h3>
-<ul>
-<li><dl>
-<dt>After a simulation in Hilbert space the resulting spectrum is convoluted with an exponential function to simulate an exponential decay of the signal. The exponential decay constant tau (which has no physical meaning) can be set in <code class="docutils literal notranslate"><span class="pre">Sys.decay</span></code>.</dt><dd><ul class="simple">
-<li><p>Given as a float in s</p></li>
-<li><p>The convolution is done by:</p></li>
-</ul>
-<div class="math notranslate nohighlight">
-\[S_{\mathrm{decay}} = S * \exp\left[-\tau t\right]\]</div>
-</dd>
-</dl>
-</li>
-<li><p>Obligatory for all simulations in Hilbert space</p></li>
-<li><p>e.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">decay</span> <span class="o">=</span> <span class="mf">1e-6</span>  <span class="c1"># s</span>
-</pre></div>
-</div>
-</li>
-</ul>
-</section>
-<section id="sys-t-relax-1">
-<h3>Sys.T_relax_1<a class="headerlink" href="#sys-t-relax-1" title="Permalink to this heading"></a></h3>
-<ul>
-<li><dl class="simple">
-<dt>This is the longitudinal relaxation time for the simulation of a phenomenological relaxation.</dt><dd><ul class="simple">
-<li><p>Given as a float in s</p></li>
-<li><p>Describes the relaxation time that drives the populations to equilibrium</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p>Optional for all simulations in Liouville space (choose <code class="docutils literal notranslate"><span class="pre">Sys.dynamics</span> <span class="pre">=</span> <span class="pre">None</span></code> if you want to use <code class="docutils literal notranslate"><span class="pre">Sys.T_relax_1</span></code> and <code class="docutils literal notranslate"><span class="pre">Sys.T_relax_2</span></code>)</p></li>
-<li><p>e.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">dynamics</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">Sys</span><span class="o">.</span><span class="n">T_relax_1</span> <span class="o">=</span> <span class="mf">1e-6</span>  <span class="c1"># s</span>
-<span class="n">Sys</span><span class="o">.</span><span class="n">T_relax_2</span> <span class="o">=</span> <span class="mf">1e-7</span>  <span class="c1"># s</span>
-</pre></div>
-</div>
-</li>
-</ul>
-</section>
-<section id="sys-t-relax-2">
-<h3>Sys.T_relax_2<a class="headerlink" href="#sys-t-relax-2" title="Permalink to this heading"></a></h3>
-<ul>
-<li><dl class="simple">
-<dt>This is the transversal relaxation time for the simulation of a phenomenological relaxation.</dt><dd><ul class="simple">
-<li><p>Given as a float in s</p></li>
-<li><p>Describes the relaxation time that describes the decay of the coherences</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p>Optional for all simulations in Liouville space (choose <code class="docutils literal notranslate"><span class="pre">Sys.dynamics</span> <span class="pre">=</span> <span class="pre">None</span></code> if you want to use <code class="docutils literal notranslate"><span class="pre">Sys.T_relax_1</span></code> and <code class="docutils literal notranslate"><span class="pre">Sys.T_relax_2</span></code>)</p></li>
-<li><p>e.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">dynamics</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">Sys</span><span class="o">.</span><span class="n">T_relax_1</span> <span class="o">=</span> <span class="mf">1e-6</span>  <span class="c1"># s</span>
-<span class="n">Sys</span><span class="o">.</span><span class="n">T_relax_2</span> <span class="o">=</span> <span class="mf">1e-7</span>  <span class="c1"># s</span>
-</pre></div>
-</div>
-</li>
-</ul>
-</section>
-<section id="sys-dynamics">
-<h3>Sys.dynamics<a class="headerlink" href="#sys-dynamics" title="Permalink to this heading"></a></h3>
-<ul>
-<li><dl class="simple">
-<dt>Set your own relaxation matrix for transitions between the systems eigenstates</dt><dd><ul class="simple">
-<li><p>The rateconstants are given in 1/s</p></li>
-<li><p>The matrix has the dimension of the spin system (if the spin system e.g. has 4 eigenfunctions, its dimension is 4x4)</p></li>
-<li><p>The diagonal elements describe the decay of populations to states “outside” of the spin system</p></li>
-<li><p>The off-diagonal elements describe transitions between the eigenstates</p></li>
-<li><p>The order of the eigenstates is ascending</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p>Optional for all simulations in Liouville space</p></li>
-<li><p>e.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># System with three eigenstates</span>
-<span class="c1"># Population of eigenstate 1 (lowest energy) decays with -1/5s^-1</span>
-<span class="c1"># Transition between state 1 &lt;-&gt; 3 with a rate of 1/2s^-1</span>
-<span class="n">Sys</span><span class="o">.</span><span class="n">dynamics</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span>
-                         <span class="p">[</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">],</span>
-                         <span class="p">[</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">]])</span>
-</pre></div>
-</div>
-</li>
-</ul>
-</section>
-</section>
-<section id="line-width">
-<h2>Line width<a class="headerlink" href="#line-width" title="Permalink to this heading"></a></h2>
-<section id="sys-width-gauss">
-<h3>Sys.width_gauss<a class="headerlink" href="#sys-width-gauss" title="Permalink to this heading"></a></h3>
-<ul>
-<li><dl class="simple">
-<dt>After the spectrum is built it is convoluted with a gaussian function. The width of this function can be set in Sys.width_gauss.</dt><dd><ul class="simple">
-<li><p>Float in mT</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p>Obligatory for all simulations</p></li>
-<li><p>e.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">width_gauss</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># mT</span>
 </pre></div>
 </div>
 </li>

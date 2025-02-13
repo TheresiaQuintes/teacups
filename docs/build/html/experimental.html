@@ -19,10 +19,11 @@
         <script src="_static/doctools.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Simulation Options (SimOpt)" href="simulation_options.html" />
+    <link rel="next" title="Experimental (Exp)" href="simulation_options.html" />
     <link rel="prev" title="Spin System (Sys)" href="spinsystem.html" /> 
 </head>
 
@@ -63,7 +64,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="simulation_options.html">Simulation Options (SimOpt)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulation_options.html">Experimental (Exp)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="limitations_issiues.html">Limitations and known issiues</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developer.html">Developer</a></li>
 </ul>
@@ -88,7 +89,7 @@
       </li>
   </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
         <a href="spinsystem.html" class="btn btn-neutral float-left" title="Spin System (Sys)" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="simulation_options.html" class="btn btn-neutral float-right" title="Simulation Options (SimOpt)" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="simulation_options.html" class="btn btn-neutral float-right" title="Experimental (Exp)" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
   <hr/>
 </div>
@@ -98,10 +99,23 @@
   <section id="experimental-exp">
 <h1>Experimental (Exp)<a class="headerlink" href="#experimental-exp" title="Permalink to this heading"></a></h1>
 <p>In the class <code class="docutils literal notranslate"><span class="pre">Exp</span></code> all parameters that describe the experimental conditions are set as attributes. This can be done in the script by typing:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Exp</span><span class="o">.</span><span class="n">Attribute</span> <span class="o">=</span> <span class="n">Value</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">Attribute</span> <span class="o">=</span> <span class="n">Value</span>
 </pre></div>
 </div>
-<p>In the following all possible attributes are named. For each attribute an explanation, cases where it is needed and an example are given. You can get a quick reference file with all attributes <code class="xref download docutils literal notranslate"><span class="pre">here</span></code>.</p>
+<p>If the class is initialized by:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">teacups.classes</span> <span class="k">as</span> <span class="nn">cl</span>
+<span class="n">Exp</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">Exp</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>the following attributes are preallocated (but can/should be newly assigned by the user):</p>
+<ul class="simple">
+<li><p>B_z: linspace(320, 380, 600)</p></li>
+<li><p>t_scale: [0, 2e-6]</p></li>
+<li><p>t_points: 60</p></li>
+<li><p>B_mw = 0.001</p></li>
+<li><p>freq_mw: 9.75e9</p></li>
+</ul>
+<p>In the following all possible attributes are named. For each attribute an explanation, cases where it is needed and an example are given. You can get a quick reference file with all attributes <a class="reference download internal" download="" href="_downloads/7d69dfccbf540b0e705373a625109db3/quickreference.pdf"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a>.</p>
 <section id="magnetic-fields">
 <h2>Magnetic fields<a class="headerlink" href="#magnetic-fields" title="Permalink to this heading"></a></h2>
 <section id="exp-b-z">
@@ -150,7 +164,7 @@
 <h3>Exp.freq_mw<a class="headerlink" href="#exp-freq-mw" title="Permalink to this heading"></a></h3>
 <ul>
 <li><dl class="simple">
-<dt>Frequency of the microwave field</dt><dd><ul class="simple">
+<dt>Frequency of the microwave field (along the <em>x</em>-axis)</dt><dd><ul class="simple">
 <li><p>Float</p></li>
 <li><p>Given in Hz</p></li>
 </ul>
@@ -188,6 +202,10 @@
 </div>
 </li>
 </ul>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>In order to see relaxation effects choose the time scale <span class="math notranslate nohighlight">\(\sim 2 T_\mathrm{relax}\)</span></p>
+</div>
 </section>
 <section id="exp-t-points">
 <h3>Exp.t_points<a class="headerlink" href="#exp-t-points" title="Permalink to this heading"></a></h3>
@@ -215,7 +233,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="spinsystem.html" class="btn btn-neutral float-left" title="Spin System (Sys)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="simulation_options.html" class="btn btn-neutral float-right" title="Simulation Options (SimOpt)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="simulation_options.html" class="btn btn-neutral float-right" title="Experimental (Exp)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
