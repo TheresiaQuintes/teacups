@@ -412,7 +412,7 @@ def set_up_tdp_full_high_field_hamiltonian(sys: object, exp: object,
 
     # exchange interaction
     h_ex = mut.Multioperator(S_doub, opt.grid_points, exp.B_z*MU_B)
-    h_ex.exchange_coupling(-1/2*sys.J_ex, S_trip)
+    h_ex.exchange_coupling(sys.J_ex, S_trip)
 
     # full high field hamiltonian
     ham_hf = h_zeeman_doub.B_angle_matrix + h_zeeman_trip.B_angle_matrix +\

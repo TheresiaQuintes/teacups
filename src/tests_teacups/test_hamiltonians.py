@@ -671,7 +671,7 @@ class TestSetUpTdpFullHighFieldHamiltonian:
 
         self.ham_ex = mut.Multioperator(s_doub, self.opt.grid_points,
                                          self.exp.B_z*MU_B)
-        self.ham_ex.exchange_coupling(-1/2*self.sys.J_ex, s_trip)
+        self.ham_ex.exchange_coupling(self.sys.J_ex, s_trip)
 
 
     def test_shape(self):

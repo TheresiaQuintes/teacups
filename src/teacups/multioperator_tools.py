@@ -462,10 +462,9 @@ class Multioperator(Multioperator_):
         if self.spinop.dimension != spinop2.dimension:
             raise IndexError("Spinoperator dimensions must not differ.")
 
-        self.matrix = -J_ex*(0.5*np.eye(self.dimension) + 2
-                             * (self.spinop.get('x')@spinop2.get('x')
+        self.matrix = J_ex * (self.spinop.get('x')@spinop2.get('x')
                                 + self.spinop.get('y')@spinop2.get('y')
-                                + self.spinop.get('z')@spinop2.get('z')))
+                                + self.spinop.get('z')@spinop2.get('z'))
         self.matrix = self.matrix.astype(COMPLEX_TYPE)
 
         self.matrix_changed()

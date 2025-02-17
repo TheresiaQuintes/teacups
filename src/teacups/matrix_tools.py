@@ -755,10 +755,10 @@ class Hamiltonian(Operator):
         if spinoperator1.dimension != spinoperator2.dimension:
             raise IndexError("Spinoperatordimensions must not differ.")
 
-        self.matrix = -J_ex*(0.5*np.eye(self.dimension)+2 * (
+        self.matrix = J_ex* (
             spinoperator1.get('x')@spinoperator2.get('x')
             + spinoperator1.get('y')@spinoperator2.get('y')
-            + spinoperator1.get('z')@spinoperator2.get('z')))
+            + spinoperator1.get('z')@spinoperator2.get('z'))
         self.matrix = self.matrix.astype(COMPLEX_TYPE)
 
         self.build_vector()

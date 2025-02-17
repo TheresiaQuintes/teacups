@@ -361,9 +361,9 @@ class TestExchangeCoupling:
             self.h.exchange_coupling(self.j, mt.Spinoperator(1))
 
     def test_value(self):
-        comp = -self.j*(0.5*np.eye(4)+2*(self.s1.get('x')@self.s2.get('x') +
+        comp = self.j*(self.s1.get('x')@self.s2.get('x') +
                                          self.s1.get('y') @ self.s2.get('y') +
-                                         self.s1.get('z')@self.s2.get('z')))
+                                         self.s1.get('z')@self.s2.get('z'))
         comp = np.array([comp, comp, comp])
         comp = np.array([comp, comp])
 
