@@ -182,7 +182,6 @@
 <li><p>If you set <code class="docutils literal notranslate"><span class="pre">SimOpt.eigval_mode</span> <span class="pre">=</span> <span class="pre">True</span></code> the eigenvalues dependent on the magnetic field are given back in a numpy array → <code class="docutils literal notranslate"><span class="pre">eigvals</span> <span class="pre">=</span> <span class="pre">sim.teacups(Sys,</span> <span class="pre">Exp,</span> <span class="pre">SimOpt)</span></code></p></li>
 <li><p>If you you run any simulation in hilbert or liouville space a two-dimensional numpy array with the intensities dependent on the magnetic field an the time is returned. → <code class="docutils literal notranslate"><span class="pre">spc</span> <span class="pre">=</span> <span class="pre">sim.teacups(Sys,</span> <span class="pre">Exp,</span> <span class="pre">SimOpt)</span></code></p></li>
 <li><p>If you run a simulation in liouville space (<code class="docutils literal notranslate"><span class="pre">SimOpt.space</span> <span class="pre">=</span> <span class="pre">'liouville'</span></code>) and set <code class="docutils literal notranslate"><span class="pre">SimOpt.pop_evolution</span> <span class="pre">=</span> <span class="pre">True</span></code> the spectrum is returned as well as the evolution of the population of all eigenstates dependent on the time (as a numpy array). → <code class="docutils literal notranslate"><span class="pre">spc,</span> <span class="pre">pop_evolution</span> <span class="pre">=</span> <span class="pre">sim.teacups(Sys,</span> <span class="pre">Exp,</span> <span class="pre">SimOpt)</span></code></p></li>
-<li><p>If you set the optional argument <code class="docutils literal notranslate"><span class="pre">developer=True</span></code> a whole object is returned, which contains many results from inbetween the calculation (for more details see the developer section of this documentation). → <code class="docutils literal notranslate"><span class="pre">cal</span> <span class="pre">=</span> <span class="pre">sim.teacups(Sys,</span> <span class="pre">Exp,</span> <span class="pre">SimOpt,</span> <span class="pre">developer=True)</span></code></p></li>
 </ol>
 </div></blockquote>
 </section>
@@ -408,6 +407,7 @@
 <span class="n">SimOpt</span><span class="o">.</span><span class="n">sym</span> <span class="o">=</span> <span class="s2">&quot;D2h&quot;</span>
 <span class="n">SimOpt</span><span class="o">.</span><span class="n">space</span> <span class="o">=</span> <span class="s1">&#39;liouville&#39;</span>
 <span class="n">SimOpt</span><span class="o">.</span><span class="n">pop_evolution</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">SimOpt</span><span class="o">.</span><span class="n">cpu_cores</span> <span class="o">=</span> <span class="mi">0</span>
 
 
 
@@ -488,6 +488,7 @@
 
 <span class="n">SimOpt</span><span class="o">.</span><span class="n">grid_points</span> <span class="o">=</span> <span class="mi">20</span>
 <span class="n">SimOpt</span><span class="o">.</span><span class="n">space</span> <span class="o">=</span> <span class="s1">&#39;hilbert&#39;</span>
+<span class="n">SimOpt</span><span class="o">.</span><span class="n">cpu_cores</span> <span class="o">=</span> <span class="mi">0</span>
 
 <span class="c1"># do simulation</span>
 <span class="n">spec</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">teacups</span><span class="p">(</span><span class="n">Sys</span><span class="p">,</span> <span class="n">Exp</span><span class="p">,</span> <span class="n">SimOpt</span><span class="p">)</span>
@@ -684,6 +685,7 @@
 <span class="n">SimOpt</span><span class="o">.</span><span class="n">grid_points</span> <span class="o">=</span> <span class="mi">7</span>
 <span class="n">SimOpt</span><span class="o">.</span><span class="n">space</span> <span class="o">=</span> <span class="s2">&quot;liouville&quot;</span>
 <span class="n">SimOpt</span><span class="o">.</span><span class="n">pop_evolution</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">SimOpt</span><span class="o">.</span><span class="n">cpu_cores</span> <span class="o">=</span> <span class="mi">0</span>
 
 <span class="c1"># %% set up dynamics-matrix</span>
 
@@ -706,11 +708,16 @@
 <span class="c1"># set isc and doublet decay rates</span>
 <span class="n">k_isc</span> <span class="o">=</span> <span class="mf">0.3</span><span class="o">/</span><span class="mf">1e-11</span>
 <span class="n">k_d</span> <span class="o">=</span> <span class="mf">0.25</span><span class="o">/</span><span class="mf">1e-6</span>
+<span class="n">k_e</span> <span class="o">=</span> <span class="mi">0</span>
 
 <span class="c1"># set up dynamics matrix</span>
 <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">R</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">k_d</span>
-<span class="n">R</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">k_d</span>
+<span class="n">R</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">k_d</span> <span class="o">+</span> <span class="n">k_e</span><span class="p">)</span>
+<span class="n">R</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">k_d</span> <span class="o">+</span> <span class="n">k_e</span><span class="p">)</span>
+<span class="n">R</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">k_e</span>
+<span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">k_e</span>
+<span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">k_e</span>
+<span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">k_e</span>
 
 <span class="n">R</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">k_isc</span><span class="o">/</span><span class="mi">45</span><span class="o">*</span><span class="p">(</span><span class="n">D</span><span class="o">/</span><span class="p">(</span><span class="n">de_53</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">R</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">k_isc</span><span class="o">/</span><span class="mi">135</span><span class="o">*</span><span class="p">(</span><span class="n">D</span><span class="o">/</span><span class="p">(</span><span class="n">de_51</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>

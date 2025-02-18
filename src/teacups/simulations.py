@@ -4,15 +4,13 @@ import itertools as it
 import teacups.signals_and_processing as sap
 import teacups.input_handler as inputs
 import teacups.hyperfine as hf
-import teacups.matrix_tools as mt
 import teacups.convolution as co
 import teacups.creators as cr
 import teacups.hamiltonians as ham
 import teacups.density_matrices as dm
 
 
-def teacups(Sys: object, Exp: object, SimOpt: object, development=False
-            ) -> 'np.ndarray':
+def teacups(Sys: object, Exp: object, SimOpt: object) -> 'np.ndarray':
     """
     Simulate a 2D transient EPR spectrum of a spinpolarized spin system.
 
@@ -30,10 +28,6 @@ def teacups(Sys: object, Exp: object, SimOpt: object, development=False
         Simulationoptions object, that contains simulation option parameters.
         Attributes can be given to this objects in the following
         syntax: sys.attribute = ?.
-    development : boolean, optional
-        If development is set to True, the whole Calculation object
-        (initialized and filled during the simulation) will be given back
-        including all interim results, instead of the signal-array.
 
     Returns
     -------
@@ -80,33 +74,18 @@ def teacups(Sys: object, Exp: object, SimOpt: object, development=False
         # set up tensors
         cr.set_up_tensors(sys, cal)
 
-        # set up hamiltonian
-
+        # set up spin system hamiltonian
         if sys.spin_system == 'rp':
             cal.ham_sys = ham.set_up_rp_hamiltonian(sys, exp, opt, cal)
-            ham_mw = ham.set_up_mw_hamiltonian(sys, exp, opt, cal)
-            cal.ham = cal.ham_sys + ham_mw
-
         elif sys.spin_system == 'trip':
-            # set up secular high-field triplet hamiltonian
             cal.ham_sys = ham.set_up_triplet_hamiltonian(exp, opt, cal)
-            cal.ham_mw = ham.set_up_mw_hamiltonian(sys, exp, opt, cal)
-            cal.ham = cal.ham_sys + cal.ham_mw
-
-            # set up (non-secular) zero-field and high-field Hamiltonian
-            # without mw interaction
-            cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
-                exp, opt, cal)
-
         elif sys.spin_system == 'doub':
             cal.ham_sys = ham.set_up_doublet_hamiltonian(exp, opt, cal)
-            cal.ham_mw = ham.set_up_mw_hamiltonian(sys, exp, opt, cal)
-            cal.ham = cal.ham_sys + cal.ham_mw
-
         elif sys.spin_system == 'tdp':
             cal.ham_sys = ham.set_up_tdp_hamiltonian(sys, exp, opt, cal)
-            cal.ham_mw = ham.set_up_mw_hamiltonian(sys, exp, opt, cal)
-            cal.ham = cal.ham_sys + cal.ham_mw
+
+        # add microwave interaction
+        cal.ham = cal.ham_sys + ham.set_up_mw_hamiltonian(sys, exp, opt, cal)
 
         # Stop simulation routine if only the eigenvalues are desired
         if opt.eigval_mode is True:
@@ -114,24 +93,18 @@ def teacups(Sys: object, Exp: object, SimOpt: object, development=False
             return eigval
 
         # set up initial density matrix
-        if (sys.precursor == 'triplet-zf' and sys.spin_system == 'rp'
-            ) or (sys.precursor == 'triplet-eigen' and sys.spin_system == 'rp'):
-            cal.s_tri = mt.Spinoperator(1)
-            cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
-                exp, opt, cal)
-
         dm.set_up_density_matrix(sys, exp, opt, cal)
 
         # clear memory
-
         keys = vars(cal).copy()
         for key in keys:
             if key.endswith('_tensor'):
                 delattr(cal, key)
+        delattr(cal, "g_iso")
 
         # calculate eigenvalues and eigenvectors of the spinsystem if needed
         if opt.space == 'liouville':
-            cal.eigval, cal.eigvec = np.linalg.eigh(cal.ham_sys)
+            cal.eigvec = np.linalg.eigh(cal.ham_sys)[1]
 
         # clear memory
         delattr(cal, 'ham_sys')
@@ -149,20 +122,33 @@ def teacups(Sys: object, Exp: object, SimOpt: object, development=False
 
         # build signal if no coupling nuclei are given
         else:
+            # build commutator superoperator (in Liouville space)
             ham.set_up_commutator_superoperator(sys, opt, cal)
 
+            # build propagation operator
             print('starting the propagation...')
             sap.propagation(sys, opt, cal)
 
             # clear memory
-            keys = vars(cal).copy()
-            for key in keys:
-                if key.startswith('ham'):
-                    delattr(cal, key)
+            delattr(cal, "ham")
+            if opt.space == 'liouville':
+                delattr(cal, "ham_superop")
 
+            # time propagation
             print('start making the signal...')
             sap.make_signal(exp, opt, cal)
 
+            # clear memory
+            delattr(cal, "theta")
+            delattr(cal, "phi")
+            delattr(cal, "s")
+            delattr(cal, "observable")
+            delattr(cal, "rho")
+            delattr(cal, "propagation")
+            if opt.space == "liouville":
+                delattr(cal, "eigvec")
+
+            # build powder average
             sap.powder_average(opt, cal)
 
     # do Voigt convolution
@@ -172,11 +158,9 @@ def teacups(Sys: object, Exp: object, SimOpt: object, development=False
     if SimOpt.space == 'hilbert':
         sap.signal_hilbert_decay(sys, cal)
 
-    # returns
-    if development:
-        return cal
+
+    # return result
+    if SimOpt.pop_evolution is True and SimOpt.space == 'liouville':
+        return cal.spec_sim, cal.pop_evolution
     else:
-        if SimOpt.pop_evolution is True and SimOpt.space == 'liouville':
-            return cal.spec_sim, cal.pop_evolution
-        else:
-            return cal.spec_sim
+        return cal.spec_sim

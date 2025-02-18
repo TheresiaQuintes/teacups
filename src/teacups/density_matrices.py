@@ -1,7 +1,6 @@
 import numpy as np
 from copy import deepcopy
 import teacups.multioperator_tools as mut
-import teacups.matrix_tools as mt
 import teacups.creators as cr
 import teacups.hamiltonians as ham
 import teacups.memory as mem
@@ -76,8 +75,11 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
 
             rho = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
 
+            ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
+                exp, opt, cal)
+
             # diagonalize hf-Hamiltonians
-            eig_hf, vec_hf = np.linalg.eigh(cal.ham_tri_hf)
+            eig_hf, vec_hf = np.linalg.eigh(ham_tri_hf)
 
             # basistransformation to the high field functions
             rho.B_angle_matrix = (
@@ -161,6 +163,7 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
             rho = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
             rho.matrix = rho_trip
 
+            # do calculations on the GPU, "normal" code under the else statement
             CUPY = opt.CUPY
             if CUPY:
                 import cupy as cp

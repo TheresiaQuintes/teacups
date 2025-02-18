@@ -80,7 +80,6 @@
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">import</span> <span class="nn">teacups.multioperator_tools</span> <span class="k">as</span> <span class="nn">mut</span>
-<span class="kn">import</span> <span class="nn">teacups.matrix_tools</span> <span class="k">as</span> <span class="nn">mt</span>
 <span class="kn">import</span> <span class="nn">teacups.creators</span> <span class="k">as</span> <span class="nn">cr</span>
 <span class="kn">import</span> <span class="nn">teacups.hamiltonians</span> <span class="k">as</span> <span class="nn">ham</span>
 <span class="kn">import</span> <span class="nn">teacups.memory</span> <span class="k">as</span> <span class="nn">mem</span>
@@ -155,8 +154,11 @@
 
             <span class="n">rho</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">)</span>
 
+            <span class="n">ham_tri_hf</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_triplet_high_field_hamiltonian</span><span class="p">(</span>
+                <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
+
             <span class="c1"># diagonalize hf-Hamiltonians</span>
-            <span class="n">eig_hf</span><span class="p">,</span> <span class="n">vec_hf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham_tri_hf</span><span class="p">)</span>
+            <span class="n">eig_hf</span><span class="p">,</span> <span class="n">vec_hf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">ham_tri_hf</span><span class="p">)</span>
 
             <span class="c1"># basistransformation to the high field functions</span>
             <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="p">(</span>
@@ -232,13 +234,6 @@
             <span class="c1"># in the xyz-Basis: xxyyzz</span>
             <span class="n">ham_xyz</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_tdp_full_high_field_hamiltonian</span><span class="p">(</span>
                 <span class="n">sys</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
-            <span class="c1"># !!! Kontrolle hat ergeben, dass sich die Eigenwerte von ham_hf</span>
-            <span class="c1"># und ham_sys nur um einen Offset von J/4 unterscheiden. Das liegt</span>
-            <span class="c1"># an der unterschiedlichen Definition von H_ex (siehe Doku) von</span>
-            <span class="c1"># RP (verwendet in multioperator_tools) und TDP. Fürs Spektrum</span>
-            <span class="c1"># gibt es keinen Unterschied, allerdings könnte man das beim</span>
-            <span class="c1"># Aufräumen vom Code angleichen (z.B. indem H_ex für alle Systeme</span>
-            <span class="c1"># identisch aufgestellt wird)</span>
 
             <span class="c1"># define rho in xyz-basis using populations for triplet-zf levels</span>
             <span class="n">rho_trip</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">population</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">))</span>
@@ -247,6 +242,7 @@
             <span class="n">rho</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">)</span>
             <span class="n">rho</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">rho_trip</span>
 
+            <span class="c1"># do calculations on the GPU, &quot;normal&quot; code under the else statement</span>
             <span class="n">CUPY</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">CUPY</span>
             <span class="k">if</span> <span class="n">CUPY</span><span class="p">:</span>
                 <span class="kn">import</span> <span class="nn">cupy</span> <span class="k">as</span> <span class="nn">cp</span>

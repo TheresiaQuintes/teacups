@@ -78,9 +78,6 @@
              
   <h1>Source code for teacups.signals_and_processing</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">teacups.grid</span> <span class="k">as</span> <span class="nn">gri</span>
-<span class="kn">import</span> <span class="nn">teacups.convolution</span> <span class="k">as</span> <span class="nn">con</span>
-<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">find_peaks</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">cpu_count</span><span class="p">,</span> <span class="n">Pool</span>
@@ -445,7 +442,6 @@
 
 
 <div class="viewcode-block" id="signal_hilbert_decay"><a class="viewcode-back" href="../../developer.html#teacups.signals_and_processing.signal_hilbert_decay">[docs]</a><span class="k">def</span> <span class="nf">signal_hilbert_decay</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="c1"># !!! In convolution.py zusätzliche Funktion anlegen?</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Multiply each time-spectrum with an exponential term for simulating</span>
 <span class="sd">    a decay of the system in hilbert space.</span>

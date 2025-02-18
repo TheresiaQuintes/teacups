@@ -1,5 +1,4 @@
 import numpy as np
-from scipy.spatial import Delaunay
 from teacups.epr_grid import Grid
 
 

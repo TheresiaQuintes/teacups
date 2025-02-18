@@ -491,7 +491,7 @@
 
     <span class="c1"># exchange interaction</span>
     <span class="n">h_ex</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">S_doub</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="o">*</span><span class="n">MU_B</span><span class="p">)</span>
-    <span class="n">h_ex</span><span class="o">.</span><span class="n">exchange_coupling</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">sys</span><span class="o">.</span><span class="n">J_ex</span><span class="p">,</span> <span class="n">S_trip</span><span class="p">)</span>
+    <span class="n">h_ex</span><span class="o">.</span><span class="n">exchange_coupling</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">J_ex</span><span class="p">,</span> <span class="n">S_trip</span><span class="p">)</span>
 
     <span class="c1"># full high field hamiltonian</span>
     <span class="n">ham_hf</span> <span class="o">=</span> <span class="n">h_zeeman_doub</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">+</span> <span class="n">h_zeeman_trip</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">+</span>\

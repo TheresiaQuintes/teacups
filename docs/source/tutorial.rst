@@ -81,7 +81,6 @@ You can now end your skript by running the simulation. Dependent on the input fo
 	#. If you set ``SimOpt.eigval_mode = True`` the eigenvalues dependent on the magnetic field are given back in a numpy array |rarr| ``eigvals = sim.teacups(Sys, Exp, SimOpt)``
 	#. If you you run any simulation in hilbert or liouville space a two-dimensional numpy array with the intensities dependent on the magnetic field an the time is returned. |rarr| ``spc = sim.teacups(Sys, Exp, SimOpt)``
 	#. If you run a simulation in liouville space (``SimOpt.space = 'liouville'``) and set ``SimOpt.pop_evolution = True`` the spectrum is returned as well as the evolution of the population of all eigenstates dependent on the time (as a numpy array). |rarr| ``spc, pop_evolution = sim.teacups(Sys, Exp, SimOpt)``
-	#. If you set the optional argument ``developer=True`` a whole object is returned, which contains many results from inbetween the calculation (for more details see the developer section of this documentation). |rarr| ``cal = sim.teacups(Sys, Exp, SimOpt, developer=True)``
 	
 
 Example Skripts

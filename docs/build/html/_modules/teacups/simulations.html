@@ -83,15 +83,13 @@
 <span class="kn">import</span> <span class="nn">teacups.signals_and_processing</span> <span class="k">as</span> <span class="nn">sap</span>
 <span class="kn">import</span> <span class="nn">teacups.input_handler</span> <span class="k">as</span> <span class="nn">inputs</span>
 <span class="kn">import</span> <span class="nn">teacups.hyperfine</span> <span class="k">as</span> <span class="nn">hf</span>
-<span class="kn">import</span> <span class="nn">teacups.matrix_tools</span> <span class="k">as</span> <span class="nn">mt</span>
 <span class="kn">import</span> <span class="nn">teacups.convolution</span> <span class="k">as</span> <span class="nn">co</span>
 <span class="kn">import</span> <span class="nn">teacups.creators</span> <span class="k">as</span> <span class="nn">cr</span>
 <span class="kn">import</span> <span class="nn">teacups.hamiltonians</span> <span class="k">as</span> <span class="nn">ham</span>
 <span class="kn">import</span> <span class="nn">teacups.density_matrices</span> <span class="k">as</span> <span class="nn">dm</span>
 
 
-<div class="viewcode-block" id="teacups"><a class="viewcode-back" href="../../developer.html#teacups.simulations.teacups">[docs]</a><span class="k">def</span> <span class="nf">teacups</span><span class="p">(</span><span class="n">Sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">Exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">SimOpt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">development</span><span class="o">=</span><span class="kc">False</span>
-            <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+<div class="viewcode-block" id="teacups"><a class="viewcode-back" href="../../developer.html#teacups.simulations.teacups">[docs]</a><span class="k">def</span> <span class="nf">teacups</span><span class="p">(</span><span class="n">Sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">Exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">SimOpt</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simulate a 2D transient EPR spectrum of a spinpolarized spin system.</span>
 
@@ -109,10 +107,6 @@
 <span class="sd">        Simulationoptions object, that contains simulation option parameters.</span>
 <span class="sd">        Attributes can be given to this objects in the following</span>
 <span class="sd">        syntax: sys.attribute = ?.</span>
-<span class="sd">    development : boolean, optional</span>
-<span class="sd">        If development is set to True, the whole Calculation object</span>
-<span class="sd">        (initialized and filled during the simulation) will be given back</span>
-<span class="sd">        including all interim results, instead of the signal-array.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -159,33 +153,18 @@
         <span class="c1"># set up tensors</span>
         <span class="n">cr</span><span class="o">.</span><span class="n">set_up_tensors</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
 
-        <span class="c1"># set up hamiltonian</span>
-
+        <span class="c1"># set up spin system hamiltonian</span>
         <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s1">&#39;rp&#39;</span><span class="p">:</span>
             <span class="n">cal</span><span class="o">.</span><span class="n">ham_sys</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_rp_hamiltonian</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
-            <span class="n">ham_mw</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_mw_hamiltonian</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
-            <span class="n">cal</span><span class="o">.</span><span class="n">ham</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">ham_sys</span> <span class="o">+</span> <span class="n">ham_mw</span>
-
         <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s1">&#39;trip&#39;</span><span class="p">:</span>
-            <span class="c1"># set up secular high-field triplet hamiltonian</span>
             <span class="n">cal</span><span class="o">.</span><span class="n">ham_sys</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_triplet_hamiltonian</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
-            <span class="n">cal</span><span class="o">.</span><span class="n">ham_mw</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_mw_hamiltonian</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
-            <span class="n">cal</span><span class="o">.</span><span class="n">ham</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">ham_sys</span> <span class="o">+</span> <span class="n">cal</span><span class="o">.</span><span class="n">ham_mw</span>
-
-            <span class="c1"># set up (non-secular) zero-field and high-field Hamiltonian</span>
-            <span class="c1"># without mw interaction</span>
-            <span class="n">cal</span><span class="o">.</span><span class="n">ham_tri_hf</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_triplet_high_field_hamiltonian</span><span class="p">(</span>
-                <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
-
         <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s1">&#39;doub&#39;</span><span class="p">:</span>
             <span class="n">cal</span><span class="o">.</span><span class="n">ham_sys</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_doublet_hamiltonian</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
-            <span class="n">cal</span><span class="o">.</span><span class="n">ham_mw</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_mw_hamiltonian</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
-            <span class="n">cal</span><span class="o">.</span><span class="n">ham</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">ham_sys</span> <span class="o">+</span> <span class="n">cal</span><span class="o">.</span><span class="n">ham_mw</span>
-
         <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s1">&#39;tdp&#39;</span><span class="p">:</span>
             <span class="n">cal</span><span class="o">.</span><span class="n">ham_sys</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_tdp_hamiltonian</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
-            <span class="n">cal</span><span class="o">.</span><span class="n">ham_mw</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_mw_hamiltonian</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
-            <span class="n">cal</span><span class="o">.</span><span class="n">ham</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">ham_sys</span> <span class="o">+</span> <span class="n">cal</span><span class="o">.</span><span class="n">ham_mw</span>
+
+        <span class="c1"># add microwave interaction</span>
+        <span class="n">cal</span><span class="o">.</span><span class="n">ham</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">ham_sys</span> <span class="o">+</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_mw_hamiltonian</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
 
         <span class="c1"># Stop simulation routine if only the eigenvalues are desired</span>
         <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">eigval_mode</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -193,24 +172,18 @@
             <span class="k">return</span> <span class="n">eigval</span>
 
         <span class="c1"># set up initial density matrix</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">precursor</span> <span class="o">==</span> <span class="s1">&#39;triplet-zf&#39;</span> <span class="ow">and</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s1">&#39;rp&#39;</span>
-            <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">precursor</span> <span class="o">==</span> <span class="s1">&#39;triplet-eigen&#39;</span> <span class="ow">and</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s1">&#39;rp&#39;</span><span class="p">):</span>
-            <span class="n">cal</span><span class="o">.</span><span class="n">s_tri</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">Spinoperator</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">cal</span><span class="o">.</span><span class="n">ham_tri_hf</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_triplet_high_field_hamiltonian</span><span class="p">(</span>
-                <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
-
         <span class="n">dm</span><span class="o">.</span><span class="n">set_up_density_matrix</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
 
         <span class="c1"># clear memory</span>
-
         <span class="n">keys</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="n">cal</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;_tensor&#39;</span><span class="p">):</span>
                 <span class="nb">delattr</span><span class="p">(</span><span class="n">cal</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="nb">delattr</span><span class="p">(</span><span class="n">cal</span><span class="p">,</span> <span class="s2">&quot;g_iso&quot;</span><span class="p">)</span>
 
         <span class="c1"># calculate eigenvalues and eigenvectors of the spinsystem if needed</span>
         <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">space</span> <span class="o">==</span> <span class="s1">&#39;liouville&#39;</span><span class="p">:</span>
-            <span class="n">cal</span><span class="o">.</span><span class="n">eigval</span><span class="p">,</span> <span class="n">cal</span><span class="o">.</span><span class="n">eigvec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham_sys</span><span class="p">)</span>
+            <span class="n">cal</span><span class="o">.</span><span class="n">eigvec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham_sys</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="c1"># clear memory</span>
         <span class="nb">delattr</span><span class="p">(</span><span class="n">cal</span><span class="p">,</span> <span class="s1">&#39;ham_sys&#39;</span><span class="p">)</span>
@@ -228,20 +201,33 @@
 
         <span class="c1"># build signal if no coupling nuclei are given</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># build commutator superoperator (in Liouville space)</span>
             <span class="n">ham</span><span class="o">.</span><span class="n">set_up_commutator_superoperator</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
 
+            <span class="c1"># build propagation operator</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;starting the propagation...&#39;</span><span class="p">)</span>
             <span class="n">sap</span><span class="o">.</span><span class="n">propagation</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
 
             <span class="c1"># clear memory</span>
-            <span class="n">keys</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="n">cal</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;ham&#39;</span><span class="p">):</span>
-                    <span class="nb">delattr</span><span class="p">(</span><span class="n">cal</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="nb">delattr</span><span class="p">(</span><span class="n">cal</span><span class="p">,</span> <span class="s2">&quot;ham&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">space</span> <span class="o">==</span> <span class="s1">&#39;liouville&#39;</span><span class="p">:</span>
+                <span class="nb">delattr</span><span class="p">(</span><span class="n">cal</span><span class="p">,</span> <span class="s2">&quot;ham_superop&quot;</span><span class="p">)</span>
 
+            <span class="c1"># time propagation</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;start making the signal...&#39;</span><span class="p">)</span>
             <span class="n">sap</span><span class="o">.</span><span class="n">make_signal</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
 
+            <span class="c1"># clear memory</span>
+            <span class="nb">delattr</span><span class="p">(</span><span class="n">cal</span><span class="p">,</span> <span class="s2">&quot;theta&quot;</span><span class="p">)</span>
+            <span class="nb">delattr</span><span class="p">(</span><span class="n">cal</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">)</span>
+            <span class="nb">delattr</span><span class="p">(</span><span class="n">cal</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">)</span>
+            <span class="nb">delattr</span><span class="p">(</span><span class="n">cal</span><span class="p">,</span> <span class="s2">&quot;observable&quot;</span><span class="p">)</span>
+            <span class="nb">delattr</span><span class="p">(</span><span class="n">cal</span><span class="p">,</span> <span class="s2">&quot;rho&quot;</span><span class="p">)</span>
+            <span class="nb">delattr</span><span class="p">(</span><span class="n">cal</span><span class="p">,</span> <span class="s2">&quot;propagation&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">space</span> <span class="o">==</span> <span class="s2">&quot;liouville&quot;</span><span class="p">:</span>
+                <span class="nb">delattr</span><span class="p">(</span><span class="n">cal</span><span class="p">,</span> <span class="s2">&quot;eigvec&quot;</span><span class="p">)</span>
+
+            <span class="c1"># build powder average</span>
             <span class="n">sap</span><span class="o">.</span><span class="n">powder_average</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
 
     <span class="c1"># do Voigt convolution</span>
@@ -251,14 +237,12 @@
     <span class="k">if</span> <span class="n">SimOpt</span><span class="o">.</span><span class="n">space</span> <span class="o">==</span> <span class="s1">&#39;hilbert&#39;</span><span class="p">:</span>
         <span class="n">sap</span><span class="o">.</span><span class="n">signal_hilbert_decay</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
 
-    <span class="c1"># returns</span>
-    <span class="k">if</span> <span class="n">development</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">cal</span>
+
+    <span class="c1"># return result</span>
+    <span class="k">if</span> <span class="n">SimOpt</span><span class="o">.</span><span class="n">pop_evolution</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">SimOpt</span><span class="o">.</span><span class="n">space</span> <span class="o">==</span> <span class="s1">&#39;liouville&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span><span class="p">,</span> <span class="n">cal</span><span class="o">.</span><span class="n">pop_evolution</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">SimOpt</span><span class="o">.</span><span class="n">pop_evolution</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">SimOpt</span><span class="o">.</span><span class="n">space</span> <span class="o">==</span> <span class="s1">&#39;liouville&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span><span class="p">,</span> <span class="n">cal</span><span class="o">.</span><span class="n">pop_evolution</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span></div>
+        <span class="k">return</span> <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span></div>
 </pre></div>
 
            </div>

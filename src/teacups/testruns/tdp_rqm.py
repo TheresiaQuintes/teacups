@@ -40,6 +40,7 @@ Exp.freq_mw = 9.75e9
 SimOpt.grid_points = 7
 SimOpt.space = "liouville"
 SimOpt.pop_evolution = True
+SimOpt.cpu_cores = 0
 
 # %% set up dynamics-matrix
 
@@ -62,11 +63,16 @@ D = (Sys.D_tri*1e6)**2
 # set isc and doublet decay rates
 k_isc = 0.3/1e-11
 k_d = 0.25/1e-6
+k_e = 0
 
 # set up dynamics matrix
 R = np.zeros((6, 6))
-R[5, 5] = -k_d
-R[4, 4] = -k_d
+R[5, 5] = -(k_d + k_e)
+R[4, 4] = -(k_d + k_e)
+R[3, 3] = -k_e
+R[2, 2] = -k_e
+R[1, 1] = -k_e
+R[0, 0] = -k_e
 
 R[5, 3] = k_isc/45*(D/(de_53)**2)
 R[5, 1] = k_isc/135*(D/(de_51)**2)
