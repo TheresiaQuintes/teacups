@@ -1,10 +1,10 @@
 What is teacups?
-================
+----------------
 
 Teacups stands for *Time resolved EPR: Algebraic Calculations for Unequally Populated Spin Systems*. It is a Python3 package for the simulation of timeresolved, transient EPR spectra of spinporalized spin species.
 
 What are its features?
-======================
+----------------------
 
 
 * Until now four spin systems can be calculated
@@ -30,7 +30,7 @@ What are its features?
 
 
 Requirements
-============
+------------
 
 You will need the following installed on your system to run a TEACUPS-simulation:
 
@@ -44,13 +44,13 @@ So far, the programme package has been run under an Ubuntu Linux distribution.
 
 
 Download teacups
-================
+----------------
 
-You can download **teacups** via git:
+You can download teacups via git:
 
       git clone https://gitlab.physchem.uni-freiburg.de/koesters/teacups.git
 
 Documentation
-=============
+-------------
 The full documentation including advice on installation and usage of the package can be found by opening `teacups/docs/build/html/index.html` in your browser.
 
