@@ -8,7 +8,7 @@ Download teacups
 
 You can download **teacups** via git::
 
-   git clone 'https://gitlab.physchem.uni-freiburg.de/koesters/teacups.git'
+   git clone 'https://github.com/TheresiaQuintes/teacups.git'
 
 
 Installation
