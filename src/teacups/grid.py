@@ -1,15 +1,17 @@
 import numpy as np
-from scipy.spatial import Delaunay
+from teacups.epr_grid import Grid
 
 
-def sphere_fibonacci_grid_points(ng: int) -> 'np.ndarray':
+def sphere_fibonacci_grid_points(ng: int, hemisphere=True) -> 'np.ndarray':
     """
-    Calculate Fibonacci spiral gridpoints on a hemisphere.
+    Calculate Fibonacci spiral gridpoints on a hemisphere or full sphere.
 
     Parameters
     ----------
     ng : int
         Number of points that shall be calculated.
+    hemisphere : boolean, optional
+        Define wether a full or a hemisphere is calculated. Default is True.
 
     Returns
     -------
@@ -42,7 +44,9 @@ def sphere_fibonacci_grid_points(ng: int) -> 'np.ndarray':
       Volume 132, Number 619, July 2006 Part B, pages 1769-1793.
 
     """
-    ng *= 2
+    if hemisphere is True:
+        ng *= 2
+
     phi = (1.0 + np.sqrt(5.0)) / 2.0
 
     theta = np.zeros(ng)
@@ -62,8 +66,12 @@ def sphere_fibonacci_grid_points(ng: int) -> 'np.ndarray':
         xg[i, 1] = cphi[i] * np.cos(theta[i])
         xg[i, 2] = sphi[i]
 
-    hemisphere = xg[0:int(ng/2)]
-    return hemisphere
+    if hemisphere is True:
+        grid = xg[0:int(ng/2)]
+    else:
+        grid = xg
+        pass
+    return grid
 
 
 def cartesian2sphereical(xyz: 'np.ndarray') -> 'np.ndarray':
@@ -74,20 +82,19 @@ def cartesian2sphereical(xyz: 'np.ndarray') -> 'np.ndarray':
     Parameters
     ----------
     xyz : np.ndarray
-        This array contains n sets of cartesian coordinates x, y and z.
-        Therefore, it describes n Points and its shape is 3xn.
+        This array contains n sets of cartesian coordinates x, y and z and its
+        shape is (nx3)
 
     Returns
     -------
     rtp : np.ndarray
-        This array contains the transformed sets of xyz. First argument is
-        the radius r, second and third are the angles theta and phi.
+        This array contains the transformed sets of xyz. Its shape is (nx3).
 
     """
     r = np.sqrt(xyz[:, 0]**2 + xyz[:, 1]**2 + xyz[:, 2]**2)
     theta = np.arctan2(np.sqrt(xyz[:, 0]**2 + xyz[:, 1]**2), xyz[:, 2])
     phi = np.arctan2(xyz[:, 1], xyz[:, 0])
-    rtp = np.array([r, theta, phi])
+    rtp = np.array([r, theta, phi]).T
     return rtp
 
 
@@ -99,28 +106,28 @@ def spherical2cartesian(rtp: 'np.ndarray') -> 'np.ndarray':
     Parameters
     ----------
     rtp : np.ndarray
-        This array contains the transformed sets of xyz. First argument is
-        the radius r, second and third are the angles theta and phi.
+        This array contains n sets of spherical coordinates r, theta and phi
+        and its shape is (nx3).
 
     Returns
     -------
     xyz : np.ndarray
-        This array contains n sets of cartesian coordinates x, y and z.
-        Therefore, it describes n Points and its shape is 3xn.
+        This array contains n sets of cartesian coordinates x, y and z. Its
+        shape is (nx3).
 
     """
-    r = rtp[0]
-    t = rtp[1]
-    p = rtp[2]
+    r = rtp[:, 0]
+    t = rtp[:, 1]
+    p = rtp[:, 2]
     x = r*np.sin(t)*np.cos(p)
     y = r*np.sin(t)*np.sin(p)
     z = r*np.cos(t)
 
-    xyz = np.array([x, y, z])
+    xyz = np.array([x, y, z]).T
     return xyz
 
 
-def get_theta_phi(grid_points: int) -> tuple['np.ndarray', 'np.ndarray']:
+def fibonacci_grid(grid_points: int) -> tuple['np.ndarray', 'np.ndarray']:
     """
     Get a number (grid_points) of angle pairs theta-phi describing points
     equally distributet on a fibonacci sphere. The radius is 1.
@@ -142,25 +149,30 @@ def get_theta_phi(grid_points: int) -> tuple['np.ndarray', 'np.ndarray']:
     """
     xyz = sphere_fibonacci_grid_points(grid_points)
     rtp = cartesian2sphereical(xyz)
-    theta = rtp[1]
-    phi = rtp[2]
+    theta = rtp[:, 1]
+    phi = rtp[:, 2]
     return theta, phi
 
 
-def sophe_grid(grid_size: int) -> tuple['np.ndarray', 'np.ndarray',
-                                        'np.ndarray']:
+def sophe_grid(grid_size: int, sym: str) -> tuple['np.ndarray', 'np.ndarray',
+                                                  'np.ndarray']:
     """
     Calculate the angles phi and theta of a set of unique orientations on a
-    (half-)sphere. The grid used is called SOPHE grid (see: D. Wang,
+    sphere. The grid used is called SOPHE grid (see: D. Wang,
     G. R. Hanson J.Magn.Reson. A, 117, 1-8 (1995)
     https://doi.org/10.1006/jmra.1995.9978) or Y. Kurihara, Monthly Weather
     Review 93(7), 399-415 (July 1965)
     https://doi.org/10.1175/1520-0493(1965)093<0399:NIOTPE>2.3.CO;2).
+    The grid is set up by the epr_grid module, which is written by Florian
+    Quintes.
 
     Parameters
     ----------
     grid_size : int
         Number of points between theta=0 and theta=pi/2.
+    sym : str
+        Point group symmetry. "C1" returns the full sphere, other point groups
+        result in smaller parts of the sphere.
 
     Returns
     -------
@@ -169,98 +181,12 @@ def sophe_grid(grid_size: int) -> tuple['np.ndarray', 'np.ndarray',
     theta : np.ndarray
         Set of spherical angles theta for all orientations.
     weights : np.ndarray
-        Associated weights for each orientation. Sum is 4*pi.
+        Associated weights for each orientation.
 
     """
-    dtheta = (np.pi/2)/(grid_size-1)
-    sindth2 = np.sin(dtheta/2)
-    w1 = 0.5
+    grid = Grid('SOPHE', point_group=sym, knots=grid_size)
+    spherical = grid.get_grid(sym, cartesian=False)
+    weights = grid.get_areas()
+    theta, phi = spherical[:, 1], spherical[:, 2]
 
-    nOct = 4
-    maxphi = 2*np.pi
-
-    nOrientations = grid_size + nOct*grid_size*(grid_size-1)/2
-    nOrientations = int(nOrientations)
-
-    phi = np.zeros(nOrientations)
-    theta = np.zeros(nOrientations)
-    weights = np.zeros(nOrientations)
-
-    phi[0] = 0
-    theta[0] = 0
-    weights[0] = maxphi*(1-np.cos(dtheta/2))
-
-    start = 2
-    for iSlice in range(2, grid_size):
-        nphi = nOct*(iSlice-1)+1
-        dphi = maxphi/(nphi-1)
-        idx = start+np.arange(0, nphi)-1
-        on = np.ones(nphi)
-        on[0] = w1
-        on[-1] = 0.5
-        weights[idx] = 2*np.sin((iSlice-1)*dtheta)*sindth2*dphi*on
-        phi[idx] = np.linspace(0, maxphi, nphi)
-        theta[idx] = (iSlice-1)*dtheta
-        start += nphi
-
-    nphi = nOct*(grid_size-1)+1
-    dphi = maxphi/(nphi-1)
-    idx = start + np.arange(0, nphi)-1
-    phi[idx] = np.linspace(0, maxphi, nphi)
-    theta[idx] = np.pi/2
-    on = np.ones(nphi)
-    on[0] = w1
-    on[-1] = 0.5
-    weights[idx] = sindth2*dphi*on
-
-    return phi, theta, weights
-
-
-def triangles(phi: 'np.ndarray', theta: 'np.ndarray') -> tuple['np.ndarray',
-                                                               'np.ndarray']:
-    """
-    Calculate a Delaunay-triangulation over a given grid on a sphere. Indices
-    of the three angle points and areas for each triangle are calculated.
-
-    Parameters
-    ----------
-    phi : np.ndarray
-        Set of spherical angles phi for all orientations on sphere.
-    theta : np.ndarray
-        Set of spherical angles theta for all orientations on sphere.
-
-    Returns
-    -------
-    idx : TYPE
-        Indices of the points of each Delaunay triangle. By using the index on
-        the phi/theta array the coordinates of the points can be calculated.
-    area : TYPE
-        Area of each Delaunay triangle.
-
-    """
-    points = np.dstack((theta*np.cos(phi), theta*np.sin(phi)))
-    tri = Delaunay(points[0])
-    idx = tri.simplices
-
-    rtp = np.dstack((np.ones(len(phi)), theta, phi))
-    rtp = rtp[0].T
-    xyz = spherical2cartesian(rtp)
-    xyz = xyz.T
-    idx_a = idx[:, 0]
-    idx_b = idx[:, 1]
-    idx_c = idx[:, 2]
-    x1 = xyz[idx_a]
-    x2 = xyz[idx_b]
-    x3 = xyz[idx_c]
-
-    a1 = np.arccos(np.sum(x2*x3, -1))
-    a2 = np.arccos(np.sum(x3*x1, -1))
-    a3 = np.arccos(np.sum(x1*x2, -1))
-
-    s = (a1+a2+a3)/2
-    x = np.sqrt(np.tan(s/2)*np.tan((s-a1)/2)*np.tan((s-a2)/2)*np.tan((s-a3)/2))
-    x = np.real(x)
-    area = 4*np.arctan(x)
-
-    area = area*4*np.pi/np.sum(area)
-    return idx, area
+    return theta, phi, weights

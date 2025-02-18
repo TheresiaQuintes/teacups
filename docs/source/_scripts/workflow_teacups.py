@@ -3,6 +3,7 @@ import teacups.classes as cl
 import numpy as np
 import matplotlib.pyplot as plt
 
+plt.style.use("stylesheet.mplstyle")
 Sys = cl.Sys()
 Exp = cl.Exp()
 SimOpt = cl.SimOpt()
@@ -15,7 +16,7 @@ Sys.g = [2.0059, 2.0059, 2.0059]
 Sys.g_tri = [2.003, 2.003, 2.003]
 
 # define triplet ZFS
-Sys.D_tri = 700
+Sys.D_tri = -700
 
 # define couplings of the radical and the triplet
 Sys.J_ex = -20000
@@ -47,6 +48,9 @@ SimOpt.eigval_mode = True
 eigvals = sim.teacups(Sys, Exp, SimOpt)
 plt.figure()
 plt.plot(Exp.B_z, eigvals[:, 0])
+plt.xlabel("$B_z / \mathrm{mT}$")
+plt.ylabel("E / Hz")
+plt.savefig("./../_images/tutorial_teacups_2.png")
 
 # Define relaxation operator for RQM, Rateconstants in 1/s
 k_d = 0.25 / 1e-6
@@ -74,17 +78,24 @@ plt.figure()
 plt.xlabel("$t / \mu\mathrm{s}$")
 plt.ylabel("population of states")
 plt.plot(t, np.array(pop_evolution).real)
+plt.savefig("./../_images/tutorial_teacups_3.png")
 
 # %% Plot single 2D
 plt.figure()
 plt.xlabel("$B_z / \mathrm{mT}$")
 plt.plot(Exp.B_z, spec[30].real)
+plt.yticks([])
+plt.savefig("./../_images/tutorial_teacups_1.png")
 
 # %% Plot multiple 2D
 plt.figure()
 plt.xlabel("$B_z / \mathrm{mT}$")
-for i in range(0, 29, 3):
-    plt.plot(Exp.B_z, spec[i].real)
+for i in range(14, 30, 5):
+    plt.plot(Exp.B_z, spec[i].real, label=str(np.round(t[i], 2))+" $\mu$s")
+
+plt.yticks([])
+plt.legend()
+plt.savefig("./../_images/tutorial_teacups_4.png")
 
 # %% Plot surface
 plt.figure()
@@ -93,3 +104,4 @@ plt.xlabel("$B_z / \mathrm{mT}$")
 plt.ylabel("$t / \mu\mathrm{s}$")
 x, y = np.meshgrid(Exp.B_z, t)
 ax.pcolormesh(x, y, spec.real, cmap="RdBu", shading="auto")
+plt.savefig("./../_images/tutorial_teacups_5.png")

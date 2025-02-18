@@ -20,8 +20,8 @@ What are its features?
 	* Triplet-Doublet-Pairs ``'tdp'``
 	
 * Calculations can be done in
-	* Hilbert space |rarr| fast calculations
-	* Lioville space |rarr| include dynamics
+	* Hilbert space |rarr| fast calculations, coherent dynamics
+	* Lioville space |rarr| slower calculations, include incoherent dynamics
 
 * Relaxation behaviour can be simulated
 	* phenomenological using relaxation times T\ :sub:`1`\  and  T\ :sub:`2`\
@@ -46,3 +46,12 @@ You will need the following installed on your system to run a TEACUPS-simulation
 * matplotlib
 * tqdm
 
+.. note::
+   So far, the programme package has been run under an Ubuntu Linux distribution.
+
+
+Literature
+==========
+To get an overview about teacups and its theoretical background you can consult this :download:`paper <./_static/teacups_main.pdf>` and the :download:`SI <./_static/teacups_SI.pdf>`. 
+
+All Simulationarguments are summarized in the :download:`quick reference <./../quickreference/quickreference.pdf>`.

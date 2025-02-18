@@ -142,16 +142,25 @@ class Matrix:
         return None
 
     def basis_transformation(self, trans: 'np.ndarray',
-                             orthonormal=False) -> None:
+                             inverse_left=True, orthonormal=False) -> None:
         """
         Change the basis of matrix. trans is the transformation matrix:
-            m = trans^-1 @ m @ trans.
+
+        .. math::
+            M = T^{-1} \cdot M \cdot T.
 
         Parameters
         ----------
         trans : np.ndarray
             Transformation matrix containing arrays of the new basis. The
             array has to have the same shape as the matrix attribute.
+        inverse_left : boolean, optional
+            Defines the direction of the basis transformation. If set to
+            True the inverse of the transformation matrix is multiplied
+            from the left side. If set to false, the inverse of the
+            transformation matrix is multiplied from the right side and the
+            direction of the basistransformation is reversed.
+            The default is True.
         orthonormal : boolean, optional
             If orthonormal is set to True the basis transforation is done by
             using the adjungate instead of the inverse transformation matrix
@@ -178,51 +187,65 @@ class Matrix:
                [-2.,  1.]])
 
         """
-        if orthonormal is True:
-            self.matrix = np.conj(trans.T) @ self.matrix @ trans
+        if trans.shape != self.matrix.shape:
+            raise IndexError("Transformationmatrix must have same shape as" +
+                             "matrix attribute.")
+
+        if inverse_left is True:
+            if orthonormal is True:
+                self.matrix = np.conj(trans.T) @ self.matrix @ trans
+            else:
+                self.matrix = np.linalg.inv(trans) @ self.matrix @ trans
         else:
-            self.matrix = np.linalg.inv(trans) @ self.matrix @ trans
+            if orthonormal is True:
+                self.matrix = trans @ self.matrix @ np.conj(trans.T)
+            else:
+                self.matrix = trans @ self.matrix @ np.linalg.inv(trans)
 
         return None
 
 
 class Tensor(Matrix):
     """
-    A Tensor object contains a tensor. This is a diagonal quadratic matrix.
-    Further it contains the attribute rot. This is the same as the tensor
-    attribute but can be changed by the function rotation.
+    An object from class Tensor is a special Matrix object. The matrix
+    attribute contains a diagonal 3x3 matrix. The diagonal elements
+    are given when setting up the object. The class Tensor provides functions
+    for the rotation of a tensor to other frames.
 
     Parameters
     ----------
     diagonal : np.ndarray
-        1D-array containing the diagonal elements of the tensor.
-        All other values in the tensor matrix will be set to zero.
+        1D-List (or array) containing exactly 3 diagonal elements of the
+        tensor. All other values in the tensor matrix will be set to zero.
 
     Attributes
     ----------
-    tensor : np.ndarray
-        The tensor attribute is a diagonal matrix (usually 3x3) which contains
+    matrix : np.ndarray
+        The matrix attribute is a diagonal 3x3-matrix which contains
         the diagonal elements given in "diagonal".
+    dimension: int
+        The dimension of the matrix attribute is 3.
+
 
     Examples
     --------
     >>> a = np.arange(1, 4)
     >>> t = tensor(a)
-    >>> t.tensor
+    >>> t.matrix
     array([[1., 0., 0.],
            [0., 2., 0.],
            [0., 0., 3.]])
-    >>> t.rot
-    array([[1., 0., 0.],
-           [0., 2., 0.],
-           [0., 0., 3.]])
+    >>> t.dimension
+    3
 
     """
 
-    def __init__(self, diagonal: int):
-        self.tensor = np.eye(len(diagonal), dtype=FLOAT_TYPE)
-        self.tensor *= diagonal
-        self.rot = self.tensor
+    def __init__(self, diagonal: list):
+        if len(diagonal) != 3:
+            raise IndexError("Tensor needs exactly three diagonal elements")
+
+        self.matrix = np.diag(np.array(diagonal, dtype=FLOAT_TYPE))
+        self.dimension = 3
 
     def rotation(self, phi: float, theta: float, psi=0.0) -> None:
         """
@@ -264,10 +287,8 @@ class Tensor(Matrix):
                [-0.58737276,  0.3825737 ,  2.08522113]])
 
         """
-        if len(self.tensor) != 3:
-            raise ValueError("Rotation only possible for 3x3-Tensors")
-        else:
-            self.rot = odh.tensor_rotation(self.tensor, phi, theta, psi)
+        self.rot = odh.tensor_rotation(self.matrix, phi, theta, psi)
+        self.rot = self.rot.astype(FLOAT_TYPE)
 
         return None
 
@@ -295,7 +316,7 @@ class Tensor(Matrix):
         None.
 
         """
-        self.multirot = np.zeros((len(phi), 3, 3), dtype=COMPLEX_TYPE)
+        self.multirot = np.zeros((len(phi), 3, 3), dtype=FLOAT_TYPE)
 
         for i in range(0, len(theta)):
             self.rotation(phi[i], theta[i])
@@ -330,8 +351,8 @@ class Operator(Matrix):
 
     def __init__(self, dimension: int):
         Matrix.__init__(self, dimension)
-        self.vector = self.matrix.flatten()
-        self.superop = None
+        self.vector = self.build_vector()
+        self.superop = self.build_superoperator()
 
     def build_vector(self) -> None:
         """
@@ -406,7 +427,7 @@ class Operator(Matrix):
                [0., 0., 0., 0.]])
 
         """
-        eye = np.eye(self.dimension, dtype=COMPLEX_TYPE)
+        eye = np.eye(self.dimension, dtype=self.matrix.dtype)
         if not swap:
             self.superop = np.kron(self.matrix, eye)
         else:
@@ -476,7 +497,7 @@ class Spinoperator(Operator):
     [ 0. +0.j   0.5+0.j   0. +0.j   0. +0.j ]]
     [[ 0. +0.j   0. +0.j   0. -0.5j  0. +0.j ]
     [ 0. +0.j   0. +0.j   0. +0.j   0. -0.5j]
-    [ 0. +0.5j  0. +0.j   0. +0.j   0. +0.j ]
+    [ 0. +0.5j  0. +0.j   0. +0.j   0. +0.j ]e vector attribute and the superop attrib
     [ 0. +0.j   0. +0.5j  0. +0.j   0. +0.j ]]
     [[ 0.5+0.j   0. +0.j   0. +0.j   0. +0.j ]
     [ 0. +0.j   0.5+0.j   0. +0.j   0. +0.j ]
@@ -507,8 +528,8 @@ class Spinoperator(Operator):
             pauli_matrices = self.pauli_matrices(spin)
             self.dimension = dim_spin
             self.matrix = np.array(pauli_matrices, dtype=COMPLEX_TYPE)
-            self.vector = self.matrix.flatten()
-            self.superop = None
+            self.build_vector()
+            self.build_superoperator()
 
             return
 
@@ -564,8 +585,8 @@ class Spinoperator(Operator):
             self.matrix = pauli_spin
             self.matrix_coupling_spins = pauli_coupling_spins
             self.dimension = dim_total
-            self.vector = self.matrix.flatten()
-            self.superop = None
+            self.build_vector()
+            self.build_superoperator()
 
             return
 
@@ -670,61 +691,6 @@ class Spinoperator(Operator):
         else:
             raise ValueError("Only 'x', 'y' and 'z' are allowed coordinates.")
 
-    def total_spin_radpair(self) -> None:
-        """
-        Calculate the total spin matrix operator of a radical pair.
-
-        The formular following is used:
-        S_ges = S@E + E@S (S is the spin operator of a single electron, E is
-        the unit matrix, @ means that tensor product is used).
-
-        Attributes
-        ----------
-        matrix : np.ndarray
-            Matrix attribute is updated and the total spin operator of a
-            radical pair is filled in.
-        dimension : int
-            Dimension of cartesian spin operator of radical pair.
-
-        Returns
-        -------
-        None.
-
-        Examples
-        --------
-        >>> s = Spinoperator(1/2)
-        >>> s.total_spin_radpair()
-        >>> s.matrix
-        array([[[ 0. +0.j ,  0.5+0.j ,  0.5+0.j ,  0. +0.j ],
-                [ 0.5+0.j ,  0. +0.j ,  0. +0.j ,  0.5+0.j ],
-                [ 0.5+0.j ,  0. +0.j ,  0. +0.j ,  0.5+0.j ],
-                [ 0. +0.j ,  0.5+0.j ,  0.5+0.j ,  0. +0.j ]],
-        <BLANKLINE>
-               [[ 0. +0.j ,  0. -0.5j,  0. -0.5j,  0. +0.j ],
-                [ 0. +0.5j,  0. +0.j ,  0. +0.j ,  0. -0.5j],
-                [ 0. +0.5j,  0. +0.j ,  0. +0.j ,  0. -0.5j],
-                [ 0. +0.j ,  0. +0.5j,  0. +0.5j,  0. +0.j ]],
-        <BLANKLINE>
-               [[ 1. +0.j ,  0. +0.j ,  0. +0.j ,  0. +0.j ],
-                [ 0. +0.j ,  0. +0.j ,  0. +0.j ,  0. +0.j ],
-                [ 0. +0.j ,  0. +0.j ,  0. +0.j ,  0. +0.j ],
-                [ 0. +0.j ,  0. +0.j ,  0. +0.j , -1. +0.j ]]])
-        >>> s.dimension
-        4
-
-        """
-        self.build_superoperator()
-        right_superop = self.superop
-        self.build_superoperator(swap=True)
-        left_superop = self.superop
-
-        total_spin = right_superop + left_superop
-
-        self.matrix = total_spin
-        self.dimension = len(self.matrix[1])
-
-        return None
-
 
 class Hamiltonian(Operator):
     """
@@ -749,93 +715,6 @@ class Hamiltonian(Operator):
         Attribute can be filled by the function build_superoperator.
 
     """
-
-    def create_linear_operator(self, tensor: 'np.ndarray',
-                               spinoperator: object) -> None:
-        """
-        Change matrix attribute of class hamiltonian by using
-        odh.create_linear_hamiltonian. Create a linear interaction
-        hamiltonian (e.g. Zeeman interaction) between
-        a spin vector operator 'spinoperator' and an interaction matrix tensor.
-
-        Parameters
-        ----------
-        tensor : np.ndarray
-            Interaction matrix between spinoperator and magnetic field. The
-            shape of the array is 3 x 3.
-        spinoperator : object
-            Spinoperator object that represents the spin vector operator
-            interacting with the magnetic field.
-
-        Attributes
-        ----------
-        matrix : np.ndarray
-            Hamiltonian in matrix representation.
-
-        Returns
-        -------
-        None.
-
-        Examples
-        --------
-        >>> h = Hamiltonian(2)
-        >>> g = Tensor(np.arange(1, 4))
-        >>> s = Spinoperator(1/2)
-        >>> h.create_linear_operator(g.rot, s)
-        >>> h.matrix
-        array([[ 1.5+0.j,  0. +0.j],
-               [ 0. +0.j, -1.5+0.j]])
-
-        """
-        self.matrix = odh.create_linear_hamiltonian(
-            tensor, spinoperator.matrix)
-
-        return None
-
-    def create_bilinear_operator(self, spinoperator1: object, tensor:
-                                 'np.ndarray', spinoperator2: object) -> None:
-        """
-        Change the matrix attribute of class Hamiltonian by unsing
-        odh.create_bilinear_hamiltonian. Create a bilinear interaction
-        Hamiltonian between two spin vectors, S1 and
-        S2, and an interaction matrix tensor.
-
-        Parameters
-        ----------
-        spinoperator1 : object
-            Spin vector operator of the first interacting spin. This is a
-            Spinoperator object.
-        tensor : np.ndarray
-            Interaction matrix between the two spin operators. The shape is
-            3 x 3.
-        spinoperator2 : object
-            Spin vector operator of the second interacting spin. This is a
-            Spinoperator object.
-
-        Attributes
-        ----------
-        matrix : np.ndarray
-            Hamiltonian in matrix representation.
-
-        Returns
-        -------
-        None.
-
-        Examples
-        --------
-        >>> h = hamiltonian(2)
-        >>> d = tensor(np.arange(1, 4))
-        >>> s = spinoperator(1/2)
-        >>> h.create_bilinear_operator(s, d.rot, s)
-        >>> h.matrix
-        array([[1.5+0.j, 0. +0.j],
-               [0. +0.j, 1.5+0.j]])
-
-        """
-        self.matrix = odh.create_bilinear_hamiltonian(
-            spinoperator1.matrix, tensor, spinoperator2.matrix)
-
-        return None
 
     def exchange_coupling(self, spinoperator1: object, J_ex: float,
                           spinoperator2: object) -> None:
@@ -873,10 +752,18 @@ class Hamiltonian(Operator):
                [ -0. +0.j, -10.4+0.j]])
 
         """
-        self.matrix = -J_ex*(0.5*np.eye(self.dimension)+2 * (
+        if spinoperator1.dimension != spinoperator2.dimension:
+            raise IndexError("Spinoperatordimensions must not differ.")
+
+        self.matrix = J_ex* (
             spinoperator1.get('x')@spinoperator2.get('x')
             + spinoperator1.get('y')@spinoperator2.get('y')
-            + spinoperator1.get('z')@spinoperator2.get('z')))
+            + spinoperator1.get('z')@spinoperator2.get('z'))
+        self.matrix = self.matrix.astype(COMPLEX_TYPE)
+
+        self.build_vector()
+        self.build_superoperator()
+
 
         return None
 
@@ -924,6 +811,10 @@ class Hamiltonian(Operator):
         self.matrix = (spinoperator.get('x')
                        * omega_nut - spinoperator.get('z')*omega_mw)
 
+        self.build_vector()
+        self.build_superoperator()
+
+
         return None
 
     def zeeman_coupling(self, g: 'np.ndarray', B_z: float,
@@ -931,8 +822,7 @@ class Hamiltonian(Operator):
         """
         Calculate the hamiltonian of the Zeeman coupling of a spin
         (represented by a spin vector operator) and a magnetic field along the
-        z-Axis. The function 'create_linear_operator' for hamilotnian
-        attributes is used.
+        z-Axis.
 
         Parameters
         ----------
@@ -961,27 +851,32 @@ class Hamiltonian(Operator):
         >>> h = Hamiltonian(2)
         >>> s = Spinoperator(1/2)
         >>> g = Tensor(np.arange(1, 4))
-        >>> h.zeeman_coupling(g.tensor, 42.5, s)
+        >>> h.zeeman_coupling(g.matrix, 42.5, s)
         >>> h.matrix
         array([[ 63.75+0.j,   0.  +0.j],
                [  0.  +0.j, -63.75+0.j]])
         """
-        self.create_linear_operator(g, spinoperator)
+        self.matrix = odh.create_linear_hamiltonian(g, spinoperator.matrix)
         self.matrix *= B_z
+        self.build_vector()
+        self.build_superoperator()
 
         return None
 
-    def dipol_coupling(self, D_tensor: 'np.ndarray', spinoperator:
-                       object) -> None:
+    def dipol_coupling(self, spinoperator1: object, D_tensor: 'np.ndarray',
+                       spinoperator2: object) -> None:
         """
         Calculate the hamiltonian of a dipolar coupling of two spins.
 
         Parameters
         ----------
+        spinoperator1: object
+            Spin vector operator of the first interacting spin. This is a
+            Spinoperator object.
         D_tensor : np.ndarray
             Dipolar coupling tensor in xyz-frame. The shape is 3 x 3.
-        spinoperator : object
-            Total spin vector operator of a radical pair. This is a
+        spinoperator2 : object
+            Spin vector operator of the first interacting spin. This is a
             Spinoperator object.
 
         Attributes
@@ -996,10 +891,11 @@ class Hamiltonian(Operator):
         Examples
         --------
         >>> h = Hamiltonian(4)
-        >>> s = Spinoperator(1/2)
-        >>> s.total_spin_radpair()
+        >>> s1 = Spinoperator(1/2, 1/2)
+        >>> s2 = mt.Spinoperator(1/2, 1/2)
+        >>> s2.matrix = s1.matrix_coupling_spins[0]
         >>> d = Tensor(np.arange(1, 4))
-        >>> h.dipol_coupling(d.tensor, s)
+        >>> h.dipol_coupling(s1, d.matrix, s2)
         >>> h.matrix
         array([[ 4.5+0.j,  0. +0.j,  0. +0.j, -0.5+0.j],
                [ 0. +0.j,  1.5+0.j,  1.5+0.j,  0. +0.j],
@@ -1007,6 +903,12 @@ class Hamiltonian(Operator):
                [-0.5+0.j,  0. +0.j,  0. +0.j,  4.5+0.j]])
 
         """
-        self.create_bilinear_operator(spinoperator, D_tensor, spinoperator)
+        if spinoperator1.dimension != spinoperator2.dimension:
+            raise IndexError("Spinoperatordimensions must not differ.")
+
+        self.matrix = odh.create_bilinear_hamiltonian(
+            spinoperator1.matrix, D_tensor, spinoperator2.matrix)
+        self.build_vector()
+        self.build_superoperator()
 
         return None

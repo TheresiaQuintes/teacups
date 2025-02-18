@@ -3,6 +3,7 @@ import numpy as np
 COMPLEX_TYPE = np.complex64
 FLOAT_TYPE = np.float32
 
+
 def superoperator_population_relaxation(k_matrix):
     """
     Calculate a relaxation superoperator for transitions between the states.
@@ -18,11 +19,18 @@ def superoperator_population_relaxation(k_matrix):
     ----------
     k_matrix : np.ndarray
         Matrix containing the transition rates between the states. E.g.:
-              a  b  c
-            a 4  1  2
-            b 1     3
-            c 2  3
+
+        ::
+
+                         a b c
+                       a 4 1 2
+            k_matrix = b 1   3
+                       c 2 3
+
         for the transition sceme:
+
+        ::
+
             a <-> b: 1
             a <-> c: 2
             b <-> c: 3
@@ -32,16 +40,19 @@ def superoperator_population_relaxation(k_matrix):
     R : np.ndarray
         Relaxation superoperator. Its dimension is the dimension of T1_matrix
         squared. E.g.:
+
+        ::
+
               aa  ab  ac  ba  bb  bc  ca  cb  cc
-           aa 1              1               2
+           aa 1                1               2
            ab
            ac
            ba
-           bb  1             -4               3
+           bb  1              -4               3
            bc
            ca
            cb
-           cc  2              3              -5
+           cc  2               3              -5
 
     """
     dimension = k_matrix.shape[0]
@@ -84,6 +95,9 @@ def superoperator_coherence_relaxation(k, dimension):
         Relaxationsuperoperator for the coherences. All diagonal elements that
         are assignable to the coherences are set to the negative value of k.
         E.g.:
+
+        ::
+
               aa ab ba bb
            aa
            ab    -k
@@ -148,6 +162,23 @@ def relaxation_operator_to_hamiltonian_basis(relaxation_superoperator:
     the relaxaton superoperator has this shape too, as basistransformation
     is done for every B- and angle-point.
 
+    The matrix containing the eigenvectors of the system is defined by:
+
+    .. math::
+        H_\mathrm{diag} = v^{-1} H v
+
+    In superoperator space the transformationmatrix for the identical
+    basistransformation can be set up as
+
+    .. math::
+        v_\mathrm{super} = v \otimes v
+
+    so that a basistransformation of a superoperator R can be done by:
+
+    .. math::
+        R_\mathrm{H basis} = v_\mathrm{super} \cdot R_\mathrm{diag}\
+            \cdot v_\mathrm{super}^{-1}.
+
     Parameters
     ----------
     relaxation_superoperator : np.ndarray
@@ -169,13 +200,12 @@ def relaxation_operator_to_hamiltonian_basis(relaxation_superoperator:
     dim = (eigvec.shape[0], eigvec.shape[1], eigvec.shape[2]**2,
            eigvec.shape[3]**2)
     R = np.zeros(dim, dtype=COMPLEX_TYPE)
-    inv = np.conj(np.transpose(eigvec, (0, 1, 3, 2)))
     for b in range(dim[0]):
         for a in range(dim[1]):
-            R[b, a] = np.kron(eigvec[b, a].T, inv[b, a])
+            R[b, a] = np.kron(eigvec[b, a], eigvec[b, a])
 
-    relaxation = np.conj(np.transpose(R, (0, 1, 3, 2)))\
-        @ relaxation_superoperator @ R
+    relaxation = R\
+        @ relaxation_superoperator @ np.conj(np.transpose(R, (0, 1, 3, 2)))
 
     return relaxation
 
@@ -231,94 +261,3 @@ def create_relaxation_superoperator(sys: object, cal: object) -> 'np.ndarray':
     relax = relaxation_operator_to_hamiltonian_basis(relax, cal.eigvec)
 
     return relax
-
-
-"""
-*** Special functions that were used when testing RQM. Still in the code as an
-example how the superoperator has to be set up ***
-
-def rqm(k_isc, k_e, k_d, cal, sys):
-    mid = int(cal.eigval.shape[0]/2)
-    eigval = cal.eigval[mid, 0]
-    de_02 = eigval[0] - eigval[2]
-    de_04 = eigval[0] - eigval[4]
-    de_05 = eigval[0] - eigval[5]
-    de_12 = eigval[1] - eigval[2]
-    de_13 = eigval[1] - eigval[3]
-    de_15 = eigval[1] - eigval[5]
-
-    K_isc_matrix = np.zeros((6, 6))
-    K_isc_matrix[0, 2] = k_isc*(1/45*sys.D_tri**2)/de_02**2
-    K_isc_matrix[0, 4] = k_isc*(1/135*sys.D_tri**2)/de_04**2
-    K_isc_matrix[0, 5] = k_isc*(1/45*sys.D_tri**2)/de_05**2
-    K_isc_matrix[1, 2] = k_isc*(1/45*sys.D_tri**2)/de_12**2
-    K_isc_matrix[1, 3] = k_isc*(1/135*sys.D_tri**2)/de_13**2
-    K_isc_matrix[1, 5] = k_isc*(1/45*sys.D_tri**2)/de_15**2
-    K_isc_matrix[2, 0] = k_isc*(1/45*sys.D_tri**2)/de_02**2
-    K_isc_matrix[2, 1] = k_isc*(1/45*sys.D_tri**2)/de_12**2
-    K_isc_matrix[3, 1] = k_isc*(1/135*sys.D_tri**2)/de_13**2
-    K_isc_matrix[4, 0] = k_isc*(1/135*sys.D_tri**2)/de_04**2
-    K_isc_matrix[5, 0] = k_isc*(1/45*sys.D_tri**2)/de_05**2
-    K_isc_matrix[5, 1] = k_isc*(1/45*sys.D_tri**2)/de_15**2
-    K_isc = superoperator_population_relaxation(K_isc_matrix)
-
-
-    K_pop = np.zeros((6, 6))
-    K_pop[0, 0] = -(k_e + k_d)
-    K_pop[1, 1] = -(k_e + k_d)
-    K_pop[2, 2] = -k_e
-    K_pop[3, 3] = -k_e
-    K_pop[4, 4] = -k_e
-    K_pop[5, 5] = -k_e
-    K_pop = superoperator_population_relaxation(K_pop)
-
-
-    R = K_isc + K_pop
-    R = R[::-1, ::-1]
-    return R
-
-def rqm_2(k_isc, k_e, k_d, cal, sys):
-    mid = int(cal.eigval.shape[0]/2)
-    eigval = cal.eigval
-    de_10 = eigval[:, :, 1] - eigval[:, :, 0]
-    de_14 = eigval[:, :, 1] - eigval[:, :, 4]
-    de_15 = eigval[:, :, 1] - eigval[:, :, 5]
-    de_30 = eigval[:, :, 3] - eigval[:, :, 0]
-    de_32 = eigval[:, :, 3] - eigval[:, :, 2]
-    de_35 = eigval[:, :, 3] - eigval[:, :, 5]
-
-    K_isc_matrix = np.zeros((700, 100, 6, 6))
-    K_isc_matrix[:, :, 1, 0] = k_isc*(1/45*sys.D_tri**2)/de_10**2
-    K_isc_matrix[:, :, 1, 4] = k_isc*(1/135*sys.D_tri**2)/de_14**2
-    K_isc_matrix[:, :, 1, 5] = k_isc*(1/45*sys.D_tri**2)/de_15**2
-    K_isc_matrix[:, :, 3, 0] = k_isc*(1/45*sys.D_tri**2)/de_30**2
-    K_isc_matrix[:, :, 3, 2] = k_isc*(1/135*sys.D_tri**2)/de_32**2
-    K_isc_matrix[:, :, 3, 5] = k_isc*(1/45*sys.D_tri**2)/de_35**2
-    K_isc_matrix[:, :, 0, 1] = k_isc*(1/45*sys.D_tri**2)/de_10**2
-    K_isc_matrix[:, :, 4, 1] = k_isc*(1/135*sys.D_tri**2)/de_14**2
-    K_isc_matrix[:, :, 5, 1] = k_isc*(1/45*sys.D_tri**2)/de_15**2
-    K_isc_matrix[:, :, 0, 3] = k_isc*(1/45*sys.D_tri**2)/de_30**2
-    K_isc_matrix[:, :, 2, 3] = k_isc*(1/135*sys.D_tri**2)/de_32**2
-    K_isc_matrix[:, :, 5, 3] = k_isc*(1/45*sys.D_tri**2)/de_35**2
-
-
-    K_isc = np.zeros((700, 100, 36, 36))
-    for b in range(700):
-        for a in range(100):
-            K_isc[b, a] = superoperator_population_relaxation(K_isc_matrix[b, a])
-
-
-
-    K_pop = np.zeros((36, 36))
-    K_pop[7, 7] = -(k_e + k_d)
-    K_pop[21, 21] = -(k_e + k_d)
-    K_pop[0, 0] = -k_e
-    K_pop[14, 14] = -k_e
-    K_pop[28, 28] = -k_e
-    K_pop[35, 35] = -k_e
-
-
-    R = K_isc + K_pop
-    R = R[:, :, ::-1, ::-1]
-    return R
-"""

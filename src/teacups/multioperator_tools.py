@@ -3,7 +3,254 @@ import numpy as np
 COMPLEX_TYPE = np.complex64
 FLOAT_TYPE = np.float32
 
-class Multioperator:
+class Multimatrix:
+    def __init__(self, dimension, grid_points: int, b_points: 'np.ndarray'):
+
+        self.dimension = dimension
+        self.angle_shape = (grid_points, self.dimension,
+                            self.dimension)
+        self.B_angle_shape = (b_points, grid_points,
+                              self.dimension, self.dimension)
+
+        self.matrix = np.zeros(
+            (self.dimension, self.dimension), dtype=COMPLEX_TYPE)
+        self.angle_matrix = np.zeros((self.angle_shape), dtype=COMPLEX_TYPE)
+        self.B_angle_matrix = np.zeros(
+            (self.B_angle_shape), dtype=COMPLEX_TYPE)
+
+    def matrix_changed(self) -> None:
+        """
+        Change all matrix attributes in angle_matrix attribute and in
+        B_angle_matrix attribute to the current value of matrix attribute. For
+        example this can be used for isotropic operators, whose matrices look
+        the same for each B-field point and each angle combination.
+
+        Attributes
+        ----------
+        angle_matrix : np.ndarray
+            Contains the same matrix array for each pair of phi and
+            theta angles. The values will be that of the matrix attribute.
+        B_angle_matrix: np.ndarray
+            Contains the same matrix array for each pair of phi and theta
+            angles and for each B-field point. The values will be that of
+            the matrix attribute.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.angle_matrix = np.broadcast_to(
+            self.matrix, self.angle_shape).copy()
+        self.B_angle_matrix = np.broadcast_to(
+            self.matrix, self.B_angle_shape).copy()
+
+        return None
+
+    def angle_matrix_changed(self) -> None:
+        """
+        Change all angle_matrix attributes in B_angle matrix attribute to the
+        current value of angle_matrix attribute. For example this can be used
+        for operators which are not dependent on different B-fields.
+
+        Attributes
+        ----------
+        B_angle_matrix: np.ndarray
+            Contains the same angle_matrix for each B-field point. The values
+            will be that of the angle_matrix attribute.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.B_angle_matrix = np.broadcast_to(
+            self.angle_matrix, self.B_angle_shape).copy()
+
+        return None
+
+
+    def scalar(self, factors: 'np.ndarray') -> None:
+        """
+        Build the scalar product of the whole B_angle_matrix
+        (this means each number in the array) with the product of all factors.
+
+        Parameters
+        ----------
+        factors : np.ndarray
+            1D-Array containing all scalars which shall be multiplied with each
+            other and with the B_angle_matrix.
+
+        Attributes
+        ----------
+        B_angle_matrix: np.ndarray
+            Each number in the matrix is multiplied by the product of factors.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.B_angle_matrix *= np.prod(factors)
+
+        return None
+
+    def product(self, scd_matrix: 'np.ndarray', left=False) -> None:
+        """
+        Build the matrix product of each matrix in B_angle_matrix and a second
+        matrix being multiplied either from right (default) or from left side.
+
+        Parameters
+        ----------
+        scd_matrix : np.ndarray
+            Matrix of same dimension as matrix attribute, which shall be
+            multiplied with all matrices in B_angle_matrix attribute.
+        left : boolean, optional
+            If left is set to True the second matrix is multiplied from
+            the left side. If left is set to False it is multiplied from
+            right side. The default is False.
+
+        Attributes
+        ----------
+        B_angle_matrix: np.ndarray
+            Each matrix attribute is multiplied by the second matrix.
+
+        Returns
+        -------
+        None.
+
+        """
+        if scd_matrix.shape != self.matrix.shape:
+            if scd_matrix.shape != self.angle_shape:
+                if scd_matrix.shape != self.B_angle_shape:
+                    raise IndexError("Multiplied matrix has to have either\
+                                     the shape of the matrix, angle_matrix\
+                                     or B_angle_matrix attribute.")
+
+        if not left:
+            self.B_angle_matrix = self.B_angle_matrix[:, :] @ scd_matrix
+        else:
+            self.B_angle_matrix = scd_matrix @ self.B_angle_matrix[:, :]
+
+        return None
+
+    def basis_transformation(self, trans: 'np.ndarray', inverse_left=True,
+                            orthonormal=False) -> None:
+        """
+        Change the basis of all matrices in B_angle_matrix.
+        trans is the transformation matrix: m = trans^-1 @ m @ trans.
+
+        Parameters
+        ----------
+        trans : np.ndarray
+            Transformation matrix containing arrays of the new basis. The shape
+            has to be the same as that of the matrix attribute.
+        orthonormal : boolean, optional
+            If orthonormal is set to True the basis transforation is done by
+            using the adjungate instead of the inverse transformation matrix
+            in calculation. This is possible if the old and the new basis
+            consist only of orthonormal vectors. The default is False.
+
+        Attributes
+        ----------
+        B_angle_matrix: np.ndarray
+            Each matrix attribute is basis transformed by T.
+
+        Returns
+        -------
+        None.
+
+        """
+        if trans.shape != self.matrix.shape:
+            if trans.shape != self.angle_shape:
+                if trans.shape != self.B_angle_shape:
+                    raise IndexError("Transformation matrix has to have either\
+                                     the shape of the matrix, angle_matrix\
+                                     or B_angle_matrix attribute.")
+
+        if inverse_left is True:
+            if not orthonormal:
+                self.B_angle_matrix = (np.linalg.inv(trans) @
+                                       self.B_angle_matrix[:, :] @ trans)
+            else:
+                self.B_angle_matrix = np.conj(trans.T) @ self.B_angle_matrix[:, :]\
+                    @ trans
+
+        else:
+            if not orthonormal:
+                self.B_angle_matrix = trans @ self.B_angle_matrix[:, :] @\
+                    (np.linalg.inv(trans))
+            else:
+                self.B_angle_matrix = trans @ self.B_angle_matrix[:, :]\
+                    @ np.conj(trans.T)
+
+
+class Multioperator_(Multimatrix):
+    def __init__(self, dimension, grid_points: int, b_points: 'np.ndarray'):
+        Multimatrix.__init__(self, dimension, grid_points, b_points)
+        self.B_angle_vector = self.build_vector()
+        self.B_angle_superop = self.build_superoperator()
+
+    def build_vector(self) -> None:
+        """
+        Changing the dimension of each matrix operator attribute in
+        B_angle_matrix to a 1D.vector using .reshape()-function for numpy
+        arrays. Lines are simply written in only one long line.
+
+        Attributes
+        ----------
+        B_angle_vector np.ndarray
+            Each matrix attribute is flattend to 1d array.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.B_angle_vector = self.B_angle_matrix.reshape(
+            (self.B_angle_matrix.shape[0], self.B_angle_matrix.shape[1],
+             self.dimension**2))
+
+        return None
+
+    def build_superoperator(self, swap=False) -> None:
+        """
+        Double the dimension of each matrix operator in B_angle_matrix
+        (in case of use in a higher dimensional space). Tensor product of
+        operator with unit matrix of the same dimension is built using the
+        numpy.kron function.
+
+        Parameters
+        ----------
+        swap : Boolean, optional
+            If swap is False the tensor product is built with matrix on left
+            and unit matrix on right site. If left is set to True unit matrix
+            is on the left side and matrix attribute on the right.
+            The default is False.
+
+        Attributes
+        ----------
+        B_angle_superop : np.ndarray
+        array
+            Result of tensor product of matrix and unit matrix for each B-field
+            point and each angle combination.
+
+        Returns
+        -------
+        None.
+
+        """
+        eye = np.eye(self.dimension, dtype=self.B_angle_matrix.dtype)
+        if not swap:
+            self.B_angle_superop = np.kron(self.B_angle_matrix[:, :], eye)
+        else:
+            self.B_angle_superop = np.kron(eye, self.B_angle_matrix[:, :])
+
+        return None
+
+
+
+class Multioperator(Multioperator_):
     """
     An object of class Multioperator contains matrix attributes of
     different dimensions (see below). Furthermore it contains a tensor, a
@@ -61,279 +308,9 @@ class Multioperator:
     """
 
     def __init__(self, spinop: object, grid_points: int, B: 'np.ndarray'):
+        Multioperator_.__init__(self, spinop.dimension, grid_points, len(B))
         self.spinop = spinop
         self.B = B
-
-        self.dimension = self.spinop.dimension
-        self.angle_shape = (grid_points, self.dimension,
-                            self.dimension)
-        self.B_angle_shape = (len(self.B), grid_points,
-                              self.dimension, self.dimension)
-
-        self.matrix = np.zeros(
-            (self.dimension, self.dimension), dtype=COMPLEX_TYPE)
-        self.angle_matrix = np.zeros((self.angle_shape), dtype=COMPLEX_TYPE)
-        self.B_angle_matrix = np.zeros(
-            (self.B_angle_shape), dtype=COMPLEX_TYPE)
-
-        self.B_angle_vector = None
-        self.B_angle_superop = None
-
-    def matrix_changed(self) -> None:
-        """
-        Change all matrix attributes in angle_matrix attribute and in
-        B_angle_matrix attribute to the current value of matrix attribute. For
-        example this can be used for isotropic operators, whose matrices look
-        the same for each B-field point and each angle combination.
-
-        Attributes
-        ----------
-        angle_matrix : np.ndarray
-            Contains the same matrix array for each pair of phi and
-            theta angles. The values will be that of the matrix attribute.
-        B_angle_matrix: np.ndarray
-            Contains the same matrix array for each pair of phi and theta
-            angles and for each B-field point. The values will be that of
-            the matrix attribute.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.angle_matrix = np.broadcast_to(
-            self.matrix, self.angle_shape).copy()
-        self.B_angle_matrix = np.broadcast_to(
-            self.matrix, self.B_angle_shape).copy()
-
-        return None
-
-    def angle_matrix_changed(self) -> None:
-        """
-        Change all angle_matrix attributes in B_angle matrix attribute to the
-        current value of angle_matrix attribute. For example this can be used
-        for operators which are not dependent on different B-fields.
-
-        Attributes
-        ----------
-        B_angle_matrix: np.ndarray
-            Contains the same angle_matrix for each B-field point. The values
-            will be that of the angle_matrix attribute.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.B_angle_matrix = np.broadcast_to(
-            self.angle_matrix, self.B_angle_shape).copy()
-
-        return None
-
-    def get_matrix(self, b: int, angle: int) -> None:
-        """
-        Change the value of matrix attribute to the value of a matrix attribute
-        from B_angle_matrix. Specify the position of this matrix attribute in
-        B_angle_matrix by the positional parameters b and angle.
-
-        Parameters
-        ----------
-        b : int
-            Index of the desired magnetic field point.
-        angle : int
-            Index of the desired angle combination.
-
-        Attributes
-        ----------
-        matrix : np.ndarray
-            The matrix attribute is changed to the value of the B_angle_matrix
-            at the given position.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.matrix = self.B_angle_matrix[b, angle]
-
-        return None
-
-    def get_angle_matrix(self, b: int) -> None:
-        """
-        Change the value of angle_matrix attribute to the value of an
-        angle_matrix attribute from B_angle_matrix. Specify the position of
-        this angle_matrix attribute in B_angle_matrix by the positional
-        parameter b.
-
-        Parameters
-        ----------
-        b : int
-            Index of the desired magnetic field point.
-
-        Attributes
-        ----------
-        angle_matrix : np.ndarray
-            The angle_matrix attribute is changed to the value of the
-            B_angle_matrix at the given position.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.angle_matrix = self.B_angle_matrix[b]
-
-        return None
-
-    def scalar(self, factors: 'np.ndarray') -> None:
-        """
-        Build the scalar product of the whole B_angle_matrix
-        (this means each number in the array) with the product of all factors.
-
-        Parameters
-        ----------
-        factors : np.ndarray
-            1D-Array containing all scalars which shall be multiplied with each
-            other and with the B_angle_matrix.
-
-        Attributes
-        ----------
-        B_angle_matrix: np.ndarray
-            Each number in the matrix is multiplied by the product of factors.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.B_angle_matrix *= np.prod(factors)
-
-        return None
-
-    def product(self, scd_matrix: 'np.ndarray', left=False) -> None:
-        """
-        Build the matrix product of each matrix in B_angle_matrix and a second
-        matrix being multiplied either from right (default) or from left side.
-
-        Parameters
-        ----------
-        scd_matrix : np.ndarray
-            Matrix of same dimension as matrix attribute, which shall be
-            multiplied with all matrices in B_angle_matrix attribute.
-        left : boolean, optional
-            If left is set to True the second matrix is multiplied from
-            the left side. If left is set to False it is multiplied from
-            right side. The default is False.
-
-        Attributes
-        ----------
-        B_angle_matrix: np.ndarray
-            Each matrix attribute is multiplied by the second matrix.
-
-        Returns
-        -------
-        None.
-
-        """
-        if not left:
-            self.B_angle_matrix = self.B_angle_matrix[:, :] @ scd_matrix
-        else:
-            self.B_angle_matrix = scd_matrix @ self.B_angle_matrix[:, :]
-
-        return None
-
-    def basistransformation(self, trans: 'np.ndarray',
-                            orthonormal=False) -> None:
-        """
-        Change the basis of all matrices in B_angle_matrix.
-        trans is the transformation matrix: m = trans^-1 @ m @ trans.
-
-        Parameters
-        ----------
-        trans : np.ndarray
-            Transformation matrix containing arrays of the new basis. The shape
-            has to be the same as that of the matrix attribute.
-        orthonormal : boolean, optional
-            If orthonormal is set to True the basis transforation is done by
-            using the adjungate instead of the inverse transformation matrix
-            in calculation. This is possible if the old and the new basis
-            consist only of orthonormal vectors. The default is False.
-
-        Attributes
-        ----------
-        B_angle_matrix: np.ndarray
-            Each matrix attribute is basis transformed by T.
-
-        Returns
-        -------
-        None.
-
-        """
-        if not orthonormal:
-            self.B_angle_matrix = (np.linalg.inv(trans) @
-                                   self.B_angle_matrix[:, :] @ trans)
-        else:
-            self.B_angle_matrix = np.conj(trans.T) @ self.B_angle_matrix[:, :]\
-                @ trans
-
-        return None
-
-    def build_vector(self) -> None:
-        """
-        Changing the dimension of each matrix operator attribute in
-        B_angle_matrix to a 1D.vector using .reshape()-function for numpy
-        arrays. Lines are simply written in only one long line.
-
-        Attributes
-        ----------
-        B_angle_vector np.ndarray
-            Each matrix attribute is flattend to 1d array.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.B_angle_vector = self.B_angle_matrix.reshape(
-            (self.B_angle_matrix.shape[0], self.B_angle_matrix.shape[1],
-             self.dimension**2))
-
-        return None
-
-    def build_superoperator(self, swap=False) -> None:
-        """
-        Double the dimension of each matrix operator in B_angle_matrix
-        (in case of use in a higher dimensional space). Tensor product of
-        operator with unit matrix of the same dimension is built using the
-        numpy.kron function.
-
-        Parameters
-        ----------
-        swap : Boolean, optional
-            If swap is False the tensor product is built with matrix on left
-            and unit matrix on right site. If left is set to True unit matrix
-            is on the left side and matrix attribute on the right.
-            The default is False.
-
-        Attributes
-        ----------
-        B_angle_superop : np.ndarray
-        array
-            Result of tensor product of matrix and unit matrix for each B-field
-            point and each angle combination.
-
-        Returns
-        -------
-        None.
-
-        """
-        eye = np.eye(self.dimension)
-        if not swap:
-            self.B_angle_superop = np.kron(self.B_angle_matrix[:, :], eye)
-        else:
-            self.B_angle_superop = np.kron(eye, self.B_angle_matrix[:, :])
-
-        return None
 
     def create_linear_operator(self, tensor) -> None:
         """
@@ -370,6 +347,11 @@ class Multioperator:
         ty = tensor.multirot[:, 1, 2, np.newaxis, np.newaxis]
         tz = tensor.multirot[:, 2, 2, np.newaxis, np.newaxis]
         self.angle_matrix = sx*tx + sy*ty + sz*tz
+        self.angle_matrix = self.angle_matrix.astype(COMPLEX_TYPE)
+
+        self.angle_matrix_changed()
+        self.build_vector()
+        self.build_superoperator()
 
         return None
 
@@ -391,9 +373,7 @@ class Multioperator:
             carried out.
         spinop2 : object
             Spin vector operator of the second interacting spin. This has to
-            be an object of class Spinoperator. Alternatively a numpy array
-            of the dimension 3xnxn with the three spin-pauli-matrices can be
-            given into the function, too.
+            be an object of class Spinoperator.
 
         Attributes
         ----------
@@ -406,21 +386,17 @@ class Multioperator:
         None.
 
         """
+        if self.spinop.dimension != spinop2.dimension:
+            raise IndexError("Spinoperator dimensions must not differ.")
+
         sx1 = np.broadcast_to(self.spinop.get('x'), (self.angle_shape))
         sy1 = np.broadcast_to(self.spinop.get('y'), (self.angle_shape))
         sz1 = np.broadcast_to(self.spinop.get('z'), (self.angle_shape))
         S1 = np.array([sx1, sy1, sz1])
 
-        # Second spinoperator can be of class spinoperator OR a numpy.array
-        if type(spinop2) == np.ndarray:
-            sx2 = np.broadcast_to(spinop2[0], (self.angle_shape))
-            sy2 = np.broadcast_to(spinop2[1], (self.angle_shape))
-            sz2 = np.broadcast_to(spinop2[2], (self.angle_shape))
-
-        else:
-            sx2 = np.broadcast_to(spinop2.get('x'), (self.angle_shape))
-            sy2 = np.broadcast_to(spinop2.get('y'), (self.angle_shape))
-            sz2 = np.broadcast_to(spinop2.get('z'), (self.angle_shape))
+        sx2 = np.broadcast_to(spinop2.get('x'), (self.angle_shape))
+        sy2 = np.broadcast_to(spinop2.get('y'), (self.angle_shape))
+        sz2 = np.broadcast_to(spinop2.get('z'), (self.angle_shape))
 
         S2 = np.array([sx2, sy2, sz2])
 
@@ -445,6 +421,11 @@ class Multioperator:
             for j in range(0, 3):
                 ham = np.add(ham, S1[i] @ (tensor_ges[i, j] * S2[j]))
         self.angle_matrix = ham
+        self.angle_matrix = self.angle_matrix.astype(COMPLEX_TYPE)
+
+        self.angle_matrix_changed()
+        self.build_vector()
+        self.build_superoperator()
 
         return None
 
@@ -478,11 +459,18 @@ class Multioperator:
         None.
 
         """
-        self.matrix = -J_ex*(0.5*np.eye(self.dimension) + 2
-                             * (self.spinop.get('x')@spinop2.get('x')
+        if self.spinop.dimension != spinop2.dimension:
+            raise IndexError("Spinoperator dimensions must not differ.")
+
+        self.matrix = J_ex * (self.spinop.get('x')@spinop2.get('x')
                                 + self.spinop.get('y')@spinop2.get('y')
-                                + self.spinop.get('z')@spinop2.get('z')))
+                                + self.spinop.get('z')@spinop2.get('z'))
+        self.matrix = self.matrix.astype(COMPLEX_TYPE)
+
         self.matrix_changed()
+        self.build_vector()
+        self.build_superoperator()
+
 
         return None
 
@@ -493,7 +481,10 @@ class Multioperator:
         Therefore, the hamiltonian is set up as the sum of the interaction
         hamiltonian with the microwave-field and the offset-hamiltonian which
         describes the shift of all lamor frequencies in rotating frame:
-        H = H_mw - H_off.
+
+        .. math::
+            H = H_\mathrm{mw} - H_\mathrm{off}.
+
         The matrix attribute is changed and afterwards filld in
         angle_matrix and B_angle_matrix by using the function matrix_changed().
 
@@ -525,7 +516,10 @@ class Multioperator:
         """
         self.matrix = self.spinop.get('x') * \
             omega_nut - self.spinop.get('z')*omega_mw
+
         self.matrix_changed()
+        self.build_vector()
+        self.build_superoperator()
 
         return None
 
@@ -562,5 +556,8 @@ class Multioperator:
         self.B_angle_matrix *= np.broadcast_to(
             self.B[:, np.newaxis, np.newaxis, np.newaxis],
             self.B_angle_shape)
+
+        self.build_vector()
+        self.build_superoperator()
 
         return None

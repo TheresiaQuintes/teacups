@@ -1,9 +1,9 @@
 import numpy as np
 from copy import deepcopy
 import teacups.multioperator_tools as mut
-import teacups.matrix_tools as mt
 import teacups.creators as cr
 import teacups.hamiltonians as ham
+import teacups.memory as mem
 
 import scipy.constants as const
 MU_B = const.physical_constants["Bohr magneton in Hz/T"][0]
@@ -29,11 +29,7 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
         zero-field levels), 'eigen' (population of eigenvalues of the system),
         'singlet' (a radical pair in pure singlet state), 'triplet-zf' (a
         triplet precursor populated in the triplets zero-field basis of a
-        radical pair or a triplet doublet pair), 'triplet-eigen' (a
-        triplet precursor populated in the triplets eigen basis of a
-        radical pair or a triplet doublet pair), 'coupled' (a triplet doublet
-        pair in the coupled basis), 'basis' (basis of the population input
-        is not changed)
+        radical pair or a triplet doublet pair)
         sys.spin_system: The spin system attribute has to be set to a string
         defining the spin system. This may be 'rp' (radical pair), 'trip'
         (triplet), 'doub' (doublet), or 'tdp' (triplet doublet pair).
@@ -79,18 +75,22 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
 
             rho = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
 
+            ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
+                exp, opt, cal)
+
             # diagonalize hf-Hamiltonians
-            eig_hf, vec_hf = np.linalg.eigh(cal.ham_tri_hf)
+            eig_hf, vec_hf = np.linalg.eigh(ham_tri_hf)
 
             # basistransformation to the high field functions
             rho.B_angle_matrix = (
                 np.conj(np.transpose((vec_hf), (0, 1, 3, 2)))
-                @ np.diag(sys.population)
+                @ np.diag(np.array(sys.population, dtype=FLOAT_TYPE))
                 @ vec_hf
             )
 
             # kill all off-diagonal elements
             rho.B_angle_matrix *= np.eye(3, dtype=FLOAT_TYPE)
+
 
         else:
             raise AttributeError(
@@ -151,124 +151,111 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
             rho.B_angle_matrix[:, :, 3, 3] = cal_tri.rho[:, :, 2, 2]
 
         elif sys.spin_system == "tdp":
-            cal_tri = deepcopy(cal)
-            sys_tri = deepcopy(sys)
-            opt_tri = deepcopy(opt)
-            opt_tri.space = "hilbert"
-            sys_tri.s = 1
-            cr.set_up_spinoperator(sys_tri, cal_tri)
-            sys_tri.spin_system = "trip"
-            sys_tri.precursor = "zf"
-            sys_tri.population = np.array(sys.population[2:], dtype=FLOAT_TYPE)
-            set_up_density_matrix(sys_tri, exp, opt_tri, cal_tri)
+            # set up the full high field hamiltonian of the coupled system
+            # in the xyz-Basis: xxyyzz
+            ham_xyz = ham.set_up_tdp_full_high_field_hamiltonian(
+                sys, exp, opt, cal)
+
+            # define rho in xyz-basis using populations for triplet-zf levels
+            rho_trip = np.diag(np.array(sys.population[2:], dtype=FLOAT_TYPE))
+            rho_trip = np.kron(rho_trip, np.eye(2, dtype=FLOAT_TYPE))
 
             rho = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
-            rho.B_angle_matrix = np.kron(
-                np.diag(np.array(sys.population[:2], dtype=FLOAT_TYPE)
-                        ), np.eye(3, dtype=FLOAT_TYPE)) +\
-                np.kron(np.eye(2, dtype=FLOAT_TYPE), cal_tri.rho)
+            rho.matrix = rho_trip
 
+            # do calculations on the GPU, "normal" code under the else statement
+            CUPY = opt.CUPY
+            if CUPY:
+                import cupy as cp
+
+                chunk_size = mem.chunk_size_for_gpu(
+                    len(exp.B_z), opt.grid_points)*4
+                print(chunk_size)
+
+                ham_xyz_split = np.array_split(ham_xyz, chunk_size)
+                ham_sys_split = np.array_split(cal.ham_sys, chunk_size)
+
+                rho_split = []
+
+                from pynvml import (
+                    nvmlInit,
+                    nvmlDeviceGetHandleByIndex,
+                    nvmlDeviceGetMemoryInfo,
+                )
+
+                for chunk in range(len(ham_xyz_split)):
+                    ham_xyz = cp.asarray(ham_xyz_split[chunk])
+
+                    eig_hf, vec_hf = cp.linalg.eigh(ham_xyz)
+                    del eig_hf, ham_xyz
+
+                    cal_ham_sys = cp.asarray(ham_sys_split[chunk])
+                    eig_sys, vec_sys = cp.linalg.eigh(cal_ham_sys)
+                    del eig_sys, cal_ham_sys
+
+                    rho_matrix = cp.asarray(rho.matrix)
+                    rho_B_angle_matrix = (
+                        cp.conj(cp.transpose((vec_hf), (0, 1, 3, 2)))
+                        @ rho_matrix
+                        @ vec_hf
+                    )
+                    del rho_matrix, vec_hf
+                    rho_B_angle_matrix *= cp.eye(6, dtype=FLOAT_TYPE)
+
+                    rho_B_angle_matrix = (
+                        vec_sys
+                        @ rho_B_angle_matrix
+                        @ cp.conj(cp.transpose((vec_sys), (0, 1, 3, 2)))
+                    )
+                    del vec_sys
+                    rho_B_angle_matrix *= cp.eye(6, dtype=FLOAT_TYPE)
+
+                    rho_split.append(rho_B_angle_matrix.get())
+                    del rho_B_angle_matrix
+                rho.B_angle_matrix = np.concatenate(rho_split)
+
+            else:
+                # diagonalise high field hamiltonian to get the eigenvectors for
+                # transformation xyz-basis <-> TDP-eigenbasis
+                eig_hf, vec_hf = np.linalg.eigh(ham_xyz)
+
+                # diagonalise the spin system hamiltonian to get the eigenvectors
+                # for the transformation product basis <-> TDP-eigenbasis
+                eig_sys, vec_sys = np.linalg.eigh(cal.ham_sys)
+
+                # basistransformation rho: xyz-basis -> TDP-eigenbasis
+                rho.B_angle_matrix = (
+                    np.conj(np.transpose((vec_hf), (0, 1, 3, 2)))
+                    @ rho.matrix
+                    @ vec_hf
+                )
+                rho.B_angle_matrix *= np.eye(6, dtype=FLOAT_TYPE)
+
+                # basistransformation rho: TDP-eigenbasis -> product basis
+                rho.B_angle_matrix = (
+                    vec_sys
+                    @ rho.B_angle_matrix
+                    @ np.conj(np.transpose((vec_sys), (0, 1, 3, 2)))
+                )
+
+                rho.B_angle_matrix *= np.eye(6, dtype=FLOAT_TYPE)
+
+            # add density matrix for the doublet in product basis
+            rho_doub = np.diag(np.array(sys.population[:2], dtype=FLOAT_TYPE))
+            rho_doub = np.kron(rho_doub, np.eye(3, dtype=FLOAT_TYPE))
+            rho.B_angle_matrix += rho_doub
         else:
             raise AttributeError(
                 'The spin_system attribute only accpets \
                                  "rp" or "tdp" as a value for a triplet\
                                   precursor.'
-            )
-
-    elif sys.precursor == "triplet-eigen":
-        if sys.spin_system == "rp":
-            cal_tri = deepcopy(cal)
-            sys_tri = deepcopy(sys)
-            opt_tri = deepcopy(opt)
-            opt_tri.space = "hilbert"
-            sys_tri.s = 1
-            cr.set_up_spinoperator(sys_tri, cal_tri)
-            sys_tri.spin_system = "trip"
-            sys_tri.precursor = "eigen"
-            cal_tri.ham_sys = ham.set_up_triplet_hamiltonian(exp, opt, cal_tri)
-            set_up_density_matrix(sys_tri, exp, opt_tri, cal_tri)
-
-            rho = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
-            rho.B_angle_matrix[:, :, 0, 0] = cal_tri.rho[:, :, 0, 0]
-            rho.B_angle_matrix[:, :, 2, 2] = cal_tri.rho[:, :, 1, 1]
-            rho.B_angle_matrix[:, :, 3, 3] = cal_tri.rho[:, :, 2, 2]
-
-        elif sys.spin_system == "tdp":
-            cal_tri = deepcopy(cal)
-            sys_tri = deepcopy(sys)
-            opt_tri = deepcopy(opt)
-            opt_tri.space = "hilbert"
-            sys_tri.s = 1
-            cr.set_up_spinoperator(sys_tri, cal_tri)
-            sys_tri.spin_system = "trip"
-            sys_tri.precursor = "eigen"
-            cal_tri.ham_sys = ham.set_up_triplet_hamiltonian(exp, opt, cal_tri)
-            sys_tri.population = np.array(sys.population[2:], dtype=FLOAT_TYPE)
-            set_up_density_matrix(sys_tri, exp, opt_tri, cal_tri)
-
-            rho = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
-            rho.B_angle_matrix = np.kron(
-                np.diag(np.array(sys.population[:2], dtype=FLOAT_TYPE)
-                        ), cal_tri.rho)
-        else:
-            raise AttributeError(
-                'The spin_system attribute only accpets \
-                                 "rp" or "tdp" as a value for a triplet\
-                                  precursor.'
-            )
-
-    elif sys.precursor == "coupled":
-        if sys.spin_system == "tdp":
-            s13 = np.sqrt(1 / 3)
-            s23 = np.sqrt(2 / 3)
-            trans = np.array(
-                [
-                    [1, 0, 0, 0, 0, 0],
-                    [0, s23, 0, s13, 0, 0],
-                    [0, 0, s13, 0, s23, 0],
-                    [0, 0, 0, 0, 0, 1],
-                    [0, -s13, 0, s23, 0, 0],
-                    [0, 0, s23, 0, -s13, 0],
-                ],
-                dtype=FLOAT_TYPE,
-            )
-
-            rho = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
-            rho.matrix = np.diag(np.array(sys.population, dtype=FLOAT_TYPE))
-            rho.matrix = np.transpose(trans) @ rho.matrix @ trans
-            rho.matrix *= np.eye(6)
-            rho.matrix_changed()
-
-        else:
-            raise AttributeError(
-                'The spin_system attribute only accpets \
-                                 "tdp" as a value for a coupled precursor.'
-            )
-
-    elif sys.precursor == "basis":
-        if (
-            sys.spin_system == "rp"
-            or sys.spin_system == "trip"
-            or sys.spin_system == "doub"
-            or sys.spin_system == "tdp"
-        ):
-            rho = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
-            rho.matrix = np.diag(np.array(sys.population, dtype=FLOAT_TYPE))
-            rho.matrix_changed()
-
-        else:
-            raise AttributeError(
-                'The spin_system attribute only accepts \
-                                  the following values: "rp", "trip", "doub" \
-                                  or "tdp".'
             )
 
     else:
         raise AttributeError(
             'The precursor attribute of the Spinsystem-class \
                              only accepts the following values: "zf", "eigen",\
-                            "singlet", "triplet-zf", "triplet-eigen", \
-                            "coupled" or basis".\
+                            "singlet" or "triplet-zf",\
                             For more details see the documentation.'
         )
 

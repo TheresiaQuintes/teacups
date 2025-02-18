@@ -5,9 +5,22 @@ Experimental (Exp)
 ==================
 In the class ``Exp`` all parameters that describe the experimental conditions are set as attributes. This can be done in the script by typing::
 	
-	Exp.Attribute = Value
+	Sys.Attribute = Value
 
-In the following all possible attributes are named. For each attribute an explanation, cases where it is needed and an example are given. You can get a quick reference file with all attributes :download:`here </quickreference.pdf>`.
+If the class is initialized by::
+
+	import teacups.classes as cl
+	Exp = cl.Exp()
+
+the following attributes are preallocated (but can/should be newly assigned by the user):
+
+* B_z: linspace(320, 380, 600)
+* t_scale: [0, 2e-6]
+* t_points: 60
+* B_mw = 0.001
+* freq_mw: 9.75e9
+
+In the following all possible attributes are named. For each attribute an explanation, cases where it is needed and an example are given. You can get a quick reference file with all attributes :download:`here <./../quickreference/quickreference.pdf>`.
 	 
 
 Magnetic fields
@@ -39,7 +52,7 @@ Exp.B_mw
 
 Exp.freq_mw
 ^^^^^^^^^^^
-* Frequency of the microwave field
+* Frequency of the microwave field (along the *x*-axis)
 	* Float
 	* Given in Hz
 * Obligatory for all simulations
@@ -61,7 +74,8 @@ Exp.t_scale
 * e.g.::
 
 	Exp.t_scale = [0, 2e-6]  # s
-
+	
+.. hint:: In order to see relaxation effects choose the time scale :math:`\sim 2 T_\mathrm{relax}`
 
 Exp.t_points
 ^^^^^^^^^^^^

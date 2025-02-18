@@ -1,0 +1,50 @@
+# Line
+lines.linewidth: 2            # line width in points
+lines.linestyle: -            # solid line
+# LaTex
+font.family:  sans-serif
+font.sans-serif: cmbright
+font.size:          18
+text.usetex: True
+text.latex.preamble:    \renewcommand{\familydefault}{\sfdefault} \usepackage{sfmath} \usepackage{cmbright} \renewcommand{\sfdefault} {cmbr}
+# Axis
+axes.linewidth:     1.5     # edge line width
+axes.grid.which:    major   # grid lines at {major, minor, both} ticks
+axes.labelsize:     18      # font size of the x and y labels
+axes.labelpad:      10      # space between label and axis
+axes.prop_cycle: cycler('color', ['275e68', 'ea3245' , 'f4972f', 'a3b380' , 'fc6e32', '183639', '932e37', 'f8e96e', '2F8A93', '554CB7', '2C592F']) # color cycle for plot (Hex-Codes) 
+axes.xmargin:       .0001
+axes.titlesize:     18
+axes.titlepad:      12
+# Ticks
+xtick.major.size:    6      # major tick size in points
+xtick.major.width:   1.5    # major tick width in points
+xtick.major.pad:     5      # distance to major tick label in points
+xtick.labelsize:     18     # font size of the tick labels
+xtick.direction:     out    # direction: {in, out, inout}
+xtick.major.top:     False  # draw x axis top major ticks
+ytick.major.size:    6      # major tick size in points
+ytick.major.width:   1.5    # major tick width in points
+ytick.major.pad:     5      # distance to major tick label in points
+ytick.labelsize:     18     # font size of the tick labels
+ytick.direction:     in     # direction: {in, out, inout}
+ytick.major.right:   False  # draw y axis right major ticks
+# Legend
+legend.loc:           best
+legend.frameon:       True   # if True, draw the legend on a background patch
+legend.framealpha:    1      # legend patch transparency
+legend.fontsize:      15
+legend.labelspacing:  0.3     # the vertical space between the legend entries
+legend.handlelength:  1.8     # the length of the legend lines
+legend.handletextpad: 0.5     # the space between the legend line and legend text
+legend.borderaxespad: 0.5   # the border between the axes and legend edge
+legend.facecolor: f6f1e3ff
+# Figure
+figure.figsize:     7.480, 4.724    # figure size in inches (x times y)
+figure.dpi:         600       # figure dots per inch
+figure.facecolor:   white     # figure face color
+figure.frameon:     True      # enable figure frame
+figure.autolayout: True       # When True, automatically adjust subplot
+# Saving
+savefig.dpi:       600        # figure dots per inch or 'figure'
+savefig.format:    png        # {png, ps, pdf, svg}

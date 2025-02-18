@@ -1,5 +1,0 @@
-1.)
-Im Intermediate Coupling-Regime liefern easyspin und teacups für ein gekoppeltes triplet-doublet-System sehr unterschiedliche Ergebnisse. Normalerweise würde ich denken, dass das Ergebnis von Easyspin stimmt. In diesem Fall bin ich mir aber nicht ganz sicher, weil das mit Easyspin erzeugte Spektrum doch sehr abenteuerlich aussieht. Kannst du vielleicht beurteilen, welches der beiden Ergebnisse sinnvoller aussieht? Mich irritiert, dass das Spektrum von Easyspin erst schmaler wird (im Vgl. zum weak-coupling) aber dann zeitweise wieder breiter wird, obwohl es schon seine finale "Quartet-Breite" erreicht hatte. 
-
-2.)
-Wenn ich den Precursor aus dem zero-field nehme und nur das Triplet unterschiedlich besetze (also die Polarisation nur aus dem Triplet kommt), dann stimmt im strong-coupling-regime die Netzpolarisation nicht überein. Ich habe absolut keine Idee warum, da die Multiplet-Polarisation genau stimmt. Hast du vielleicht irgendeine Idee? Ansonsten löst sich das vielleicht, wenn sich die Differenzen im intermediate-Coupling geklärt haben...

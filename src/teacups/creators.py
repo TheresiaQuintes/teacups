@@ -40,17 +40,21 @@ def create_tensor(diag: list, phi: 'np.ndarray', theta: 'np.ndarray',
     else:
         angle_list = np.array(first_rotation, dtype=FLOAT_TYPE)
         tensor.rotation(angle_list[0], angle_list[1], angle_list[2])
-        tensor.tensor = tensor.rot
+        tensor.matrix = tensor.rot.astype(FLOAT_TYPE)
 
     tensor.multirotation(phi, theta)
+    tensor.multirot = tensor.multirot.astype(FLOAT_TYPE)
     return tensor
 
 
-def create_dipol_tensor_diagonals(D: float, E: float) -> 'np.ndarray':
+def create_zfs_tensor_diagonals(D: float, E: float) -> 'np.ndarray':
     """
-    Create an array with three diagonal elements of the dipol tensor. Calculate
-    this values from the zero-field-splitting parameters D and E by:
-    -1/3*D+E, -1/3*D-E, 2/3*D.
+    Create an array with three diagonal elements of the zero-field splitting
+    (ZFS) tensor. Calculate this values from the zero-field-splitting
+    parameters D and E by:
+
+    .. math::
+       -1/3*D+E; -1/3*D-E; 2/3*D.
 
     Parameters
     ----------
@@ -62,11 +66,38 @@ def create_dipol_tensor_diagonals(D: float, E: float) -> 'np.ndarray':
     Returns
     -------
     diag : np.ndarray
-        The three diagonal elements of a dipol tensor (-1/3*D+E, -1/3*D-E, 2/3*D).
+        The three diagonal elements of a ZFS tensor (-1/3*D+E, -1/3*D-E, 2/3*D).
         This is a 1D-array.
 
     """
-    diag = np.array([-1/3*D+E, -1/3*D-E, 2/3*D])
+    diag = np.array([-1/3*D+E, -1/3*D-E, 2/3*D], dtype=FLOAT_TYPE)
+    return diag
+
+
+def create_dipol_tensor_diagonals(D: float, E: float) -> 'np.ndarray':
+    """
+    Create an array with three diagonal elements of the dipolar interaction
+    tensor of two spin species. Calculate this values from the
+    axial dipolar coupling $D$ and the rhombic dipolar coupling $E$ by:
+
+    .. math::
+       D+E; D-E; -2D.
+
+    Parameters
+    ----------
+    D : float
+        Axial dipolar coupling.
+    E : float
+        Rhombic dipolar coupling.
+
+    Returns
+    -------
+    diag : np.ndarray
+        The three diagonal elements of a dipol tensor (D+E, -D-E, -2D).
+        This is a 1D-array.
+
+    """
+    diag = np.array([D+E, D-E, -2*D], dtype=FLOAT_TYPE)
     return diag
 
 
@@ -82,14 +113,14 @@ def set_up_tensors(sys: object, cal: object) -> None:
     sys : object
         Contains parameters concerning the spin system. This function can use
         the following arguments and returns the tensors:
-            g1, g2 (g-tensors of a radical pair) + g1_frame/g2_frame [lists]
-            g (g-tensor of a radical) + g_frame [lists]
-            g_tri (g-tensor of a triplet) + g_tri_frame [lists]
-            D, E (dipole coupling parameters of a coupled spin system) [floats]
-            + D_frame [list], if D, E are not given, they will be set to zero
-            D_tri, E_tri (ZFS parameters of a triplet) [floats]
-            + D_tr_frame [list], if D, E are not given, they will be set
-            to zero
+        g1, g2 (g-tensors of a radical pair) + g1_frame/g2_frame [lists]
+        g (g-tensor of a radical) + g_frame [lists]
+        g_tri (g-tensor of a triplet) + g_tri_frame [lists]
+        D, E (dipole coupling parameters of a coupled spin system) [floats]
+        + D_frame [list], if D, E are not given, they will be set to zero
+        D_tri, E_tri (ZFS parameters of a triplet) [floats]
+        + D_tr_frame [list], if D, E are not given, they will be set
+        to zero
     cal : object
         Container for calculated tensors. The attributes cal.phi and cal.theta
         (arrays with the angle points on a sphere for rotations) are needed.
@@ -123,7 +154,7 @@ def set_up_tensors(sys: object, cal: object) -> None:
     if not hasattr(sys, 'D_tri'):
         sys.D_tri = 0
     if not hasattr(sys, 'E_tri'):
-        sys.E_tri = 0
+        sys.E_tri = 0.01
 
     for attr in vars(sys):
         if attr == 'g':
@@ -155,11 +186,15 @@ def set_up_tensors(sys: object, cal: object) -> None:
                     sys.g_tri, cal.phi, cal.theta, sys.g_tri_frame)
             else:
                 cal.g_tri_tensor = create_tensor(sys.g_tri, cal.phi, cal.theta)
-            if not hasattr(sys, 'g2'):
+            if hasattr(sys, 'g2'):
+                pass
+            elif hasattr(sys, 'g'):
+                cal.g_iso = 1/2*(1/3*np.sum(sys.g_tri)+1/3*np.sum(sys.g))
+            else:
                 cal.g_iso = 1/3*np.sum(sys.g_tri)
 
         elif attr == 'D_tri':
-            diag = create_dipol_tensor_diagonals(sys.D_tri, sys.E_tri)
+            diag = create_zfs_tensor_diagonals(sys.D_tri, sys.E_tri)
             if hasattr(sys, 'D_tri_frame'):
                 cal.D_tri_tensor = create_tensor(
                     diag, cal.phi, cal.theta, sys.D_tri_frame)
@@ -256,7 +291,7 @@ def set_up_observable(sys: object, opt: object, cal: object) -> None:
         st_transformation = np.array([[1, 0, 0, 0],
                                       [0, np.sqrt(1/2), np.sqrt(1/2), 0],
                                       [0, -np.sqrt(1/2), np.sqrt(1/2), 0],
-                                      [0, 0, 0, 1]])
+                                      [0, 0, 0, 1]], dtype=FLOAT_TYPE)
         obs.matrix = st_transformation.T@obs.matrix@st_transformation
 
     obs.matrix = np.conjugate(obs.matrix.T)

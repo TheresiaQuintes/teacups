@@ -102,7 +102,6 @@ def set_up_doublet_hamiltonian(exp: object, opt: object, cal: object
 
     """
     ham = mut.Multioperator(cal.s, opt.grid_points, exp.B_z*MU_B)
-
     B_z = exp.B_z*MU_B
     B_z = B_z[:, np.newaxis]
 
@@ -124,7 +123,9 @@ def set_up_triplet_hamiltonian(exp: object, opt: object, cal: object
     interaction (=ZFS). The spinfunctions (-1, 0, +1) are used as a basis set.
     As the Hamiltonian is set up in the rotating frame, secular approximation
     is applied:
-        H = D_zz * (S_z^2 - 1/3*S^2) + H_zeeman
+
+    .. math::
+        H = D_{zz} * (S_z^2 - 1/3*S^2) + H_\mathrm{Zeeman}
 
     Parameters
     ----------
@@ -195,58 +196,25 @@ def set_up_triplet_high_field_hamiltonian(exp: object, opt: object,
     """
     s_tri = mt.Spinoperator(1)
 
+    # ZFS-Hamiltonian
     ham_d = mut.Multioperator(s_tri, opt.grid_points, exp.B_z*MU_B)
     ham_d.create_bilinear_operator(cal.D_tri_tensor, s_tri)
     ham_d.angle_matrix_changed()
 
+    # The eigenbasis of the ZFS-Hamiltonian is the xyz-Basis
     eig_d, vec_d = np.linalg.eigh(ham_d.B_angle_matrix)
 
+    # Calculate high-field Hamiltonian
     ham_tri_hf = mut.Multioperator(s_tri, opt.grid_points, exp.B_z*MU_B)
     ham_tri_hf.zeeman_coupling(cal.g_tri_tensor)
-    ham_tri_hf.B_angle_matrix += ham_d.B_angle_matrix
+    ham_tri_hf.B_angle_matrix -= ham_d.B_angle_matrix
 
+    # Transfer high-field Hamiltonian to xyz-Basis
     ham_tri_hf.B_angle_matrix = np.conj(
         np.transpose(vec_d, (0, 1, 3, 2))) @ ham_tri_hf.B_angle_matrix @ vec_d
     ham_tri_hf = ham_tri_hf.B_angle_matrix
 
     return ham_tri_hf
-
-
-def set_up_triplet_zero_field_hamiltonian(exp: object, opt: object, cal: object
-                                          ) -> 'np.ndarray':
-    """
-    Calculate the zero field Hamiltonian matrix of a triplet. It is set up
-    by multiplication:
-        H = SDS.
-    The Hamiltonian is given in the main-axis system of the D-tensor.
-    It is returned for all magnetic field points and all grid
-    points as a B_angle_matrix-attribute of the Multioperator class.
-
-    Parameters
-    ----------
-    exp : object
-        Contains experimental parameters. This function uses the attribute
-        exp.B_z (magnetic field array).
-    opt : object
-        Contains simulation options. This function uses opt.grid_points.
-    cal : object
-        Container for results of calculations during the simulation. This
-        function uses the attribute cal.D_tri_tensor (ZFS-tensor).
-
-    Returns
-    -------
-    cal.ham_tri_zf : np.ndarray
-        Triplet zero field hamiltonian. This is a B_angle_matrix attribute from
-        the class Multioperator.
-
-    """
-    s_tri = mt.Spinoperator(1)
-    ham_zf = mut.Multioperator(s_tri, opt.grid_points, exp.B_z)
-    ham_zf.create_bilinear_operator(cal.D_tri_tensor, s_tri)
-    ham_zf.angle_matrix_changed()
-    ham_tri_zf = ham_zf.B_angle_matrix
-
-    return ham_tri_zf
 
 
 def set_up_rp_hamiltonian(sys: object, exp: object, opt: object, cal: object
@@ -302,12 +270,12 @@ def set_up_rp_hamiltonian(sys: object, exp: object, opt: object, cal: object
     delta_omega = B_z*difference_g
 
     ham = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
-    ham.B_angle_matrix[:, :, 0, 0] = omega - J_ex - 1/2*D
-    ham.B_angle_matrix[:, :, 1, 1] = J_ex
+    ham.B_angle_matrix[:, :, 0, 0] = omega + 1/2*J_ex - 1/2*D
+    ham.B_angle_matrix[:, :, 1, 1] = -1/2*J_ex
     ham.B_angle_matrix[:, :, 1, 2] = delta_omega
     ham.B_angle_matrix[:, :, 2, 1] = delta_omega
-    ham.B_angle_matrix[:, :, 2, 2] = -J_ex + D
-    ham.B_angle_matrix[:, :, 3, 3] = -omega - J_ex - 1/2*D
+    ham.B_angle_matrix[:, :, 2, 2] = +1/2*J_ex + D
+    ham.B_angle_matrix[:, :, 3, 3] = -omega + 1/2*J_ex - 1/2*D
 
     ham_rp = ham.B_angle_matrix
 
@@ -316,12 +284,12 @@ def set_up_rp_hamiltonian(sys: object, exp: object, opt: object, cal: object
 
 def set_up_tdp_hamiltonian(sys: object, exp: object, opt: object, cal: object
                            ) -> 'np.ndarray':
-    """
+    r"""
     Calculate a Hamiltonian matrix operator for a coupled triplet doublet pair.
     Coupling with the static magnetic field of the triplet and the doublet is
     included each as well as the ZFS of the triplet and the interactions of the
     two spins. The Hamiltonian is calculated for all orientations and magnetic
-    field points in the singlet-triplet-basis and returned as a
+    field points in the product basis and returned as a
     B_angle_matrix attribute from the class Multioperator. Secular
     approximation is presumed.
 
@@ -347,7 +315,7 @@ def set_up_tdp_hamiltonian(sys: object, exp: object, opt: object, cal: object
         Triplet-doublet-pair hamiltonian in the shape of a B_angle_matrix from
         the class Multioperator. The hamiltonian is given in the product basis
         of doublet and triplet:
-        |a, +1>, |a, 0>, |a, -1>, |b, +1>, |b, 0>, |b, -1>.
+        \|a, +1\>, \|a, 0\>, \|a, -1\>, \|b, +1\>, \|b, 0\>, \|b, -1\>.
 
     """
     s = cal.s
@@ -378,6 +346,92 @@ def set_up_tdp_hamiltonian(sys: object, exp: object, opt: object, cal: object
     return ham_tdp
 
 
+def set_up_tdp_full_high_field_hamiltonian(sys: object, exp: object,
+                                           opt: object, cal: object
+                                           ) -> 'np.ndarray':
+    r"""
+    Calculate a Hamiltonian matrix operator for a coupled triplet doublet pair.
+    Coupling with the static magnetic field of the triplet and the doublet is
+    included each as well as the ZFS of the triplet and the interactions of the
+    two spins. The Hamiltonian is calculated for all orientations and magnetic
+    field points in the xyz-Basis (basis in which the ZFS-Hamiltonian of the
+    triplet is diagonal) and returned as a B_angle_matrix
+    attribute from the class Multioperator. The interaction matrices are
+    calculated by direct prducts of spin matrices and interaction tensors and
+    no secular approximation is applied.
+
+    Parameters
+    ----------
+    sys : object
+        Contains spinsystem parameters. This function uses the attributes
+        sys.J_ex.
+    exp : object
+        Contains experimental parameters. This function uses the attribute
+        exp.B_z (magnetic field array).
+    opt : object
+        Contains simulation options. This function uses opt.grid_points.
+    cal : object
+        Container for results of calculations during the simulation. This
+        function uses cal.g_tensor and cal.g_tri_tensor, cal.D_tri_tensor and
+        cal.D_tensor (e.g. from set_up_tensors).
+
+    Returns
+    -------
+    ham_hf : np.ndarray
+        Full triplet-doublet-pair high-field hamiltonian in the shape of a
+        B_angle_matrix from the class Multioperator. The hamiltonian is given
+        in the xyz-Basis of doublet and triplet:
+        \|a, x\>, \|b, x\>, \|a, y\>, \|b, y\>, \|a, z\>, \|b, z\>.
+
+    """
+    setup_s = mt.Spinoperator(0.5, 1)
+    S_doub = mt.Spinoperator(0.5, 1)
+    S_trip = mt.Spinoperator(0.5, 1)
+
+    S_doub.matrix = setup_s.matrix
+    S_trip.matrix = setup_s.matrix_coupling_spins[0]
+
+    # ZFS
+    h_zfs = mut.Multioperator(S_trip, opt.grid_points, exp.B_z*MU_B)
+    h_zfs.create_bilinear_operator(cal.D_tri_tensor, S_trip)
+    h_zfs.angle_matrix_changed()
+
+    # zeeman interactions
+    h_zeeman_doub = mut.Multioperator(
+        S_doub, opt.grid_points, exp.B_z*MU_B)
+    h_zeeman_doub.zeeman_coupling(cal.g_tensor)
+
+    h_zeeman_trip = mut.Multioperator(
+        S_trip, opt.grid_points, exp.B_z*MU_B)
+    h_zeeman_trip.zeeman_coupling(cal.g_tri_tensor)
+
+    # dipolar interaction
+    h_dip = mut.Multioperator(S_doub, opt.grid_points, exp.B_z*MU_B)
+    h_dip.create_bilinear_operator(cal.D_tensor, S_trip)
+    h_dip.angle_matrix_changed()
+
+    # exchange interaction
+    h_ex = mut.Multioperator(S_doub, opt.grid_points, exp.B_z*MU_B)
+    h_ex.exchange_coupling(sys.J_ex, S_trip)
+
+    # full high field hamiltonian
+    ham_hf = h_zeeman_doub.B_angle_matrix + h_zeeman_trip.B_angle_matrix +\
+        h_zfs.B_angle_matrix + h_dip.B_angle_matrix + h_ex.B_angle_matrix
+
+
+    # the eigenbasis of ham_zfs is xx yy zz (= xyz-basis)
+    eig_zfs, vec_zfs = np.linalg.eigh(h_zfs.B_angle_matrix)
+
+    # transform high field hamiltonian to xyz-basis
+    ham_hf = np.conj(np.transpose(
+        vec_zfs, (0, 1, 3, 2))) @ ham_hf @ vec_zfs
+
+
+    ham_hf = ham_hf.astype(COMPLEX_TYPE)
+
+    return ham_hf
+
+
 def set_up_commutator_superoperator(sys: object, opt: object, cal: object
                                     ) -> None:
     """
@@ -398,7 +452,7 @@ def set_up_commutator_superoperator(sys: object, opt: object, cal: object
         Container for results of calculations during the simulation. This
         function uses the attribute cal.ham, a hamiltonian in hilbert space
         (B_angle_matrix is required, can be calculated e.g. by the function
-         set_up_rp_hamiltonian). The hamiltonian is used to set up the
+        set_up_rp_hamiltonian). The hamiltonian is used to set up the
         commutator superoperator.
 
     Attributes
@@ -418,9 +472,13 @@ def set_up_commutator_superoperator(sys: object, opt: object, cal: object
     elif opt.space == 'liouville':
         ham_adj = np.transpose(np.conjugate(cal.ham), [0, 1, 3, 2])
         ham_superop = np.kron(np.eye(
-            cal.ham.shape[-1], dtype=FLOAT_TYPE), cal.ham[:, :]) - \
+            cal.ham.shape[-1], dtype=FLOAT_TYPE), cal.ham[:, :] ) - \
             np.kron(ham_adj[:, :], np.eye(cal.ham.shape[-1], dtype=FLOAT_TYPE))
 
+        """ (how to build the commutator superoperator)
+        https://physics.stackexchange.com/questions/163546/finding-the-matrix-representation-of-a-superoperator
+        https://arxiv.org/pdf/1510.08634
+        """
         relax = rlx.create_relaxation_superoperator(sys, cal)
 
         ham_superop = ham_superop + 1j * relax

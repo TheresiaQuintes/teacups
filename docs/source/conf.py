@@ -20,12 +20,12 @@ numpydoc_show_class_members = False
 # -- Project information -----------------------------------------------------
 
 project = "TEACUPS"
-copyright = "2023 M. Sc. Theresia Quintes"
+copyright = "2025 M. Sc. Theresia Quintes"
 author = "Theresia Quintes"
 
 # The full version, including alpha/beta/rc tags
-release = "2023"
-version = "1.1"
+release = "2025"
+version = "2.0"
 
 # -- General configuration ---------------------------------------------------
 

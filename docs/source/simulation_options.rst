@@ -3,35 +3,35 @@
 ===========================
 Simulation Options (SimOpt)
 ===========================
-In the class ``SimOpt`` all parameters that set options for the simulation are set as attributes. This can be done in the script by typing::
+In the class ``SimOpt`` all parameters that define the options for the simulation are set as attributes. This can be done in the script by typing::
 	
-	Sys.Attribute = Value
+	SimOpt.Attribute = Value
 
-In the following all possible attributes are named. For each attribute an explanation, cases where it is needed and an example are given. You can get a quick reference file with all attributes :download:`here </quickreference.pdf>`.
+If the class is initialized by::
 
-If you use the class provided by teacups.classes, the (recommended) default attributes are defined, so that you only have to define the values that you would like to change  from default in your skript::
- 
-	>>> import teacups.classes as cl
-	
-	>>> SimOpt = cl.SimOpt()
-	
-	>>> vars(SimOpt)
-	{'grid_points': 10,
-	 'grid': 'fibonacci',
-	 'space': 'hilbert',
-	 'pop_evolution': False,
-	 'eigval_mode': False,
-	 'cpu_cores': 0}
+	import teacups.classes as cl
+	SimOpt = cl.SimOpt()
 
+the following attributes are preallocated and can be used as a starting point, which should be adapted by the user:
+
+* grid_points: 15
+* grid: "fibonacci"
+* theta: [np.pi]
+* phi: [0]
+* sym: "D2h"
+* space: "hilbert"
+* pop_evolution: False
+* eigval_mode: False
+* cpu_cores: 1
+* CUPY: False
+
+In the following all possible attributes are named. For each attribute an explanation, cases where it is needed and an example are given. You can get a quick reference file with all attributes :download:`here <./../quickreference/quickreference.pdf>`.
 
 Grid
 ----
 
 SimOpt.grid
 ^^^^^^^^^^^
-.. warning::
-   The sophe-grid uses interpolation between the angle points. This does not work properly for narrow spectra. It is useful for fast calculation of very broad spectra with a small number of angle points to get a quick overview. To get a smooth spectrum the fibonacci grid is still recommended.
-
 * Type of the grid that is chosen to distribute points equally on a hemisphere
 	* Set it to a string, either 'fibonacci' or 'sophe' (add SimOpt.grid_points)
 	* Set it to 'single' if you don't want to simulate a full hemisphere but your own chosen angle points (add SimOpt.theta and SimOpt.phi)
@@ -40,12 +40,14 @@ SimOpt.grid
 	
 	SimOpt.grid = 'fibonacci'
 
+.. hint:: If you know the point group of your spin system it is more efficient to choose ``SimOpt.grid = 'sophe'``. You have to add ``SimOpt.sym``.
+
 SimOpt.grid_points
 ^^^^^^^^^^^^^^^^^^
 * Number of points between theta = 0 and theta = pi/2 on the orientational sphere
-	* Given as a integer
+	* Integer
 	* From this value the grid with points distributed equally on a hemisphere is created
-	* Typical values range from 1-20 points dependent on the anisotropy of the system, the more anisotrope a system is, the more points are needed
+	* Typical values range from 1-30 points dependent on the anisotropy of the system, the more anisotrope a system is, the more points are needed
 * Obligatory for all simulations with 'fibonacci' or 'sophe' grid
 * e.g.::
 	
@@ -54,9 +56,9 @@ SimOpt.grid_points
 
 SimOpt.theta / SimOpt.phi
 ^^^^^^^^^^^^^^^^^^^^^^^^^
-* Lists with orientation angles chosen by the user
+* Lists with angles to choose one or multiple special orientations
 	* Both lists have to have the same length
-	* Angles are given in rad
+	* Angles are set in rad
 * Obligatory for all simulations with SimOpt.grid = 'single'
 * e.g.::
 	
@@ -64,14 +66,17 @@ SimOpt.theta / SimOpt.phi
 	SimOpt.theta = [0, 0.5]
 	SimOpt.phi = [0, np.pi/2]
 
-SimOpt.width_intp
-^^^^^^^^^^^^^^^^^
-* If the grid is a sophe grid points between the grid points will be interpolated. To get the desired peaks a interpolation width in mT has to be set
-	* Width in mT
-* Obligatory, if ``SimOpt.grid = 'sophe'``
+SimOpt.sym
+^^^^^^^^^^
+* Point group of the spin system
+	* String
+	* The following symmetries are possible: "C1", "Ci", "C2h", "S6", "C4h", "C6h", "D2h", "Th", "D3d", "D4h", "Oh", "D6h", "Dooh", "O3"
+	* Many spin systems have the symmetry "D2h"
+* Obligatory for all simulations with SimOpt.grid = 'sophe'
 * e.g.::
 	
-	SimOpt.widthintp = 1  # mT
+	SimOpt.grid = "sophe"
+	SimOpt.sym = "D2h"
 
 Simulation modes
 ----------------
@@ -80,13 +85,15 @@ SimOpt.space
 ^^^^^^^^^^^^
 * Choose the space for the simulation
 	* Either ``'hilbert'`` or ``'liouville'``
+	* Choose the Hilbert-space if you are interested in coherent dynamics
+	* Choose the Liouville-space if you would like to include incoherent dynamics
 * Obligatory for all simulations
 * e.g.::
 	
 	SimOpt.space = 'hilbert'
 
-.. note::
-   For quick simulations you should use the Hilbert space. It is recommended to do a Hilbert space simulation for your system first to determine the minimal sufficient number of grid-points and magnetic field/time-points for your spin system to get a smooth graph. If you are interested in relaxation and intend to use ``Sys.T_relax_1/2`` or ``Sys.dynamics`` you have to choose the liouville space. This will be more expensive but you can take all (other) parameters from the initial Hilbert space simulation.
+.. hint::
+   As a starting point you should do a Hilbert space simulation (which is less expensive) to determine the minimal sufficient number of grid-points and magnetic field/time-points to get a satisfying smooth spectrum. If you are then intrested in incoherent dynamics you have to switch to Liouville space but are now able to take over all other parameters from the Hilbert space simulation.
 
 
 SimOpt.pop_evolution
@@ -108,12 +115,16 @@ SimOpt.pop_evolution
 SimOpt.eigval_mode
 ^^^^^^^^^^^^^^^^^^
 * Calculate only the eigenvalues of the spin system dependent on the magnetic field
-	* Set to ``True`` if you do like get only the eigenvalues and stop the simulation after. Set to ``False`` if you would like to run the full simulation.
+	* Set to ``True`` if you do like to get only the eigenvalues and stop the simulation after. Set to ``False`` if you would like to run the full simulation.
 * Obligatory for all simulations
 * e.g.::
 	
 	SimOpt.eigval_mode = True
 	eigvals = teacups(Sys, Exp, SimOpt)
+
+* The shape of the returned eigval-array is::
+	B-points x grid-points x eigenvalues
+
 
 Calculation settings
 --------------------
@@ -132,3 +143,13 @@ SimOpt.cpu_cores
 	
 	# use all available cores
 	SimOpt.cpu_cores = 0
+
+SimOpt.CUPY
+^^^^^^^^^^^
+* For some time consuming functionalities GPU-support is availabe
+	* Set to True, if you want to calculate some parts on your (nvidia) GPU
+	* Set to False, if you do not want to calculate on your GPU
+* Obligatory for all simulations
+* e.g.::
+	
+	SimOpt.CUPY = False

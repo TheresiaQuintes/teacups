@@ -1,7 +1,4 @@
 import numpy as np
-import teacups.grid as gri
-import teacups.convolution as con
-from scipy.signal import find_peaks
 from tqdm import tqdm
 from copy import deepcopy
 from multiprocessing import cpu_count, Pool
@@ -134,7 +131,7 @@ def make_signal(exp: object, opt: object, cal: object) -> None:
     # calculate population evolution
     if opt.pop_evolution is True and opt.space == 'liouville':
         print("starting population evolution...")
-        rho_prop = cal.rho[1, 0, :, np.newaxis]
+        rho_prop = cal.rho[0, 0, :, np.newaxis]
         cal.pop_evolution = []
         for i in range(0, len(cal.t)):
             pop_matrix = np.conj(np.transpose(cal.eigvec[0, 0])) @\
@@ -315,11 +312,12 @@ def multicore(time_evolution_function: callable) -> callable:
     return multicore_wrapper
 
 
-def powder_average(exp: object, opt: object, cal: object) -> None:
+def powder_average(opt: object, cal: object) -> None:
     """
     Build the powder average of a signal. Depending on the chosen grid, points
     are just summed up for all orientations (opt.grid='fibonacci',
-    opt.grid='single') or the signal is interpolated (opt.grid='sophe').
+    opt.grid='single') or the signal is weightened and summed up for all
+    orientations (opt.grid='sophe').
 
     Parameters
     ----------
@@ -353,186 +351,15 @@ def powder_average(exp: object, opt: object, cal: object) -> None:
 
     """
     if opt.grid == 'sophe':
-        cal.spec_sim = interpolate_signal(
-            exp.B_z, cal.signal, cal.phi, cal.theta, opt.number_of_peaks,
-            opt.width_intp)
+        weightened_signal = cal.signal*cal.weights
+        signal_powder_average = np.sum(weightened_signal, (-1))
+        cal.spec_sim += signal_powder_average
 
-    elif opt.grid == 'fibonacci':
+    else:
         signal_powder_average = np.sum(cal.signal, (-1))
         cal.spec_sim += signal_powder_average
 
-    elif opt.grid == 'single':
-        signal_multiple_orientations = np.sum(cal.signal, (-1))
-        cal.spec_sim += signal_multiple_orientations
-
     return None
-
-
-def maximal_peak_finder(signal: 'np.ndarray', number_of_peaks: int
-                        ) -> 'np.ndarray':
-    """
-    Find a variable number of maximal absolute peaks in a spectrum.
-
-    Parameters
-    ----------
-    signal : np.ndarray
-        Signal in which to find the peaks. This is a 1-dimensional array, that
-        contains the intensities of the spectrum.
-    number_of_peaks : int
-        Number of peaks to detect.
-
-    Returns
-    -------
-    peak_idx : np.ndarray
-        Indices in the signal array of the maximal absolute peaks.
-
-    """
-    all_peaks = find_peaks(abs(signal), height=0)
-    height = all_peaks[1]['peak_heights']
-    idx_in_all_peaks = np.argpartition(
-        height, -number_of_peaks)[-number_of_peaks:]
-    peak_idx = all_peaks[0][idx_in_all_peaks]
-
-    return peak_idx
-
-
-def get_peaks(signal: 'np.ndarray', number_of_peaks: int,
-              convolution_width: float) -> ('np.ndarray', 'np.ndarray'):
-    """
-    Get the peak indices and peak intensities in a spectrum for each time and
-    orientation point. Before the peaks are determined the spectrum is
-    convolved with a gaussian function.
-
-    Parameters
-    ----------
-    signal : np.ndarray
-        Signal in which to find the peaks. This is a 3-dimensional array, that
-        contains the intensities of the spectrum for each time/magnetic field/
-        orientation point.
-    number_of_peaks : int
-        Number of peaks to detect for each subspectrum.
-    convolution_width : float
-        Gaussian line width for the convolution.
-
-    Returns
-    -------
-    peak_indices : 'np.ndarray'
-        Peak index for each time point and each orientation point. The shape
-        of the array will be time_points x number_of_peaks x grid_points.
-    peak_intensities : 'np.ndarray'
-        Intensity of the convolved spectrum at the position of the indices.
-        Has the same dimension as peak_indices.
-
-    """
-
-    # convolve signal with gaussian function
-    for orientation in range(signal.shape[-1]):
-        signal[:, :, orientation] = con.voigt_convolution(
-            convolution_width, signal[:, :, orientation])
-
-    # find indices and intensities of the maximal peaks
-    # for each time and orientation
-    peak_indices = np.zeros(
-        (signal.shape[0], number_of_peaks, signal.shape[-1]), dtype=np.int)
-    peak_intensities = np.zeros(
-        (signal.shape[0], number_of_peaks, signal.shape[-1]),
-        dtype=COMPLEX_TYPE)
-
-    for time in range(1, signal.shape[0]):
-        for orientation in range(0, signal.shape[-1]):
-            spc = np.real(signal[time, :, orientation])
-            peak_idx = maximal_peak_finder(spc, number_of_peaks)
-            peak_idx = np.sort(np.array(peak_idx))
-            peak_indices[time, :, orientation] = peak_idx
-            peak_intensities[time, :, orientation] = signal[
-                time,  peak_idx, orientation]
-
-    return peak_indices, peak_intensities
-
-
-def interpolate_signal(x_axis: 'np.ndarray', signal: 'np.ndarray',
-                       phi: 'np.ndarray', theta: 'np.ndarray',
-                       number_of_peaks: int, convolution_width: float
-                       ) -> 'np.ndarray':
-    """
-    Do an interpolation on a spectrum. The spectrum is time dependent and the
-    following steps are done for every time point: A given number of peaks is
-    searched for every orientation. Triangles on the sophe grid are determined
-    and the peaks are sorted into groups of three (for each triangle). Then
-    for each peak-grup the spectrum is interpolated along the x_axis by
-    calculating a triangle along the x_axis. All triangle-spectra are summed
-    up to the interpolated spectrum.
-
-    Parameters
-    ----------
-    x_axis : 'np.ndarray'
-        Axis along which the interpolation is done. This is the magnetic field.
-    signal : 'np.ndarray'
-        Array with intensities of the spectrum. Its shape should be
-        time-points x magnetic-field-points x orientation-points.
-    phi : 'np.ndarray'
-        Array with the phi angles of the sophe grid.
-    theta : 'np.ndarray'
-        Array with the phi angles of the sophe grid.
-    number_of_peaks : int
-        Number of peaks to detect for each subspectrum.
-    convolution_width : float
-        Gaussian line width for the convolution for peak-finding.
-
-    Returns
-    -------
-    interpolated_signal : 'np.ndarray'
-        Interpolated powder pattern of the signal. Its shape is
-        time-points x magnetic-field-points.
-
-    """
-    # build triangles from the sophe-grid
-    idx, area = gri.triangles(phi, theta)
-    number_of_triangles = area.shape[0]
-
-    # find peaks in all spectra (for each orientation and time)
-    peak_indices, peak_intensities = get_peaks(
-        signal, number_of_peaks, convolution_width)
-
-    # get the peaks for each triangle
-    peak_intensities_tri = peak_intensities[:, :, idx]
-    peak_indices_tri = peak_indices[:, :, idx]
-
-    # calculate maximum height for each triangle-spectrum
-    h_max = peak_intensities_tri.sum(-1)/3
-    area_tri = (h_max*area)
-
-    # get ascending values on the x-axis for each peak of each triangle
-    peak_indices_tri = np.sort(peak_indices_tri, axis=-1)
-    x_1 = x_axis[peak_indices_tri[:, :, :, 0]]
-    x_2 = x_axis[peak_indices_tri[:, :, :, 1]]
-    x_3 = x_axis[peak_indices_tri[:, :, :, 2]]
-
-    # interpolate a triangle-spectrum in each triangle on the sphere
-    interpolated_signal = np.zeros(
-        (signal.shape[0], len(x_axis)), dtype=COMPLEX_TYPE)
-    for time in range(0, signal.shape[0]):
-        for peak in range(0, number_of_peaks):
-            for triangle in range(0, number_of_triangles):
-                x_idx_1 = peak_indices_tri[time, peak, triangle, 0]
-                x_idx_2 = peak_indices_tri[time, peak, triangle, 1]
-                x_idx_3 = peak_indices_tri[time, peak, triangle, 2]
-
-                # first part of interpolated triangle-spectrum
-                interpolated_signal[time, x_idx_1: x_idx_2] +=\
-                    area_tri[time, peak, triangle] * (
-                        x_axis[x_idx_1:x_idx_2]-x_1[time, peak, triangle]) / (
-                            (x_2[time, peak, triangle]-x_1[time, peak, triangle]) * (
-                                x_3[time, peak, triangle]-x_1[time, peak, triangle]))
-
-                # second part of interpolated triangle-spectrum
-                interpolated_signal[time, x_idx_2:x_idx_3] +=\
-                    area_tri[time, peak, triangle] * (
-                        x_axis[x_idx_2:x_idx_3]-x_2[time, peak, triangle]) / (
-                            (x_3[time, peak, triangle]-x_2[time, peak, triangle]) * (
-                                x_3[time, peak, triangle]-x_1[time, peak, triangle]))
-
-    return interpolated_signal
 
 
 def signal_hilbert_decay(sys: object, cal: object) -> None:

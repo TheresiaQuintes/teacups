@@ -97,7 +97,7 @@ def create_hf_hamiltonian(spins: list, coupling_nucs: list, hf_tensors: list
         the diagonal elements of the hyperfine interaction in the product
         basis. The shape of the arrays is
         gridpoints x (multiplicity_spin*product of
-                      multiplicity_of_all_coupling_nucs).
+        multiplicity_of_all_coupling_nucs).
 
     Examples
     --------
@@ -132,9 +132,11 @@ def create_hf_hamiltonian(spins: list, coupling_nucs: list, hf_tensors: list
             ham_hf_tmp = mut.Multioperator(
                 spin_matrices, hf_tensors[n][nuc].multirot.shape[0], [0])
             try:
+                s2 = mt.Spinoperator(s, coupling_nucs[n])
+                s2.matrix = spin_matrices.matrix_coupling_spins[nuc]
                 ham_hf_tmp.create_bilinear_operator(
                     hf_tensors[n][nuc],
-                    spin_matrices.matrix_coupling_spins[nuc])
+                    s2)
             except IndexError:
                 pass
             ham_hf_for_each_spin += ham_hf_tmp.angle_matrix
@@ -216,13 +218,13 @@ def make_signal_with_hyperfine(sys: object, exp: object, opt: object,
                         += ham_hf_tmp
 
                 ham.set_up_commutator_superoperator(sys, opt, cal)
-                
+
                 print('start propagation for combination ' + str(m_a+1) + '/' + str(combinations[0]) + ' ' + str(m_b+1) + '/'  + str(combinations[1]))
                 sap.propagation(sys, opt, cal)
-                
+
                 print('start making the signal...')
                 sap.make_signal(exp, opt, cal)
-                
+
                 sap.powder_average(exp, opt, cal)
 
     # system consisting of 1 spin
@@ -238,11 +240,11 @@ def make_signal_with_hyperfine(sys: object, exp: object, opt: object,
             ham.set_up_commutator_superoperator(sys, opt, cal)
             print('start propagation for combination ' + str(m_i+1) + '/' + str(combinations))
             sap.propagation(sys, opt, cal)
-            
+
             print('start making the signal...')
             sap.make_signal(exp, opt, cal)
-            
-            sap.powder_average(exp, opt, cal)
+
+            sap.powder_average(opt, cal)
 
     return None
 

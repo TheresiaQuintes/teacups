@@ -1,10 +1,9 @@
+import teacups.grid as grid
+import teacups.matrix_tools as mt
+import teacups.creators as cr
+import numpy as np
 import sys
 sys.path.append("./..")
-
-import numpy as np
-import teacups.creators as cr
-import teacups.matrix_tools as mt
-import teacups.grid as grid
 
 
 class Sys:
@@ -27,12 +26,19 @@ class Cal:
         return
 
 
-class Test_create_tensor:
-    diag = [1, 2, 3]
-    theta, phi = grid.get_theta_phi(3)
-    g1Frame = [1, 2, 3]
-    ten1 = cr.create_tensor(diag, phi, theta)
-    ten2 = cr.create_tensor(diag, phi, theta, g1Frame)
+class TestCreateTensor:
+    def setup(self):
+        diag = [1, 2, 3]
+        self.theta, self.phi = grid.fibonacci_grid(3)
+        g1Frame = [1, 2, 3]
+        self.ten1 = cr.create_tensor(diag, self.phi, self.theta)
+        self.ten2 = cr.create_tensor(diag, self.phi, self.theta, g1Frame)
+
+    def test_dtype(self):
+        assert self.ten1.matrix.dtype == "float32"
+        assert self.ten2.matrix.dtype == "float32"
+        assert self.ten1.multirot.dtype == "float32"
+        assert self.ten2.multirot.dtype == "float32"
 
     def test_tensor(self):
         comp1 = np.array([[1., 0., 0.],
@@ -42,10 +48,8 @@ class Test_create_tensor:
         comp2 = np.array([[2.79957166,  0.02570897, -0.42563375],
                           [0.02570897,  1.26862141, -0.47826256],
                           [-0.42563375, -0.47826256,  1.93180692]])
-        np.testing.assert_allclose(
-            comp1, self.ten1.tensor, atol=1e-8, rtol=1e-5)
-        np.testing.assert_allclose(
-            comp2, self.ten2.tensor, atol=1e-8, rtol=1e-5)
+        np.testing.assert_allclose(comp1, self.ten1.matrix)
+        np.testing.assert_allclose(comp2, self.ten2.matrix, atol=1e-7)
 
     def test_multirot(self):
         comp1 = mt.Tensor(np.array([1, 2, 3]))
@@ -53,29 +57,51 @@ class Test_create_tensor:
 
         comp2 = mt.Tensor(np.array([1, 2, 3]))
         comp2.rotation(1, 2, 3)
-        comp2.tensor = comp2.rot
+        comp2.matrix = comp2.rot
         comp2.multirotation(self.phi, self.theta)
 
         np.testing.assert_allclose(
-            comp1.multirot, self.ten1.multirot, atol=1e-8, rtol=1e-5)
+            comp1.multirot, self.ten1.multirot, atol=1e-7)
         np.testing.assert_allclose(
-            comp2.multirot, self.ten2.multirot, atol=1e-8, rtol=1e-5)
+            comp2.multirot, self.ten2.multirot, atol=1e-7)
 
 
-class Test_create_dipol_tensor_diagonals:
-    D = 3
-    E = 1
-    a = -1/3*D+E
-    b = -1/3*D-E
-    c = 2/3*D
-    dig = cr.create_dipol_tensor_diagonals(D, E)
+class TestCreateZfsTensorDiagonals:
+    def setup(self):
+        D = 3
+        E = 1
+        self.a = -1/3*D+E
+        self.b = -1/3*D-E
+        self.c = 2/3*D
+        self.dig = cr.create_zfs_tensor_diagonals(D, E)
+
+    def test_type(self):
+        assert self.dig.dtype == "float32"
 
     def test_values(self):
         comp = np.array([self.a, self.b, self.c])
         assert np.array_equal(comp, self.dig)
 
 
-class Test_set_up_tensors_doublet:
+class TestCreateDipolTensorDiagonals:
+    def setup(self):
+        D = 3
+        E = 1
+        self.a = D+E
+        self.b = D-E
+        self.c = -2*D
+        self.dig = cr.create_dipol_tensor_diagonals(D, E)
+
+    def test_type(self):
+        assert self.dig.dtype == "float32"
+
+    def test_values(self):
+        comp = np.array([self.a, self.b, self.c])
+        assert np.array_equal(comp, self.dig)
+
+
+
+class TestSetUpTensorsDoublet:
 
     def setup(self):
         self.sys = Sys()
@@ -86,7 +112,7 @@ class Test_set_up_tensors_doublet:
         self.sys.g = [1, 2, 3]
         self.sys.g_frame = [0, 0, 0]
         self.opt.grid_points = 3
-        self.cal.theta, self.cal.phi = grid.get_theta_phi(3)
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(3)
 
     def test_g(self):
         g_tensor = cr.create_tensor([1, 2, 3], self.cal.phi, self.cal.theta)
@@ -107,7 +133,7 @@ class Test_set_up_tensors_doublet:
         assert g_iso == self.cal.g_iso
 
 
-class Test_set_up_tensors_rp:
+class TestSetUpTensorsRp:
 
     def setup(self):
         self.opt = Opt()
@@ -115,7 +141,7 @@ class Test_set_up_tensors_rp:
         self.cal = Cal()
 
         self.opt.grid_points = 20
-        self.cal.theta, self.cal.phi = grid.get_theta_phi(20)
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(20)
 
         self.sys.g1 = [1, 2, 3]
         self.sys.g2 = [2, 3, 4]
@@ -136,8 +162,8 @@ class Test_set_up_tensors_rp:
 
     def test_no_Ds(self):
         cr.set_up_tensors(self.sys, self.cal)
-        D_tensor = cr.create_tensor(cr.create_dipol_tensor_diagonals(
-            0, 0), self.cal.phi, self.cal.theta)
+        D_tensor = cr.create_tensor(cr.create_zfs_tensor_diagonals(
+            0, 0.01), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(D_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
@@ -193,7 +219,7 @@ class Test_set_up_tensors_rp:
         self.sys.precursor = 'triplet'
         self.sys.D_tri = 5
         DT_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(5, 0), self.cal.phi, self.cal.theta)
+            cr.create_zfs_tensor_diagonals(5, 0.01), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(DT_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
@@ -202,7 +228,7 @@ class Test_set_up_tensors_rp:
         self.sys.precursor = 'triplet'
         self.sys.E_tri = 5
         DT_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(0, 5), self.cal.phi, self.cal.theta)
+            cr.create_zfs_tensor_diagonals(0, 5), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(DT_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
@@ -212,7 +238,7 @@ class Test_set_up_tensors_rp:
         self.sys.D_tri = 5
         self.sys.E_tri = 1
         DT_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(5, 1), self.cal.phi, self.cal.theta)
+            cr.create_zfs_tensor_diagonals(5, 1), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(DT_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
@@ -223,7 +249,7 @@ class Test_set_up_tensors_rp:
         self.sys.E_tri = 1
         self.sys.D_tri_frame = [1, 2, 3]
         DT_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(5, 1), self.cal.phi, self.cal.theta, [1, 2, 3])
+            cr.create_zfs_tensor_diagonals(5, 1), self.cal.phi, self.cal.theta, [1, 2, 3])
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(DT_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
@@ -234,14 +260,14 @@ class Test_set_up_tensors_rp:
         assert g_iso == self.cal.g_iso
 
 
-class Test_set_up_tensors_triplet:
+class TestSetUpTensorsTriplet:
     def setup(self):
         self.opt = Opt()
         self.sys = Sys()
         self.cal = Cal()
 
         self.opt.grid_points = 20
-        self.cal.theta, self.cal.phi = grid.get_theta_phi(20)
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(20)
         self.sys.g_tri = [4, 5, 6]
 
     def test_g(self):
@@ -262,7 +288,7 @@ class Test_set_up_tensors_triplet:
     def test_dipole_tensor_only_D(self):
         self.sys.D_tri = 5
         D_tri_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(5, 0), self.cal.phi, self.cal.theta)
+            cr.create_zfs_tensor_diagonals(5, 0.01), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(D_tri_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
@@ -270,7 +296,7 @@ class Test_set_up_tensors_triplet:
     def test_dipole_tensor_only_E(self):
         self.sys.E_tri = 5
         D_tri_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(0, 5), self.cal.phi, self.cal.theta)
+            cr.create_zfs_tensor_diagonals(0, 5), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(D_tri_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
@@ -279,25 +305,24 @@ class Test_set_up_tensors_triplet:
         self.sys.D_tri = 5
         self.sys.E_tri = 1
         D_tri_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(5, 1), self.cal.phi, self.cal.theta)
+            cr.create_zfs_tensor_diagonals(5, 1), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(D_tri_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
 
     def test_dipole_tensor_with_frame(self):
-        self.sys.precursor = 'triplet'
         self.sys.D_tri = 5
         self.sys.E_tri = 1
         self.sys.D_tri_frame = [1, 2, 3]
         D_tri_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(5, 1), self.cal.phi, self.cal.theta, [1, 2, 3])
+            cr.create_zfs_tensor_diagonals(5, 1), self.cal.phi, self.cal.theta, [1, 2, 3])
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(D_tri_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
 
     def test_dipole_tensor_no_D_and_E(self):
         D_tri_tensor = cr.create_tensor(
-            cr.create_dipol_tensor_diagonals(0, 0), self.cal.phi, self.cal.theta)
+            cr.create_zfs_tensor_diagonals(0, 0.01), self.cal.phi, self.cal.theta)
         cr.set_up_tensors(self.sys, self.cal)
         assert np.array_equal(D_tri_tensor.multirot,
                               self.cal.D_tri_tensor.multirot)
@@ -308,12 +333,59 @@ class Test_set_up_tensors_triplet:
         assert g_iso == self.cal.g_iso
 
 
-class Test_set_up_spinoperator:
+class TestSetUpTensorsTdp:
+    def setup(self):
+        self.opt = Opt()
+        self.sys = Sys()
+        self.cal = Cal()
+
+        self.opt.grid_points = 20
+        self.cal.theta, self.cal.phi = grid.fibonacci_grid(20)
+        self.sys.g = [1, 2, 3]
+        self.sys.g_tri = [4, 5, 6]
+        self.sys.D_tri = 5
+        self.sys.E_tri = 1
+
+    def test_g(self):
+        g_tensor = cr.create_tensor([1, 2, 3], self.cal.phi, self.cal.theta)
+        cr.set_up_tensors(self.sys, self.cal)
+        assert np.array_equal(g_tensor.multirot, self.cal.g_tensor.multirot)
+
+    def test_g_tri(self):
+        g_tri_tensor = cr.create_tensor(
+            [4, 5, 6], self.cal.phi, self.cal.theta)
+        cr.set_up_tensors(self.sys, self.cal)
+        assert np.array_equal(g_tri_tensor.multirot,
+                              self.cal.g_tri_tensor.multirot)
+
+    def test_D(self):
+        self.sys.D = 5
+        self.sys.E = 1
+        D_tensor = cr.create_tensor(cr.create_dipol_tensor_diagonals(
+            5, 1), self.cal.phi, self.cal.theta)
+        cr.set_up_tensors(self.sys, self.cal)
+        assert np.array_equal(D_tensor.multirot, self.cal.D_tensor.multirot)
+
+    def test_D_tri(self):
+        D_tri_tensor = cr.create_tensor(
+            cr.create_zfs_tensor_diagonals(5, 1), self.cal.phi, self.cal.theta)
+        cr.set_up_tensors(self.sys, self.cal)
+        assert np.array_equal(D_tri_tensor.multirot,
+                              self.cal.D_tri_tensor.multirot)
+
+    def test_g_iso(self):
+        g_iso = 1/2*(1/3*(np.sum(self.sys.g_tri))+1/3*(np.sum(self.sys.g)))
+        cr.set_up_tensors(self.sys, self.cal)
+        assert g_iso == self.cal.g_iso
+
+
+class TestSetUpSpinoperator:
     def setup(self):
         self.cal = Cal()
         self.sys = Sys()
 
-    def test_s_rp(self):
+    def test_s_coupled(self):
+        # radical pair
         s1 = np.array([[[0. + 0.j,  0. + 0.j,  0.5+0.j,  0. + 0.j],
                         [0. + 0.j,  0. + 0.j,  0. + 0.j,  0.5+0.j],
                         [0.5+0.j,  0. + 0.j,  0. + 0.j,  0. + 0.j],
@@ -348,7 +420,13 @@ class Test_set_up_spinoperator:
         cr.set_up_spinoperator(self.sys, self.cal)
         assert np.array_equal(self.cal.s.matrix, S)
 
-    def test_s_doublet(self):
+    def test_dtype_coupled(self):
+        self.sys.s = [1/2, 1/2]
+        cr.set_up_spinoperator(self.sys, self.cal)
+        assert self.cal.s.matrix.dtype == "complex64"
+
+    def test_s_uncoupled(self):
+        # Doublet
         s = np.array([[[0.+0.j,  0.5+0.j],
                        [0.5+0.j, 0.+0.j]],
 
@@ -362,8 +440,13 @@ class Test_set_up_spinoperator:
         cr.set_up_spinoperator(self.sys, self.cal)
         assert np.array_equal(self.cal.s.matrix, s)
 
+    def test_dtype_uncoupled(self):
+        self.sys.s = [1/2]
+        cr.set_up_spinoperator(self.sys, self.cal)
+        assert self.cal.s.matrix.dtype == "complex64"
 
-class Test_set_up_observable:
+
+class TestSetUpObservable:
     def setup(self):
         self.opt = Opt()
         self.cal = Cal()
@@ -374,15 +457,16 @@ class Test_set_up_observable:
         self.opt.space = 'hilbert'
         cr.set_up_spinoperator(self.sys, self.cal)
 
-    def test_hilbert_signal_rp(self):
+    def test_hilbert_observable_rp(self):
         sig = np.array([[0.-0.j, 0.-0.j, 0.-0.70710678j, 0.-0.j],
                         [0.-0.j, 0.-0.j, 0.-0.j, 0.-0.j],
                         [0.+0.70710678j, 0.-0.j, 0.-0.j, 0.-0.70710678j],
                         [0.-0.j, 0.-0.j, 0.+0.70710678j, 0.-0.j]])
         cr.set_up_observable(self.sys, self.opt, self.cal)
         np.testing.assert_allclose(sig, self.cal.observable)
+        assert self.cal.observable.dtype == "complex64"
 
-    def test_liouville_signal_rp(self):
+    def test_liouville_observable_rp(self):
         sig = np.array([0.-0.j, 0.-0.j, 0.-0.70710678j, 0.-0.j,
                         0.-0.j, 0.-0.j, 0.-0.j, 0.-0.j,
                         0.+0.70710678j, 0.-0.j, 0.-0.j, 0.-0.70710678j,
@@ -390,16 +474,18 @@ class Test_set_up_observable:
         self.opt.space = 'liouville'
         cr.set_up_observable(self.sys, self.opt, self.cal)
         np.testing.assert_allclose(sig, self.cal.observable)
+        assert self.cal.observable.dtype == "complex64"
 
-    def test_hilbert_signal_doub(self):
+    def test_hilbert_observable_doub(self):
         self.sys.spin_system = 'doub'
         self.sys.s = [1/2]
         cr.set_up_spinoperator(self.sys, self.cal)
         cr.set_up_observable(self.sys, self.opt, self.cal)
         sig = self.cal.s.get('y')
         assert np.array_equal(sig, self.cal.observable)
+        assert self.cal.observable.dtype == "complex64"
 
-    def test_liouville_signal_trip(self):
+    def test_liouville_observable_trip(self):
         self.sys.spin_system = 'trip'
         self.sys.s = [1]
         self.opt.space = 'liouville'
@@ -408,3 +494,4 @@ class Test_set_up_observable:
         sig = self.cal.s.get('y')
         sig = sig.flatten()
         assert np.array_equal(sig, self.cal.observable)
+        assert self.cal.observable.dtype == "complex64"
