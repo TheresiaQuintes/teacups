@@ -40,6 +40,7 @@ SimOpt.grid = 'sophe'
 SimOpt.sym = "D2h"
 SimOpt.space = 'liouville'
 SimOpt.pop_evolution = True
+SimOpt.cpu_cores = 0
 
 
 

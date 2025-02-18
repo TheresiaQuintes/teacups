@@ -42,6 +42,7 @@ Exp.freq_mw = 9.8562*1e9
 
 SimOpt.grid_points = 20
 SimOpt.space = 'hilbert'
+SimOpt.cpu_cores = 0
 
 # do simulation
 spec = sim.teacups(Sys, Exp, SimOpt)
