@@ -46,7 +46,7 @@ So far, the programme package has been run under an Ubuntu Linux distribution.
 Download teacups
 ================
 
-You can download **teacups** via git::
+You can download **teacups** via git:
 
       git clone https://gitlab.physchem.uni-freiburg.de/koesters/teacups.git
 
