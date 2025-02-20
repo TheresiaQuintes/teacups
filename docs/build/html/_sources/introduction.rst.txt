@@ -45,9 +45,10 @@ You will need the following installed on your system to run a TEACUPS-simulation
 * scipy
 * matplotlib
 * tqdm
+* psutil
 
 .. note::
-   So far, the programme package has been run under an Ubuntu Linux distribution.
+   So far, the programme package has been run under an Ubuntu Linux distribution and Windows 10.
 
 
 Literature

@@ -20,6 +20,10 @@ Be aware that the secular approximation is used. For systems with large anisotro
 
 Known issiues
 -------------
+RuntimeError on Windows system
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+If the skript does not stop running and shows repeatedly a ``RuntimeError`` you may have forgotten to add ``if __name__ == "__main__"`` to your skript (See section: *Getting started*)
+
 Bends in the spectrum for long times
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 If you see bends in the spectrum along the time axis for long times :math:`t` you can remove the mistake by raising the number of magnetic field points in ``Exp.B_z``.
