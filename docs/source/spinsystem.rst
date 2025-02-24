@@ -48,7 +48,8 @@ Sys.precursor
 	- ``'eigen'`` to give the polarisation vector in the eigenbasis of the system. |rarr| possible for all spin systems
 	- ``'zf'`` to give the poalrisation vector in the basis of the zero field states. |rarr| possible for triplet spin systems
 	- ``'singlet'`` to initialize a pure singlet polarisation. |rarr| possible for radical pair spin systems
-	- ``'triplet-zf'`` to give the polarisation vector as a trplet precursor in the zero field basis |rarr| possible for radical pairs (with triplet precursor) and triplet doublet pairs (consisting of the triplet precursor and a radical precursor
+	- ``'triplet-zf'`` to give the polarisation vector as a trplet precursor in the zero field basis (xyz) |rarr| possible for radical pairs (with triplet precursor) and triplet doublet pairs (consisting of the triplet precursor and a radical precursor
+	- ``'triplet-pnm'`` to give the polarisation vector as a triplet precursor in the zero field basis (+1, 0, -1) |rarr| possible for radical pairs (with triplet precursor) and triplet doublet pairs (consisting of the triplet precursor and a radical precursor
 	
 * Obligatory for all simulations
 * e.g.::
@@ -59,8 +60,8 @@ Sys.precursor
 	
 	- for ``'doub'`` use ``'eigen'`` for the population of the alpha and beta states in ascending energetic order 
 	- for ``'trip'`` use ``'zf'`` for ISC triplets (populate :math:`T_x`, :math:`T_y` and :math:`T_z` in ascending energetic order) and ``'eigen'`` for recombination triplets (populate :math:`T_-`, :math:`T_0` and :math:`T_+` in ascending energetic order)
-	- for ``'rp'`` use ``'singlet'`` for a singlet precursor and ``'triplet-zf'`` for a triplet precursor
-	- for ``'tdp'`` use ``'triplet-zf'`` to populate the zerofield levels of an ISC-triplet perecursor and a radical precursor and ``'eigen'`` to populate the highfield levels of the coupled system
+	- for ``'rp'`` use ``'singlet'`` for a singlet precursor and ``'triplet-zf'`` (ISC) or  ``'triplet-pnm'`` (recombination) for a triplet precursor
+	- for ``'tdp'`` use ``'triplet-zf'`` to populate the zerofield levels of an ISC-triplet perecursor and a doublet precursor, ``'triplet-pnm'`` to populate the zerofield levels of a recombination-triplet perecursor and a doublet precursor and ``'eigen'`` to populate the highfield levels of the coupled system
 	
 Sys.population
 ^^^^^^^^^^^^^^

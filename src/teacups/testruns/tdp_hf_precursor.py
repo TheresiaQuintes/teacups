@@ -9,44 +9,47 @@ Sys = cl.Sys()
 Exp = cl.Exp()
 SimOpt = cl.SimOpt()
 
-# choose a triplet spin system
-Sys.spin_system = "trip"
+# choose a triplet doublet pair spin system
+Sys.spin_system = "tdp"
 
-# set up g-tensors of the triplet
+# set up g-tensors of the radical and the triplet
+Sys.g = [2.0059, 2.0059, 2.0059]
 Sys.g_tri = [2.003, 2.003, 2.003]
 
 # define triplet ZFS
-Sys.D_tri = 700
-Sys.E_tri = -100
+Sys.D_tri = -500
+Sys.E_tri = 50
 
-# define initial state
-Sys.precursor = "zf"
-Sys.population = [1, 0, 0]
+# define couplings of the radical and the triplet
+Sys.J_ex = -400000
+
+Sys.precursor = "triplet-pnm"
+Sys.population = [0.2, 0.2, 0, 1, 0]
 
 # define decay time and line width
 Sys.decay = 1e-6
 Sys.width_gauss = 1
 
 # experimental setup
-Exp.B_z = np.linspace(300, 400, 1024)
+Exp.B_z = np.linspace(333, 363, 550)
 Exp.t_scale = [0, 2e-6]
 Exp.t_points = 2
-Exp.B_mw = 0.001
 Exp.freq_mw = 9.75e9
 
 # simulation options
-SimOpt.grid_points = 40
+SimOpt.grid = "sophe"
+SimOpt.sym = "D2h"
+SimOpt.grid_points = 30
+SimOpt.CUPY = False
+
 
 # do the simulation
 spec_sim = sim.teacups(Sys, Exp, SimOpt)
 spec_sim = spec_sim.real[1]/max(abs(spec_sim.real[1]))
 
-
-
 plt.figure()
 plt.plot(Exp.B_z, spec_sim)
-
 plt.xlabel("$B_z$ / mT")
 plt.ylabel("norm. intensity")
 
-# plt.savefig("triplet_2D_hilbert.pdf")
+# plt.savefig("tdp_2D_hilbert.pdf")
