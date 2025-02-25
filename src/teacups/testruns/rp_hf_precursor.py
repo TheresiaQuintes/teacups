@@ -3,6 +3,8 @@ import teacups.classes as cl
 import numpy as np
 import matplotlib.pyplot as plt
 
+plt.style.use("stylesheet.mplstyle")
+
 Sys = cl.Sys()
 Exp = cl.Exp()
 SimOpt = cl.SimOpt()
@@ -27,16 +29,23 @@ Sys.decay = 1e-6
 
 Exp.B_z = np.linspace(337.3, 341.05, 800)
 Exp.t_scale = [0, 1e-6]
-Exp.t_points = 20
+Exp.t_points = 5
 Exp.B_mw = 0.00001
 Exp.freq_mw = 9.5*1e9
 Exp.cpu_cores = 0
 
-SimOpt.grid_points = 20
+SimOpt.grid_points = 2
+SimOpt.sym = "D2h"
+SimOpt.grid = "sophe"
 SimOpt.space = 'hilbert'
 
 # do simulation
 spec = sim.teacups(Sys, Exp, SimOpt)
-spec = spec[8].real/abs(spec[8]).real.max()
+spec = spec[2].real/abs(spec[2]).real.max()
 
-plt.plot(spec)
+plt.figure()
+plt.plot(Exp.B_z, spec)
+plt.xlabel("$B_z$ / mT")
+plt.ylabel("norm. intensity")
+
+# plt.savefig("rp_hf_precursor.pdf")
