@@ -120,7 +120,7 @@ def set_up_triplet_hamiltonian(exp: object, opt: object, cal: object
     Calculate the triplet Hamiltonian. The high-field-Hamiltonian is set up as
     a multioperator object for each grid point and for each magnetic field
     point. Interactions included are: Zeeman-interaction and dipolar
-    interaction (=ZFS). The spinfunctions (-1, 0, +1) are used as a basis set.
+    interaction (=ZFS). The spinfunctions (+1, 0, -1) are used as a basis set.
     As the Hamiltonian is set up in the rotating frame, secular approximation
     is applied:
 
@@ -163,8 +163,8 @@ def set_up_triplet_hamiltonian(exp: object, opt: object, cal: object
     return ham
 
 
-def set_up_triplet_high_field_hamiltonian(exp: object, opt: object,
-                                          cal: object) -> 'np.ndarray':
+def set_up_triplet_high_field_xyz_hamiltonian(exp: object, opt: object,
+                                              cal: object) -> 'np.ndarray':
     """
     Calculate the hamiltonian of a triplet state in high magnetic field in
     the D-tensor main-axis system (Tx, Ty, Tz). It is built as the sum of
@@ -216,6 +216,55 @@ def set_up_triplet_high_field_hamiltonian(exp: object, opt: object,
 
     return ham_tri_hf
 
+def set_up_triplet_high_field_pnm_hamiltonian(exp: object, opt: object,
+                                              cal: object) -> 'np.ndarray':
+    """
+    Calculate the hamiltonian of a triplet state in high magnetic field in
+    the basis of the spin operators (+1, 0, -1). It is built as the sum of
+    the ZFS and the Zeeman interaction.
+
+    The triplet hamiltonian is calculated for different B_z-values and all
+    combinations of the euler angels phi and theta (grid_points points
+    distributed on the fibonacci sphere). All hamiltonians are returned in
+    cal.ham_tri wich is an object of the class Multioperator.
+
+    Parameters
+    ----------
+    exp : object
+        Contains experimental parameters. This function uses exp.B_z
+    opt : object
+        Contains simulation option parameters. This function uses
+        opt.grid_points.
+    cal : object
+        Container for results of calculations during the simulation. This
+        function uses the attributes cal.D_tri_tensor and cal.g_tri_tensor
+        (e.g.built by the function set_up_tensors).
+
+    Returns
+    -------
+    ham_tri_hf : np.ndarray
+        Hamiltonian of a triplet precursor of a radical pair in high field.
+        This is a B_angle_matrix attribute from the class Multioperator.
+
+    """
+    s_tri = mt.Spinoperator(1)
+
+    # ZFS-Hamiltonian
+    ham_d = mut.Multioperator(s_tri, opt.grid_points, exp.B_z*MU_B)
+    ham_d.create_bilinear_operator(cal.D_tri_tensor, s_tri)
+    ham_d.angle_matrix_changed()
+
+    # The eigenbasis of the ZFS-Hamiltonian is the xyz-Basis
+    eig_d, vec_d = np.linalg.eigh(ham_d.B_angle_matrix)
+
+    # Calculate high-field Hamiltonian
+    ham_tri_hf = mut.Multioperator(s_tri, opt.grid_points, exp.B_z*MU_B)
+    ham_tri_hf.zeeman_coupling(cal.g_tri_tensor)
+    ham_tri_hf.B_angle_matrix -= ham_d.B_angle_matrix
+
+    ham_tri_hf = ham_tri_hf.B_angle_matrix
+
+    return ham_tri_hf
 
 def set_up_rp_hamiltonian(sys: object, exp: object, opt: object, cal: object
                           ) -> 'np.ndarray':
@@ -346,7 +395,7 @@ def set_up_tdp_hamiltonian(sys: object, exp: object, opt: object, cal: object
     return ham_tdp
 
 
-def set_up_tdp_full_high_field_hamiltonian(sys: object, exp: object,
+def set_up_tdp_high_field_xyz_hamiltonian(sys: object, exp: object,
                                            opt: object, cal: object
                                            ) -> 'np.ndarray':
     r"""
@@ -431,6 +480,80 @@ def set_up_tdp_full_high_field_hamiltonian(sys: object, exp: object,
 
     return ham_hf
 
+def set_up_tdp_high_field_pnm_hamiltonian(sys: object, exp: object,
+                                           opt: object, cal: object
+                                           ) -> 'np.ndarray':
+    r"""
+    Calculate a Hamiltonian matrix operator for a coupled triplet doublet pair.
+    Coupling with the static magnetic field of the triplet and the doublet is
+    included each as well as the ZFS of the triplet and the interactions of the
+    two spins. The Hamiltonian is calculated for all orientations and magnetic
+    field points in the product basis of the spin operator functions
+    and returned as a B_angle_matrix attribute from the class Multioperator.
+    The interaction matrices are calculated by direct prducts of spin matrices
+    and interaction tensors and no secular approximation is applied.
+
+    Parameters
+    ----------
+    sys : object
+        Contains spinsystem parameters. This function uses the attributes
+        sys.J_ex.
+    exp : object
+        Contains experimental parameters. This function uses the attribute
+        exp.B_z (magnetic field array).
+    opt : object
+        Contains simulation options. This function uses opt.grid_points.
+    cal : object
+        Container for results of calculations during the simulation. This
+        function uses cal.g_tensor and cal.g_tri_tensor, cal.D_tri_tensor and
+        cal.D_tensor (e.g. from set_up_tensors).
+
+    Returns
+    -------
+    ham_hf : np.ndarray
+        Full triplet-doublet-pair high-field hamiltonian in the shape of a
+        B_angle_matrix from the class Multioperator. The hamiltonian is given
+        in the product basis of doublet and triplet high field functions:
+        \|a, +1\>, \|b, +1\>, \|a, 0\>, \|b, 0\>, \|a, -1\>, \|b, -1\>.
+
+    """
+    setup_s = mt.Spinoperator(0.5, 1)
+    S_doub = mt.Spinoperator(0.5, 1)
+    S_trip = mt.Spinoperator(0.5, 1)
+
+    S_doub.matrix = setup_s.matrix
+    S_trip.matrix = setup_s.matrix_coupling_spins[0]
+
+    # ZFS
+    h_zfs = mut.Multioperator(S_trip, opt.grid_points, exp.B_z*MU_B)
+    h_zfs.create_bilinear_operator(cal.D_tri_tensor, S_trip)
+    h_zfs.angle_matrix_changed()
+
+    # zeeman interactions
+    h_zeeman_doub = mut.Multioperator(
+        S_doub, opt.grid_points, exp.B_z*MU_B)
+    h_zeeman_doub.zeeman_coupling(cal.g_tensor)
+
+    h_zeeman_trip = mut.Multioperator(
+        S_trip, opt.grid_points, exp.B_z*MU_B)
+    h_zeeman_trip.zeeman_coupling(cal.g_tri_tensor)
+
+    # dipolar interaction
+    h_dip = mut.Multioperator(S_doub, opt.grid_points, exp.B_z*MU_B)
+    h_dip.create_bilinear_operator(cal.D_tensor, S_trip)
+    h_dip.angle_matrix_changed()
+
+    # exchange interaction
+    h_ex = mut.Multioperator(S_doub, opt.grid_points, exp.B_z*MU_B)
+    h_ex.exchange_coupling(sys.J_ex, S_trip)
+
+    # full high field hamiltonian
+    ham_hf = h_zeeman_doub.B_angle_matrix + h_zeeman_trip.B_angle_matrix +\
+        h_zfs.B_angle_matrix + h_dip.B_angle_matrix + h_ex.B_angle_matrix
+
+    ham_hf = ham_hf.astype(COMPLEX_TYPE)
+
+    return ham_hf
 
 def set_up_commutator_superoperator(sys: object, opt: object, cal: object
                                     ) -> None:

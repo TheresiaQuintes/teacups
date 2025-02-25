@@ -1,26 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tutorial &mdash; TEACUPS 2025 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=cb975c41"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="_static/copybutton.js?v=f281be69"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -33,18 +31,14 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="index.html" class="icon icon-home">
-            TEACUPS
+            <a href="index.html" class="icon icon-home"> TEACUPS
           </a>
               <div class="version">
                 2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -100,7 +94,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
       <li class="breadcrumb-item active">Tutorial</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/tutorial.rst.txt" rel="nofollow"> View page source</a>
@@ -115,7 +109,7 @@
            <div itemprop="articleBody">
              
   <section id="tutorial">
-<h1>Tutorial<a class="headerlink" href="#tutorial" title="Link to this heading"></a></h1>
+<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading"></a></h1>
 <p>This tutorial will teach you the basics to write your first scripts. It <strong>does</strong> show you</p>
 <ul class="simple">
 <li><p>How to set up a simple spin system</p></li>
@@ -130,7 +124,7 @@
 <li><p>use all features of the routine. See the sections about the Spin System, Experimental and Simulation Options for further information about possible attributes.</p></li>
 </ul>
 <section id="the-main-simulation-function">
-<h2>The main simulation function<a class="headerlink" href="#the-main-simulation-function" title="Link to this heading"></a></h2>
+<h2>The main simulation function<a class="headerlink" href="#the-main-simulation-function" title="Permalink to this heading"></a></h2>
 <p>The simulation is done by the main simulation function. You can use the function by importing the simulations module from the teacups package:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">teacups.simulations</span> <span class="k">as</span> <span class="nn">sim</span>
 </pre></div>
@@ -141,7 +135,7 @@
 </div>
 </section>
 <section id="input-classes-provided-by-teacups">
-<h2>Input classes provided by teacups<a class="headerlink" href="#input-classes-provided-by-teacups" title="Link to this heading"></a></h2>
+<h2>Input classes provided by teacups<a class="headerlink" href="#input-classes-provided-by-teacups" title="Permalink to this heading"></a></h2>
 <p>The main simulation function needs three classes as input. In your script theses classes need to be set up. Their attributes define the spin system parameters (Sys), the experimental parameters (Exp) and the simulation options (SimOpt). You can import the classes form the classes module by:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">teacups.classes</span> <span class="k">as</span> <span class="nn">cl</span>
 
@@ -159,9 +153,9 @@
 <p>To get a full overview of all possible attributes please consult the specific section in the documentation.</p>
 </section>
 <section id="a-first-simulation">
-<h2>A first simulation<a class="headerlink" href="#a-first-simulation" title="Link to this heading"></a></h2>
+<h2>A first simulation<a class="headerlink" href="#a-first-simulation" title="Permalink to this heading"></a></h2>
 <section id="define-necessary-inputs">
-<h3>Define necessary inputs<a class="headerlink" href="#define-necessary-inputs" title="Link to this heading"></a></h3>
+<h3>Define necessary inputs<a class="headerlink" href="#define-necessary-inputs" title="Permalink to this heading"></a></h3>
 <p>After importing the classes and simulation modules and setting up the (nearly) empty classes you can fill your skript with live by defining the necessary inputs. The default syntax is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Class</span><span class="o">.</span><span class="n">Attribute</span> <span class="o">=</span> <span class="n">Value</span>
 </pre></div>
@@ -181,7 +175,7 @@
 <p>Using these parameters it is possible to run a simulation, nevertheless you should definitly make yourself familiar with further details to get the right things calculated.</p>
 </section>
 <section id="getting-the-outputs">
-<h3>Getting the outputs<a class="headerlink" href="#getting-the-outputs" title="Link to this heading"></a></h3>
+<h3>Getting the outputs<a class="headerlink" href="#getting-the-outputs" title="Permalink to this heading"></a></h3>
 <p>You can now end your skript by running the simulation. Dependent on the input four different outputs can be expected:</p>
 <blockquote>
 <div><ol class="arabic simple">
@@ -192,10 +186,10 @@
 </div></blockquote>
 </section>
 <section id="example-skripts">
-<h3>Example Skripts<a class="headerlink" href="#example-skripts" title="Link to this heading"></a></h3>
+<h3>Example Skripts<a class="headerlink" href="#example-skripts" title="Permalink to this heading"></a></h3>
 <p>In the following four example scripts for each of the spin systems focussing on different time evolutions are provided. These can be used as a starting point for your own simulations.</p>
 <section id="doublet-transient-nutations">
-<h4>Doublet (transient nutations)<a class="headerlink" href="#doublet-transient-nutations" title="Link to this heading"></a></h4>
+<h4>Doublet (transient nutations)<a class="headerlink" href="#doublet-transient-nutations" title="Permalink to this heading"></a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">teacups.simulations</span> <span class="k">as</span> <span class="nn">sim</span>
 <span class="kn">import</span> <span class="nn">teacups.classes</span> <span class="k">as</span> <span class="nn">cl</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -256,7 +250,7 @@
 <p><a class="reference download internal" download="" href="_downloads/1b0773f3b12d6f573db18d693094c093/doublet_transient_nutations_B.pdf"><code class="xref download docutils literal notranslate"><span class="pre">spectrum</span> <span class="pre">(magnetic</span> <span class="pre">field)</span></code></a></p>
 </section>
 <section id="doublet-with-hyperfines">
-<h4>Doublet (with hyperfines)<a class="headerlink" href="#doublet-with-hyperfines" title="Link to this heading"></a></h4>
+<h4>Doublet (with hyperfines)<a class="headerlink" href="#doublet-with-hyperfines" title="Permalink to this heading"></a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">teacups.classes</span> <span class="k">as</span> <span class="nn">cl</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -311,7 +305,7 @@
 <p><a class="reference download internal" download="" href="_downloads/09f24064595b3923a08f3ea463596750/doublet_with_hyperfines.pdf"><code class="xref download docutils literal notranslate"><span class="pre">spectrum</span></code></a></p>
 </section>
 <section id="triplet-2d">
-<h4>Triplet (2D)<a class="headerlink" href="#triplet-2d" title="Link to this heading"></a></h4>
+<h4>Triplet (2D)<a class="headerlink" href="#triplet-2d" title="Permalink to this heading"></a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">teacups.classes</span> <span class="k">as</span> <span class="nn">cl</span>
 <span class="kn">import</span> <span class="nn">teacups.simulations</span> <span class="k">as</span> <span class="nn">sim</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -352,8 +346,7 @@
 <span class="n">SimOpt</span><span class="o">.</span><span class="n">grid_points</span> <span class="o">=</span> <span class="mi">40</span>
 
 <span class="c1"># do the simulation</span>
-<span class="n">cal</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">teacups</span><span class="p">(</span><span class="n">Sys</span><span class="p">,</span> <span class="n">Exp</span><span class="p">,</span> <span class="n">SimOpt</span><span class="p">,</span> <span class="n">development</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">spec_sim</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span>
+<span class="n">spec_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">teacups</span><span class="p">(</span><span class="n">Sys</span><span class="p">,</span> <span class="n">Exp</span><span class="p">,</span> <span class="n">SimOpt</span><span class="p">)</span>
 <span class="n">spec_sim</span> <span class="o">=</span> <span class="n">spec_sim</span><span class="o">.</span><span class="n">real</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">spec_sim</span><span class="o">.</span><span class="n">real</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
 
 
@@ -370,7 +363,7 @@
 <p><a class="reference download internal" download="" href="_downloads/49eb0b692ae38d95394a9d0cc15760d5/triplet_2D_hilbert.pdf"><code class="xref download docutils literal notranslate"><span class="pre">spectrum</span></code></a></p>
 </section>
 <section id="triplet-asymmetric-relaxation">
-<h4>Triplet (asymmetric relaxation)<a class="headerlink" href="#triplet-asymmetric-relaxation" title="Link to this heading"></a></h4>
+<h4>Triplet (asymmetric relaxation)<a class="headerlink" href="#triplet-asymmetric-relaxation" title="Permalink to this heading"></a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">teacups.simulations</span> <span class="k">as</span> <span class="nn">sim</span>
@@ -449,7 +442,7 @@
 <a class="reference download internal" download="" href="_downloads/dc6be9bf419b2121a5c3edd163280fa8/znp_triplet_asymmetric_pop.pdf"><code class="xref download docutils literal notranslate"><span class="pre">population</span> <span class="pre">evolution</span></code></a></p>
 </section>
 <section id="radical-pair-quantum-beats">
-<h4>Radical pair (quantum beats)<a class="headerlink" href="#radical-pair-quantum-beats" title="Link to this heading"></a></h4>
+<h4>Radical pair (quantum beats)<a class="headerlink" href="#radical-pair-quantum-beats" title="Permalink to this heading"></a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">teacups.simulations</span> <span class="k">as</span> <span class="nn">sim</span>
 <span class="kn">import</span> <span class="nn">teacups.classes</span> <span class="k">as</span> <span class="nn">cl</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -519,7 +512,7 @@
 <p><a class="reference download internal" download="" href="_downloads/0937b3e06b4b0f3975b8a0bf098bd694/rp_quantum_beats_B.pdf"><code class="xref download docutils literal notranslate"><span class="pre">spectrum</span> <span class="pre">(magnetic</span> <span class="pre">field)</span></code></a></p>
 </section>
 <section id="radical-pair-early-dynamics">
-<h4>Radical pair (early dynamics)<a class="headerlink" href="#radical-pair-early-dynamics" title="Link to this heading"></a></h4>
+<h4>Radical pair (early dynamics)<a class="headerlink" href="#radical-pair-early-dynamics" title="Permalink to this heading"></a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">teacups.simulations</span> <span class="k">as</span> <span class="nn">sim</span>
@@ -585,7 +578,7 @@
 <p><a class="reference download internal" download="" href="_downloads/41e320062498a7fc4b35e0aa0f2856b4/psi_rp_early_dynamics.pdf"><code class="xref download docutils literal notranslate"><span class="pre">spectrum</span></code></a></p>
 </section>
 <section id="triplet-doublet-pair-2d">
-<h4>Triplet-doublet pair (2D)<a class="headerlink" href="#triplet-doublet-pair-2d" title="Link to this heading"></a></h4>
+<h4>Triplet-doublet pair (2D)<a class="headerlink" href="#triplet-doublet-pair-2d" title="Permalink to this heading"></a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">teacups.classes</span> <span class="k">as</span> <span class="nn">cl</span>
 <span class="kn">import</span> <span class="nn">teacups.simulations</span> <span class="k">as</span> <span class="nn">sim</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -632,9 +625,7 @@
 
 
 <span class="c1"># do the simulation</span>
-<span class="n">cal</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">teacups</span><span class="p">(</span><span class="n">Sys</span><span class="p">,</span> <span class="n">Exp</span><span class="p">,</span> <span class="n">SimOpt</span><span class="p">,</span> <span class="n">development</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="n">spec_sim</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span>
+<span class="n">spec_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">teacups</span><span class="p">(</span><span class="n">Sys</span><span class="p">,</span> <span class="n">Exp</span><span class="p">,</span> <span class="n">SimOpt</span><span class="p">)</span>
 <span class="n">spec_sim</span> <span class="o">=</span> <span class="n">spec_sim</span><span class="o">.</span><span class="n">real</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">spec_sim</span><span class="o">.</span><span class="n">real</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
@@ -648,7 +639,7 @@
 <p><a class="reference download internal" download="" href="_downloads/4022e5fe003e19037076e823a9407bf9/tdp_2D_hilbert.pdf"><code class="xref download docutils literal notranslate"><span class="pre">spectrum</span></code></a></p>
 </section>
 <section id="triplet-doublet-pair-reverse-quartet-mechanism">
-<h4>Triplet-doublet pair (reverse quartet mechanism)<a class="headerlink" href="#triplet-doublet-pair-reverse-quartet-mechanism" title="Link to this heading"></a></h4>
+<h4>Triplet-doublet pair (reverse quartet mechanism)<a class="headerlink" href="#triplet-doublet-pair-reverse-quartet-mechanism" title="Permalink to this heading"></a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">teacups.simulations</span> <span class="k">as</span> <span class="nn">sim</span>
 <span class="kn">import</span> <span class="nn">teacups.classes</span> <span class="k">as</span> <span class="nn">cl</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -787,10 +778,10 @@
 </section>
 </section>
 <section id="workflow-using-teacups">
-<h2>Workflow using Teacups<a class="headerlink" href="#workflow-using-teacups" title="Link to this heading"></a></h2>
+<h2>Workflow using Teacups<a class="headerlink" href="#workflow-using-teacups" title="Permalink to this heading"></a></h2>
 <p>When running a simulation in order to calculate a timeresolved spectrum you should first think about what you excactly want to simulate. Think about possible relaxation models and try to determine all parameters of the spin system before starting the simulation as the calculation may be very expensive. In the following a potential workflow is described and illustrated with code snippets how you could run a TEACUPS simulation from the start.</p>
 <section id="determine-the-spin-system">
-<h3>Determine the spin system<a class="headerlink" href="#determine-the-spin-system" title="Link to this heading"></a></h3>
+<h3>Determine the spin system<a class="headerlink" href="#determine-the-spin-system" title="Permalink to this heading"></a></h3>
 <p>First you have to determine the spin system for your transient simulation. Therefore a static spectrum of the spin system can be calculated. You may use some other programms like e.g. <a class="reference external" href="https://easyspin.org/">EasySpin</a> to simulate any spin system more quickly. To simulate a (nearly) static spectrum in TEACUPS choose as  <code class="docutils literal notranslate"><span class="pre">SimOpt.space</span> <span class="pre">=</span> <span class="pre">'hilbert'</span></code>. Further you can calculate only two time points by setting <code class="docutils literal notranslate"><span class="pre">Exp.t_points</span> <span class="pre">=</span> <span class="pre">2</span></code>. If you look at the second time trace you can see your initial static spectrum. Choose carefully the precursor state by setting <code class="docutils literal notranslate"><span class="pre">Sys.precursor</span></code>:</p>
 <dl class="field-list simple">
 <dt class="field-odd">zf<span class="colon">:</span></dt>
@@ -899,7 +890,7 @@
 <a class="reference internal image-reference" href="_images/tutorial_teacups_1.png"><img alt="_images/tutorial_teacups_1.png" src="_images/tutorial_teacups_1.png" style="width: 500px;" /></a>
 </section>
 <section id="analyze-the-eigenvalues">
-<h3>Analyze the eigenvalues<a class="headerlink" href="#analyze-the-eigenvalues" title="Link to this heading"></a></h3>
+<h3>Analyze the eigenvalues<a class="headerlink" href="#analyze-the-eigenvalues" title="Permalink to this heading"></a></h3>
 <p>If you are happy with the initial spin system you should have a look at the eigenvalues of the system. Therefore you have to set <code class="docutils literal notranslate"><span class="pre">SimOpt.eigval_mode</span> <span class="pre">=</span> <span class="pre">True</span></code>. If you add the following lines to the code above you’ll get the eigenvalues in ascending order dependent on the magnetic field.</p>
 <div class="highlight-python notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
@@ -914,7 +905,7 @@
 <p>Now it is possible to analyze the eigenstates and think about a suitable relaxation mechanism.</p>
 </section>
 <section id="calculate-the-time-evolution">
-<h3>Calculate the time evolution<a class="headerlink" href="#calculate-the-time-evolution" title="Link to this heading"></a></h3>
+<h3>Calculate the time evolution<a class="headerlink" href="#calculate-the-time-evolution" title="Permalink to this heading"></a></h3>
 <p>To calculate a certain time evolution you can define <code class="docutils literal notranslate"><span class="pre">Sys.dynamics</span></code> as a relaxation matrix containing rate constants in 1/s. For example, if you want the eigenstate 5 to decay with the rate constant <em>k_d</em>, set <code class="docutils literal notranslate"><span class="pre">Sys.dynamics[5,</span> <span class="pre">5]</span> <span class="pre">=</span> <span class="pre">-k_d</span></code>. For transitions between the eigenstates you can use the off-diagonal elements. E.g. the transition between eigenstates 5 and 2 is described by the elements [5, 2] and [2, 5].
 After setting up the relaxation operator, you have to change the simulation options. Set <code class="docutils literal notranslate"><span class="pre">SimOpt.eigval_mode</span> <span class="pre">=</span> <span class="pre">False</span></code> in order to calculate a spectrum instead of eigenvalues. Further <code class="docutils literal notranslate"><span class="pre">SimOpt.space</span> <span class="pre">=</span> <span class="pre">&quot;liouville&quot;</span></code> activates the calculation of the time evolution in liouville space. If you set <code class="docutils literal notranslate"><span class="pre">SimOpt.pop_evolution</span> <span class="pre">=</span> <span class="pre">True</span></code> the matrix <code class="docutils literal notranslate"><span class="pre">Exp.pop_evolution</span></code> will be calculated additionally, which contains the population of each eigenstate dependent on the time. This is a good poissbility to check your relaxation model and to compare the dependence of the spectrum on the populations.</p>
 <p>As an example you can add the following lines to your code to a time resolved spectrum:</p>

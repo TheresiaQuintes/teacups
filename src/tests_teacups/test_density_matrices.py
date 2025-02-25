@@ -136,7 +136,7 @@ class TestTriplets:
         cr.set_up_tensors(self.sys, self.cal)
         self.cal.ham_sys = ham.set_up_triplet_hamiltonian(self.exp, self.opt,
                                                           self.cal)
-        self.cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
+        self.cal.ham_tri_hf = ham.set_up_triplet_high_field_xyz_hamiltonian(
             self.exp, self.opt, self.cal)
 
         pop = np.diag(np.arange(1, 4))
@@ -187,7 +187,9 @@ class TestRps:
         cr.set_up_tensors(self.sys, self.cal)
         self.cal.ham_sys = ham.set_up_rp_hamiltonian(self.sys, self.exp, self.opt,
                                                      self.cal)
-        self.cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
+        self.cal.ham_tri_hf = ham.set_up_triplet_high_field_xyz_hamiltonian(
+            self.exp, self.opt, self.cal)
+        self.cal.ham_tri_hf_pnm = ham.set_up_triplet_high_field_pnm_hamiltonian(
             self.exp, self.opt, self.cal)
 
         pop = np.diag(np.arange(1, 5))
@@ -232,6 +234,26 @@ class TestRps:
         np.testing.assert_allclose(comp, self.cal.rho, atol=2e-6)
         assert self.cal.rho.dtype == "complex64"
 
+    def test_triplet_hf_precursor(self):
+        self.sys.population = np.arange(1, 4, dtype=np.complex64)
+        self.sys.precursor = 'triplet-pnm'
+        dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
+
+        pop = np.diag(self.sys.population)
+        self.rho_trip_basis = np.array([[pop], [pop], [pop]])
+
+        _, vec = np.linalg.eigh(self.cal.ham_tri_hf_pnm)
+        rho_trip_zf = np.linalg.inv(vec)@self.rho_trip_basis@vec
+        rho_trip_zf *= np.eye(3, dtype=np.float32)
+
+        comp = np.zeros((3, 1, 4, 4), dtype=np.complex64)
+        comp[:, :, 0, 0] = rho_trip_zf[:, :, 2, 2]
+        comp[:, :, 2, 2] = rho_trip_zf[:, :, 1, 1]
+        comp[:, :, 3, 3] = rho_trip_zf[:, :, 0, 0]
+
+        np.testing.assert_allclose(comp, self.cal.rho, atol=2e-6)
+        assert self.cal.rho.dtype == "complex64"
+
 
 class TestTdps:
     def setup(self):
@@ -259,9 +281,11 @@ class TestTdps:
         cr.set_up_tensors(self.sys, self.cal)
         self.cal.ham_sys = ham.set_up_tdp_hamiltonian(self.sys, self.exp,
                                                       self.opt, self.cal)
-        self.cal.ham_hf = ham.set_up_tdp_full_high_field_hamiltonian(
+        self.cal.ham_hf = ham.set_up_tdp_high_field_xyz_hamiltonian(
             self.sys, self.exp, self.opt, self.cal)
-        self.cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
+        self.cal.ham_hf_pnm = ham.set_up_tdp_high_field_pnm_hamiltonian(
+            self.sys, self.exp, self.opt, self.cal)
+        self.cal.ham_tri_hf = ham.set_up_triplet_high_field_xyz_hamiltonian(
             self.exp, self.opt, self.cal)
 
         pop = np.diag(np.arange(1, 7, dtype=np.complex64))
@@ -272,8 +296,7 @@ class TestTdps:
         _, vec = np.linalg.eigh(self.cal.ham_sys)
         rho_eigen = vec@self.rho_basis@np.linalg.inv(vec)
         dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
-        # Toleranz nötig wegen mumerischen Unterschieds zwischen inverser und adjungierter Matrix
-        np.testing.assert_allclose(rho_eigen, self.cal.rho, rtol=1e-6)
+        np.testing.assert_allclose(rho_eigen, self.cal.rho, atol=2e-6)
         assert self.cal.rho.dtype == "complex64"
 
     def test_triplet_zf_precursor(self):
@@ -297,12 +320,49 @@ class TestTdps:
         rho += rho_doub
 
         dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
-        # Toleranz nötig wegen mumerischen Unterschieds zwischen inverser und adjungierter Matrix
-        np.testing.assert_allclose(rho, self.cal.rho, rtol=1e-6)
+        np.testing.assert_allclose(rho, self.cal.rho, atol=2e-6)
         assert self.cal.rho.dtype == "complex64"
 
     def test_triplet_zf_precursor_changing_with_J(self):
         self.sys.precursor = 'triplet-zf'
+        self.sys.population = np.array([0.5, 0.51, 1, 2, 3])
+
+        dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
+        rho_J_20000 = self.cal.rho
+
+        self.sys.J_ex = 20
+        dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
+        rho_J_20 = self.cal.rho
+
+        with pytest.raises(AssertionError):
+            np.testing.assert_array_equal(rho_J_20, rho_J_20000)
+
+    def test_triplet_hf_precursor(self):
+        self.sys.precursor = 'triplet-pnm'
+        self.sys.population = np.array([0.5, 0.51, 1, 2, 3])
+
+        pop = np.diag(np.arange(1, 4, dtype=np.complex64))
+        rho_basis = np.array([[pop], [pop], [pop]])
+        rho_basis = np.kron(rho_basis, np.eye(2, dtype=np.float32))
+
+        _, vec_pnm = np.linalg.eigh(self.cal.ham_hf_pnm)
+        _, vec_sys = np.linalg.eigh(self.cal.ham_sys)
+
+        rho = np.linalg.inv(vec_pnm)@rho_basis@vec_pnm
+        rho *= np.eye(6, dtype=np.float32)
+        rho = vec_sys@rho@np.linalg.inv(vec_sys)
+        rho *= np.eye(6, dtype=np.float32)
+
+        rho_doub = np.diag(np.array([0.5, 0.51], dtype=np.float32))
+        rho_doub = np.kron(rho_doub, np.eye(3, dtype=np.float32))
+        rho += rho_doub
+
+        dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
+        np.testing.assert_allclose(rho, self.cal.rho, atol=2e-6)
+        assert self.cal.rho.dtype == "complex64"
+
+    def test_triplet_hf_precursor_changing_with_J(self):
+        self.sys.precursor = 'triplet-pnm'
         self.sys.population = np.array([0.5, 0.51, 1, 2, 3])
 
         dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
@@ -339,7 +399,7 @@ class TestTripletZfDensityMatrixConditions:
         self.sys.precursor = 'zf'
 
         cr.set_up_tensors(self.sys, self.cal)
-        self.cal.ham_tri_hf = ham.set_up_triplet_high_field_hamiltonian(
+        self.cal.ham_tri_hf = ham.set_up_triplet_high_field_xyz_hamiltonian(
             self.exp, self.opt, self.cal)
         dm.set_up_density_matrix(self.sys, self.exp, self.opt, self.cal)
 

@@ -23,8 +23,8 @@ Sys.E_tri = 50
 # define couplings of the radical and the triplet
 Sys.J_ex = -400000
 
-Sys.precursor = "triplet-zf"
-Sys.population = [0.2, 0.205, 0.2, 0.1, 0.1]
+Sys.precursor = "triplet-pnm"
+Sys.population = [0.2, 0.2, 0, 1, 0]
 
 # define decay time and line width
 Sys.decay = 1e-6
@@ -39,7 +39,7 @@ Exp.freq_mw = 9.75e9
 # simulation options
 SimOpt.grid = "sophe"
 SimOpt.sym = "D2h"
-SimOpt.grid_points = 25
+SimOpt.grid_points = 5
 SimOpt.CUPY = False
 
 
@@ -52,4 +52,21 @@ plt.plot(Exp.B_z, spec_sim)
 plt.xlabel("$B_z$ / mT")
 plt.ylabel("norm. intensity")
 
-# plt.savefig("tdp_2D_hilbert.pdf")
+# plt.savefig("tdp_hf_precursor.pdf")
+# %%
+# do triplet simulation
+Sys.spin_system = "trip"
+Sys.precursor = "eigen"
+Sys.population = [0, 1, 0]
+Exp.B_z = np.linspace(320, 380, 600)
+SimOpt.grid_points = 40
+
+spec_trip = sim.teacups(Sys, Exp, SimOpt)
+spec_trip = spec_trip.real[1]/max(abs(spec_trip.real[1]))
+
+plt.figure()
+plt.plot(Exp.B_z, spec_trip)
+plt.xlabel("$B_z$ / mT")
+plt.ylabel("norm. intensity")
+
+# plt.savefig("tdp_hf_precursor_trip.pdf")

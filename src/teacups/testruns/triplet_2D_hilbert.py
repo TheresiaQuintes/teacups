@@ -38,8 +38,7 @@ Exp.freq_mw = 9.75e9
 SimOpt.grid_points = 40
 
 # do the simulation
-cal = sim.teacups(Sys, Exp, SimOpt, development=True)
-spec_sim = cal.spec_sim
+spec_sim = sim.teacups(Sys, Exp, SimOpt)
 spec_sim = spec_sim.real[1]/max(abs(spec_sim.real[1]))
 
 
