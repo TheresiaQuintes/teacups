@@ -61,6 +61,7 @@ def teacups(Sys: object, Exp: object, SimOpt: object) -> 'np.ndarray':
 
     # do simulation for each part of the grid
     for chunk in range(len(cal.phi_split)):
+        print(chunk)
         cal.phi = cal.phi_split[chunk]
         cal.theta = cal.theta_split[chunk]
         if opt.grid == 'sophe':

@@ -41,6 +41,7 @@ def chunk_size(bottleneck: str, bp: int, gp: int) -> int:
 
         available_memory = psutil.virtual_memory().available * 0.8
         chunksize = np.ceil(need_of_memory/available_memory)
+        print(chunksize)
 
     if chunksize > 1:
         chunksize += 1
@@ -98,7 +99,7 @@ def nom_tdp_zf_set_up_density_matrix(bp: int, gp: int) -> float:
     eigvecs = 3*multioperator
     basistransformation = 5*multioperator
     nom = hams+eigvecs+basistransformation
-    return nom
+    return nom*15
 
 
 def chunk_size_for_gpu(bp: int, gp: int) -> int:
