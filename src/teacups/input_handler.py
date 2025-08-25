@@ -289,7 +289,8 @@ def split_grid(sys: object, exp: object, opt: object, cal: object) -> None:
     bottleneck = mem.define_bottleneck(sys)
     bp = len(exp.B_z)
     gp = opt.grid_points
-    chunk_size = mem.chunk_size(bottleneck, bp, gp)
+    chunk_size = mem.chunk_size(bottleneck, bp, gp)*3
+    print(chunk_size)
 
     cal.phi_split = np.array_split(cal.phi, chunk_size)
     cal.theta_split = np.array_split(cal.theta, chunk_size)

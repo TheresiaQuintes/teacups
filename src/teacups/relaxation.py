@@ -79,7 +79,7 @@ def superoperator_population_relaxation(k_matrix):
 def superoperator_coherence_relaxation(k, dimension):
     """
     Calculate a superoperator for the decay of the coherences of a matrix.
-    The coherences will decay with the rate constant T2
+    The coherences will decay with the rate constant k.
 
     Parameters
     ----------
