@@ -54,5 +54,5 @@ Documentation
 -------------
 The full documentation including advice on installation and usage of the package can be found at:
 
-      `https://theresiaquintes.github.io/teacups/`.
+      https://theresiaquintes.github.io/teacups/
 
