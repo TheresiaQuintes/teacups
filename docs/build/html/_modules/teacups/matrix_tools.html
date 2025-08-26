@@ -1,25 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="../../">
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>teacups.matrix_tools &mdash; TEACUPS 2025 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+    <link rel="canonical" href="https://theresiaquintes.github.io/teacups/_modules/teacups/matrix_tools.html" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=cb975c41"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="../../_static/copybutton.js?v=f281be69"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -30,18 +29,14 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="../../index.html" class="icon icon-home">
-            TEACUPS
+            <a href="../../index.html" class="icon icon-home"> TEACUPS
           </a>
               <div class="version">
                 2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -71,7 +66,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
       <li class="breadcrumb-item active">teacups.matrix_tools</li>
       <li class="wy-breadcrumbs-aside">
@@ -90,9 +85,7 @@
 <span class="n">FLOAT_TYPE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
 
 
-<div class="viewcode-block" id="Matrix">
-<a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Matrix">[docs]</a>
-<span class="k">class</span> <span class="nc">Matrix</span><span class="p">:</span>
+<div class="viewcode-block" id="Matrix"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Matrix">[docs]</a><span class="k">class</span> <span class="nc">Matrix</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A Matrix-object contains the dimension and the matrix of a square matrix.</span>
 
@@ -133,9 +126,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dimension</span><span class="p">,</span> <span class="n">dimension</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span> <span class="o">=</span> <span class="n">dimension</span>
 
-<div class="viewcode-block" id="Matrix.scalar">
-<a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Matrix.scalar">[docs]</a>
-    <span class="k">def</span> <span class="nf">scalar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multipliers</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="Matrix.scalar"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Matrix.scalar">[docs]</a>    <span class="k">def</span> <span class="nf">scalar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multipliers</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Build scalar product of the matrix attribute with the product of all</span>
 <span class="sd">        multipliers.</span>
@@ -175,10 +166,7 @@
 
         <span class="k">return</span> <span class="kc">None</span></div>
 
-
-<div class="viewcode-block" id="Matrix.product">
-<a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Matrix.product">[docs]</a>
-    <span class="k">def</span> <span class="nf">product</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scd_matrix</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="Matrix.product"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Matrix.product">[docs]</a>    <span class="k">def</span> <span class="nf">product</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scd_matrix</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Build matrix product of the matrix attribute and a second matrix</span>
 <span class="sd">        being multiplied either from right (default) or from left side.</span>
@@ -233,10 +221,7 @@
 
         <span class="k">return</span> <span class="kc">None</span></div>
 
-
-<div class="viewcode-block" id="Matrix.basis_transformation">
-<a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Matrix.basis_transformation">[docs]</a>
-    <span class="k">def</span> <span class="nf">basis_transformation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trans</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span>
+<div class="viewcode-block" id="Matrix.basis_transformation"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Matrix.basis_transformation">[docs]</a>    <span class="k">def</span> <span class="nf">basis_transformation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trans</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span>
                              <span class="n">inverse_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">orthonormal</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Change the basis of matrix. trans is the transformation matrix:</span>
@@ -297,14 +282,10 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">trans</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="kc">None</span></div>
-</div>
+        <span class="k">return</span> <span class="kc">None</span></div></div>
 
 
-
-<div class="viewcode-block" id="Tensor">
-<a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Tensor">[docs]</a>
-<span class="k">class</span> <span class="nc">Tensor</span><span class="p">(</span><span class="n">Matrix</span><span class="p">):</span>
+<div class="viewcode-block" id="Tensor"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Tensor">[docs]</a><span class="k">class</span> <span class="nc">Tensor</span><span class="p">(</span><span class="n">Matrix</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An object from class Tensor is a special Matrix object. The matrix</span>
 <span class="sd">    attribute contains a diagonal 3x3 matrix. The diagonal elements</span>
@@ -346,9 +327,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">diagonal</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span> <span class="o">=</span> <span class="mi">3</span>
 
-<div class="viewcode-block" id="Tensor.rotation">
-<a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Tensor.rotation">[docs]</a>
-    <span class="k">def</span> <span class="nf">rotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">psi</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="Tensor.rotation"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Tensor.rotation">[docs]</a>    <span class="k">def</span> <span class="nf">rotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">psi</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Rotate the tensor attribute by Euler rotation. The result is given to</span>
 <span class="sd">        the attribute rot, while tensor remains unchanged.</span>
@@ -393,10 +372,7 @@
 
         <span class="k">return</span> <span class="kc">None</span></div>
 
-
-<div class="viewcode-block" id="Tensor.multirotation">
-<a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Tensor.multirotation">[docs]</a>
-    <span class="k">def</span> <span class="nf">multirotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="Tensor.multirotation"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Tensor.multirotation">[docs]</a>    <span class="k">def</span> <span class="nf">multirotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Rotate the tensor attribute to all combinations of theta and</span>
 <span class="sd">        phi. The  two arrays contain angles for each point that shall be</span>
@@ -426,14 +402,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">rotation</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">theta</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">multirot</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rot</span>
 
-        <span class="k">return</span> <span class="kc">None</span></div>
-</div>
+        <span class="k">return</span> <span class="kc">None</span></div></div>
 
 
-
-<div class="viewcode-block" id="Operator">
-<a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Operator">[docs]</a>
-<span class="k">class</span> <span class="nc">Operator</span><span class="p">(</span><span class="n">Matrix</span><span class="p">):</span>
+<div class="viewcode-block" id="Operator"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Operator">[docs]</a><span class="k">class</span> <span class="nc">Operator</span><span class="p">(</span><span class="n">Matrix</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An Operator object is an object of class matrix, which has two additional</span>
 <span class="sd">    attributes: The vector attribute and the superop attribute.</span>
@@ -462,9 +434,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">vector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_vector</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">superop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_superoperator</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Operator.build_vector">
-<a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Operator.build_vector">[docs]</a>
-    <span class="k">def</span> <span class="nf">build_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="Operator.build_vector"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Operator.build_vector">[docs]</a>    <span class="k">def</span> <span class="nf">build_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Changing the dimension of the matrix attribute to a 1d vector</span>
 <span class="sd">        using .flatten()-function for numpy arrays. Lines are simply written</span>
@@ -496,10 +466,7 @@
 
         <span class="k">return</span> <span class="kc">None</span></div>
 
-
-<div class="viewcode-block" id="Operator.build_superoperator">
-<a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Operator.build_superoperator">[docs]</a>
-    <span class="k">def</span> <span class="nf">build_superoperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">swap</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="Operator.build_superoperator"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Operator.build_superoperator">[docs]</a>    <span class="k">def</span> <span class="nf">build_superoperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">swap</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Double the dimension of the matrix operator (in case of use in a higher</span>
 <span class="sd">        dimensional space). Tensor product of operator with unit matrix of the</span>
@@ -546,14 +513,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">superop</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">eye</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="kc">None</span></div>
-</div>
+        <span class="k">return</span> <span class="kc">None</span></div></div>
 
 
-
-<div class="viewcode-block" id="Spinoperator">
-<a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Spinoperator">[docs]</a>
-<span class="k">class</span> <span class="nc">Spinoperator</span><span class="p">(</span><span class="n">Operator</span><span class="p">):</span>
+<div class="viewcode-block" id="Spinoperator"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Spinoperator">[docs]</a><span class="k">class</span> <span class="nc">Spinoperator</span><span class="p">(</span><span class="n">Operator</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    By creating a spinoperator object the pauli matrices for a spin (with any</span>
 <span class="sd">    spin quantum number) are calculated. Optionally the spin is coupled to any</span>
@@ -707,9 +670,7 @@
 
             <span class="k">return</span>
 
-<div class="viewcode-block" id="Spinoperator.pauli_matrices">
-<a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Spinoperator.pauli_matrices">[docs]</a>
-    <span class="k">def</span> <span class="nf">pauli_matrices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spin</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<div class="viewcode-block" id="Spinoperator.pauli_matrices"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Spinoperator.pauli_matrices">[docs]</a>    <span class="k">def</span> <span class="nf">pauli_matrices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spin</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create the three Pauli matrices for each cartesian direction for a</span>
 <span class="sd">        given spin quantum number.</span>
@@ -770,10 +731,7 @@
 
         <span class="k">return</span> <span class="n">sigma_x</span><span class="p">,</span> <span class="n">sigma_y</span><span class="p">,</span> <span class="n">sigma_z</span></div>
 
-
-<div class="viewcode-block" id="Spinoperator.get">
-<a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Spinoperator.get">[docs]</a>
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinate</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+<div class="viewcode-block" id="Spinoperator.get"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Spinoperator.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinate</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the spin operator matrices for each cartesian direction out of the</span>
 <span class="sd">        matrix attribute.</span>
@@ -811,14 +769,10 @@
         <span class="k">elif</span> <span class="n">coordinate</span> <span class="o">==</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only &#39;x&#39;, &#39;y&#39; and &#39;z&#39; are allowed coordinates.&quot;</span><span class="p">)</span></div>
-</div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only &#39;x&#39;, &#39;y&#39; and &#39;z&#39; are allowed coordinates.&quot;</span><span class="p">)</span></div></div>
 
 
-
-<div class="viewcode-block" id="Hamiltonian">
-<a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Hamiltonian">[docs]</a>
-<span class="k">class</span> <span class="nc">Hamiltonian</span><span class="p">(</span><span class="n">Operator</span><span class="p">):</span>
+<div class="viewcode-block" id="Hamiltonian"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Hamiltonian">[docs]</a><span class="k">class</span> <span class="nc">Hamiltonian</span><span class="p">(</span><span class="n">Operator</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A Hamiltonian object is the same as an Operator object, but some functions</span>
 <span class="sd">    are added.</span>
@@ -842,9 +796,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Hamiltonian.exchange_coupling">
-<a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Hamiltonian.exchange_coupling">[docs]</a>
-    <span class="k">def</span> <span class="nf">exchange_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spinoperator1</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">J_ex</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<div class="viewcode-block" id="Hamiltonian.exchange_coupling"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Hamiltonian.exchange_coupling">[docs]</a>    <span class="k">def</span> <span class="nf">exchange_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spinoperator1</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">J_ex</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
                           <span class="n">spinoperator2</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate interaction hamiltonian of the exchangecoupling of two spins.</span>
@@ -895,10 +847,7 @@
 
         <span class="k">return</span> <span class="kc">None</span></div>
 
-
-<div class="viewcode-block" id="Hamiltonian.microwave_coupling">
-<a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Hamiltonian.microwave_coupling">[docs]</a>
-    <span class="k">def</span> <span class="nf">microwave_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">omega_mw</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">omega_nut</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<div class="viewcode-block" id="Hamiltonian.microwave_coupling"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Hamiltonian.microwave_coupling">[docs]</a>    <span class="k">def</span> <span class="nf">microwave_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">omega_mw</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">omega_nut</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
                            <span class="n">spinoperator</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the interaction hamiltonian of a spinoperator with a magnetic</span>
@@ -948,10 +897,7 @@
 
         <span class="k">return</span> <span class="kc">None</span></div>
 
-
-<div class="viewcode-block" id="Hamiltonian.zeeman_coupling">
-<a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Hamiltonian.zeeman_coupling">[docs]</a>
-    <span class="k">def</span> <span class="nf">zeeman_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">B_z</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<div class="viewcode-block" id="Hamiltonian.zeeman_coupling"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Hamiltonian.zeeman_coupling">[docs]</a>    <span class="k">def</span> <span class="nf">zeeman_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">B_z</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
                         <span class="n">spinoperator</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the hamiltonian of the Zeeman coupling of a spin</span>
@@ -997,10 +943,7 @@
 
         <span class="k">return</span> <span class="kc">None</span></div>
 
-
-<div class="viewcode-block" id="Hamiltonian.dipol_coupling">
-<a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Hamiltonian.dipol_coupling">[docs]</a>
-    <span class="k">def</span> <span class="nf">dipol_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spinoperator1</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">D_tensor</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span>
+<div class="viewcode-block" id="Hamiltonian.dipol_coupling"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Hamiltonian.dipol_coupling">[docs]</a>    <span class="k">def</span> <span class="nf">dipol_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spinoperator1</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">D_tensor</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span>
                        <span class="n">spinoperator2</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the hamiltonian of a dipolar coupling of two spins.</span>
@@ -1048,9 +991,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">build_vector</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">build_superoperator</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="kc">None</span></div>
-</div>
-
+        <span class="k">return</span> <span class="kc">None</span></div></div>
 </pre></div>
 
            </div>
