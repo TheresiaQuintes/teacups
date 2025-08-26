@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>teacups.input_handler &mdash; TEACUPS 2025 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=cb975c41"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            TEACUPS
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spinsystem.html">Spin System (Sys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../experimental.html">Experimental (Exp)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulation_options.html">Simulation Options (SimOpt)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../limitations_issiues.html">Limitations and known issiues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer.html">Developer</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">TEACUPS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">teacups.input_handler</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for teacups.input_handler</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">import</span> <span class="nn">teacups.grid</span> <span class="k">as</span> <span class="nn">gri</span>
+<span class="kn">import</span> <span class="nn">teacups.memory</span> <span class="k">as</span> <span class="nn">mem</span>
+
+
+<span class="n">COMPLEX_TYPE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">complex64</span>
+<span class="n">FLOAT_TYPE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+
+<div class="viewcode-block" id="Calculations">
+<a class="viewcode-back" href="../../developer.html#teacups.input_handler.Calculations">[docs]</a>
+<span class="k">class</span> <span class="nc">Calculations</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An object of class Calculations has no attributes at the beginning. The</span>
+<span class="sd">    object of the Calculations-Class is used during the simulation by several</span>
+<span class="sd">    functions to save results.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span></div>
+
+
+
+<div class="viewcode-block" id="input_object_handler">
+<a class="viewcode-back" href="../../developer.html#teacups.input_handler.input_object_handler">[docs]</a>
+<span class="k">def</span> <span class="nf">input_object_handler</span><span class="p">(</span><span class="n">Sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">Exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">Opt</span><span class="p">:</span> <span class="nb">object</span>
+                         <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">object</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">object</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Build copys of the three input objects, that contain all simulation</span>
+<span class="sd">    parameters. Create a Calculation object.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Sys : object</span>
+<span class="sd">        This is a Spinsystem object, that should contain all spinsystem</span>
+<span class="sd">        parameters needed for a simulation.</span>
+<span class="sd">    Exp : object</span>
+<span class="sd">        This is an Experiment object, that should contain all experimental</span>
+<span class="sd">        parameters needed for a simulation.</span>
+<span class="sd">    Opt : object</span>
+<span class="sd">        This is an Options object, that should contain all simulation option</span>
+<span class="sd">        parameters needed for a simulation.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sys : object</span>
+<span class="sd">        Copy of Sys.</span>
+<span class="sd">    exp : object</span>
+<span class="sd">        Copy of Exp.</span>
+<span class="sd">    opt : object</span>
+<span class="sd">        Copy of Opt.</span>
+<span class="sd">    cal : object</span>
+<span class="sd">        Freshly initialized object from the class Calculations. This is needed</span>
+<span class="sd">        for saving results during the simulation.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sys</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">Sys</span><span class="p">)</span>
+    <span class="n">exp</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">Exp</span><span class="p">)</span>
+    <span class="n">opt</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">Opt</span><span class="p">)</span>
+    <span class="n">cal</span> <span class="o">=</span> <span class="n">Calculations</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">sys</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span></div>
+
+
+
+<div class="viewcode-block" id="scale_inputs">
+<a class="viewcode-back" href="../../developer.html#teacups.input_handler.scale_inputs">[docs]</a>
+<span class="k">def</span> <span class="nf">scale_inputs</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Change the unit of the attributes of the input to Hz or T.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sys : object</span>
+<span class="sd">        Parameters of the spinsystem. All coupling parameters are</span>
+<span class="sd">        changed to Hz.</span>
+<span class="sd">    exp : object</span>
+<span class="sd">        Experimental parameters. The microwave frequency is change to Hz,</span>
+<span class="sd">        all magnetic parameters are changed to T.</span>
+<span class="sd">    opt : object</span>
+<span class="sd">        Simulation options object. If the sophe grid is chosen, the gaussian</span>
+<span class="sd">        line width for interpolation is scaled.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># MHz -&gt; Hz</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">J_ex</span> <span class="o">*=</span> <span class="mf">1e6</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">D</span> <span class="o">*=</span> <span class="mf">1e6</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">E</span> <span class="o">*=</span> <span class="mf">1e6</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">D_tri</span> <span class="o">*=</span> <span class="mf">1e6</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">E_tri</span> <span class="o">*=</span> <span class="mf">1e6</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">*</span><span class="mf">1e6</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">A</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># mT -&gt; T</span>
+    <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span> <span class="o">/=</span> <span class="mf">1e3</span>
+    <span class="n">exp</span><span class="o">.</span><span class="n">B_mw</span> <span class="o">/=</span> <span class="mf">1e3</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">width_gauss</span> <span class="o">/=</span> <span class="mf">1e3</span>
+
+    <span class="c1"># gaussian line width -&gt; standard deviation</span>
+    <span class="n">std</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">width_gauss</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span>
+    <span class="c1"># standard deviation has to be converted to the width of the magnetic field</span>
+    <span class="c1"># array</span>
+    <span class="n">conversion</span> <span class="o">=</span> <span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">/</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">std</span> <span class="o">=</span> <span class="n">std</span><span class="o">/</span><span class="n">conversion</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">width_gauss</span> <span class="o">=</span> <span class="n">std</span>
+
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="predefinitions">
+<a class="viewcode-back" href="../../developer.html#teacups.input_handler.predefinitions">[docs]</a>
+<span class="k">def</span> <span class="nf">predefinitions</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Predefine arrays needed for the calculations: A linear spaced t-axis,</span>
+<span class="sd">    and an empty signal-array.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    exp : object</span>
+<span class="sd">        Contains experimental parameters. This function uses exp.B_z,</span>
+<span class="sd">        exp.t_scale and  exp.t_points.</span>
+
+<span class="sd">    cal : object</span>
+<span class="sd">        Container for calculated spaces.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cal.t : np.ndarray</span>
+<span class="sd">        Linear spaced 1D-array with time points at which the spectrum</span>
+<span class="sd">        will be simulated.</span>
+<span class="sd">    cal.spec_sim : np.ndarray</span>
+<span class="sd">        Array contains only zeros and will be filled later. The shape is</span>
+<span class="sd">        nPoints x tPoints.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cal</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">t_scale</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">exp</span><span class="o">.</span><span class="n">t_scale</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">exp</span><span class="o">.</span><span class="n">t_points</span><span class="p">,</span>
+                        <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
+    <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">exp</span><span class="o">.</span><span class="n">t_points</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="initialize_spin_system">
+<a class="viewcode-back" href="../../developer.html#teacups.input_handler.initialize_spin_system">[docs]</a>
+<span class="k">def</span> <span class="nf">initialize_spin_system</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set up the spin quantum numer s for a given spinsystem.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sys : object</span>
+<span class="sd">        Object of class spin system. The needed attribute spin_system is a</span>
+<span class="sd">        string describing the type of the spin system. This is either &#39;rp&#39;</span>
+<span class="sd">        for a radical pair, &#39;doub&#39; for a doublet or &#39;trip&#39; for a triplet.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sys.s : list</span>
+<span class="sd">        This list contains the spin_quantum numbers of the spin system.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s1">&#39;rp&#39;</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s1">&#39;doub&#39;</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s1">&#39;trip&#39;</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s1">&#39;tdp&#39;</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="create_grid">
+<a class="viewcode-back" href="../../developer.html#teacups.input_handler.create_grid">[docs]</a>
+<span class="k">def</span> <span class="nf">create_grid</span><span class="p">(</span><span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create the orientational grid and set up pairs of theta and phi for each</span>
+<span class="sd">    angle point. The variable grid_points is changed from the input value</span>
+<span class="sd">    (Number of points between theta=0 and theta=pi/2) to the number of angle</span>
+<span class="sd">    points. A fibonacci grid or a sophe grid either is built, or a &quot;grid&quot;</span>
+<span class="sd">    consisting of user-chosen angle points.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    opt : object</span>
+<span class="sd">        Object of class Options. The attribute opt.grid sets the chosen</span>
+<span class="sd">        grid. It may be &#39;sophe&#39; or &#39;fibonacci&#39; either.</span>
+<span class="sd">        It has to contain the attribute opt.grid_points which is the number of</span>
+<span class="sd">        points between theta=0 and theat=pi/2 on the orientational sphere that</span>
+<span class="sd">        shall be calculated. In case of a sophe grid opt.sym has to contain</span>
+<span class="sd">        a string that defines the symmetry of the system.</span>
+<span class="sd">        If opt.grid is set to &#39;single&#39; user-chosen orientations can be</span>
+<span class="sd">        calculated. In that case opt.theta and opt.phi have to be given as</span>
+<span class="sd">        lists containing the desired angle inputs.</span>
+<span class="sd">    cal : object</span>
+<span class="sd">        Container for calculated values.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cal.phi : np.ndarray</span>
+<span class="sd">        Array with the phi values for each angle point.</span>
+<span class="sd">    cal.theta : np.ndarray</span>
+<span class="sd">        Array with the theta values for each angle point.</span>
+<span class="sd">    opt.grid_points : int</span>
+<span class="sd">        Number of angle points.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid</span> <span class="o">==</span> <span class="s1">&#39;sophe&#39;</span><span class="p">:</span>
+        <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="n">gri</span><span class="o">.</span><span class="n">sophe_grid</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">sym</span><span class="p">)</span>
+        <span class="n">cal</span><span class="o">.</span><span class="n">theta</span> <span class="o">=</span> <span class="n">theta</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
+        <span class="n">cal</span><span class="o">.</span><span class="n">phi</span> <span class="o">=</span> <span class="n">phi</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
+        <span class="n">cal</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
+
+        <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">phi</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid</span> <span class="o">==</span> <span class="s1">&#39;fibonacci&#39;</span><span class="p">:</span>
+        <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">gri</span><span class="o">.</span><span class="n">fibonacci_grid</span><span class="p">(</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span> <span class="o">+</span> <span class="mi">4</span><span class="o">*</span><span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="o">*</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">cal</span><span class="o">.</span><span class="n">theta</span> <span class="o">=</span> <span class="n">theta</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
+        <span class="n">cal</span><span class="o">.</span><span class="n">phi</span> <span class="o">=</span> <span class="n">phi</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
+        <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">phi</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid</span> <span class="o">==</span> <span class="s1">&#39;single&#39;</span><span class="p">:</span>
+        <span class="n">cal</span><span class="o">.</span><span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">theta</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
+        <span class="n">cal</span><span class="o">.</span><span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">phi</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
+        <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">phi</span><span class="p">)</span>
+    <span class="k">return</span></div>
+
+
+
+<div class="viewcode-block" id="split_grid">
+<a class="viewcode-back" href="../../developer.html#teacups.input_handler.split_grid">[docs]</a>
+<span class="k">def</span> <span class="nf">split_grid</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find the memory-bottleneck for a routine and split the grid into a number</span>
+<span class="sd">    of chunks defined by the available memory.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sys : object</span>
+<span class="sd">        Contains spinsystem parameters. This function uses the attributes</span>
+<span class="sd">        sys.spin_system and sys.precursor.</span>
+<span class="sd">    exp : object</span>
+<span class="sd">        Contains experimental parameters. This function uses the attributes</span>
+<span class="sd">        exp.B_z.</span>
+<span class="sd">    opt : object</span>
+<span class="sd">        Contains simulation options. This function uses opt.grid_points and</span>
+<span class="sd">        opt.grid.</span>
+<span class="sd">    cal : object</span>
+<span class="sd">        Container for results of calculations during the simulation. This</span>
+<span class="sd">        function uses cal.phi, cal.theta and in case that opt.grid is &#39;sophe&#39;</span>
+<span class="sd">        cal.weights.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cal.phi_split : list of np.ndarrays</span>
+<span class="sd">        List with the array of phi angle points split into multiple numpy</span>
+<span class="sd">        arrays. Their length is dependent on the available memory and the</span>
+<span class="sd">        simulations bottleneck.</span>
+
+<span class="sd">    cal.theta_split : list of np.ndarrays</span>
+<span class="sd">        List with the array of theta angle points split into multiple numpy</span>
+<span class="sd">        arrays. Their length is dependent on the available memory and the</span>
+<span class="sd">        simulations bottleneck.</span>
+
+<span class="sd">    cal.weights_split : list of np.ndarrays (optional)</span>
+<span class="sd">        List with the array of weights (in case of SOPHE-grid) split into</span>
+<span class="sd">        multiple numpy arrays. Their length is dependent on the available</span>
+<span class="sd">        memory and the simulations bottleneck.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">bottleneck</span> <span class="o">=</span> <span class="n">mem</span><span class="o">.</span><span class="n">define_bottleneck</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>
+    <span class="n">bp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">)</span>
+    <span class="n">gp</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span>
+    <span class="n">chunk_size</span> <span class="o">=</span> <span class="n">mem</span><span class="o">.</span><span class="n">chunk_size</span><span class="p">(</span><span class="n">bottleneck</span><span class="p">,</span> <span class="n">bp</span><span class="p">,</span> <span class="n">gp</span><span class="p">)</span>
+
+    <span class="n">cal</span><span class="o">.</span><span class="n">phi_split</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">phi</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">)</span>
+    <span class="n">cal</span><span class="o">.</span><span class="n">theta_split</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">theta</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid</span> <span class="o">==</span> <span class="s1">&#39;sophe&#39;</span><span class="p">:</span>
+        <span class="n">cal</span><span class="o">.</span><span class="n">weights_split</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+
+<div class="viewcode-block" id="hyperfine_converter">
+<a class="viewcode-back" href="../../developer.html#teacups.input_handler.hyperfine_converter">[docs]</a>
+<span class="k">def</span> <span class="nf">hyperfine_converter</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Allow flexible input of hyperfine parameters. Function has the following</span>
+<span class="sd">    possibilities for handling hyperfine parameters:</span>
+
+<span class="sd">    * No hyperfines are given: Only sys.I is set as an empty list.</span>
+<span class="sd">      No further hyperfine correlated attributes are added to the sys object.</span>
+
+<span class="sd">    * Hyperfines are given in the spinsystem attributes sys.I, sys.A and</span>
+<span class="sd">      sys.A_frame as lists (like the lists like needed by</span>
+<span class="sd">      set_up_hyperfine_tensors and create_hf_hamiltonian): Function just returns;</span>
+<span class="sd">      it does not change the attributes.</span>
+
+<span class="sd">    * Hyperfines are given as numbered attributes of sys, e.g. sys.I1, sys.I2</span>
+<span class="sd">      etc., the spin_system is not &#39;rp&#39;: Attributes sys.A, sys.I and sys.A_frame</span>
+<span class="sd">      are build as lists (like needed by set_up_hyperfine_tensors and</span>
+<span class="sd">      create_hf_hamiltonian) and filled with all n numbered attributes. If no</span>
+<span class="sd">      sys.A_frame_i is given the values in sys.A_frame are set to [0, 0, 0]. The</span>
+<span class="sd">      attribute sys.n_i determines the number of times the type of core is added</span>
+<span class="sd">      to sys.A/I/A_frame.</span>
+
+<span class="sd">    * Hyperfines are given as numbered attributes of sys, e.g. sys.I1, sys.I2</span>
+<span class="sd">      etc. and the spin_system is &#39;rp&#39;: The attributes are created as if</span>
+<span class="sd">      spin_sytem would not be &#39;rp&#39; but the resulting lists contain two instead</span>
+<span class="sd">      of one list of hyperfine parameters, one for each electron. The place where</span>
+<span class="sd">      the numbered elements shall be placed is defined by the attributes</span>
+<span class="sd">      donor_list and acceptor list.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sys : object</span>
+<span class="sd">        Spin system object. May contain parameters for the hyperfine coupling.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; sys = Sys()</span>
+<span class="sd">    &gt;&gt;&gt; sys.spin_system = &#39;doub&#39;</span>
+<span class="sd">    &gt;&gt;&gt; sys.I1 = 1/2</span>
+<span class="sd">    &gt;&gt;&gt; sys.n1 = 2</span>
+<span class="sd">    &gt;&gt;&gt; sys.A1 = [2, 2, 2]</span>
+<span class="sd">    &gt;&gt;&gt; hyperfine_converter(sys)</span>
+<span class="sd">    &gt;&gt;&gt; sys.A</span>
+<span class="sd">    [[[2, 2, 2], [2, 2, 2]]]</span>
+<span class="sd">    &gt;&gt;&gt; sys.I</span>
+<span class="sd">    [[1/2, 1/2]]</span>
+<span class="sd">    &gt;&gt;&gt; sys.A_frame</span>
+<span class="sd">    [[[0, 0, 0], [0, 0, 0]]]</span>
+
+<span class="sd">    &gt;&gt;&gt; sys.spin_system = &#39;rp&#39;</span>
+<span class="sd">    &gt;&gt;&gt; sys.I1 = 1/2</span>
+<span class="sd">    &gt;&gt;&gt; sys.n1 = 1</span>
+<span class="sd">    &gt;&gt;&gt; sys.A1 = [1, 2, 3]</span>
+<span class="sd">    &gt;&gt;&gt; sys.I2 = 1</span>
+<span class="sd">    &gt;&gt;&gt; sys.n2 = 1</span>
+<span class="sd">    &gt;&gt;&gt; sys.A2 = [4, 5, 6]</span>
+<span class="sd">    &gt;&gt;&gt; sys.A2_frame = [7, 7, 7]</span>
+<span class="sd">    &gt;&gt;&gt; sys.acceptor_list = [1]</span>
+<span class="sd">    &gt;&gt;&gt; sys.donor_list = [2]</span>
+<span class="sd">    &gt;&gt;&gt; hyperfine_converter(sys)</span>
+<span class="sd">    &gt;&gt;&gt; sys.I</span>
+<span class="sd">    [[1/2], [1]]</span>
+<span class="sd">    &gt;&gt;&gt; sys.A</span>
+<span class="sd">    [[[1, 2, 3]], [[4, 5, 6]]]</span>
+<span class="sd">    &gt;&gt;&gt; sys.A_frame</span>
+<span class="sd">    [[[0, 0, 0]], [[7, 7, 7]]]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">all_hyperfines</span> <span class="o">=</span> <span class="p">[</span><span class="n">nucspin</span> <span class="k">for</span> <span class="n">nucspin</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                      <span class="k">if</span> <span class="n">nucspin</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="p">)]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">all_hyperfines</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">I</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">return</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;I&#39;</span> <span class="ow">in</span> <span class="n">all_hyperfines</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s1">&#39;rp&#39;</span><span class="p">:</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">A_frame</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">I</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">all_hyperfines</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">=</span> <span class="n">nuc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;n&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">)]):</span>
+                        <span class="n">A</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;A&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">)])</span>
+                        <span class="n">I</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;I&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">)])</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">A_frame</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;A&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;_frame&quot;</span><span class="p">])</span>
+                        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                            <span class="n">A_frame</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+                <span class="n">sys</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="n">A</span><span class="p">]</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">I</span> <span class="o">=</span> <span class="p">[</span><span class="n">I</span><span class="p">]</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">A_frame</span> <span class="o">=</span> <span class="p">[</span><span class="n">A_frame</span><span class="p">]</span>
+                <span class="k">return</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">A_d</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">A_a</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">A_d_frame</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">A_a_frame</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">I_d</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">I_a</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">donor_list</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;n&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)]):</span>
+                        <span class="n">A_d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;A&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)])</span>
+                        <span class="n">I_d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;I&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)])</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">A_d_frame</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;A&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;_frame&quot;</span><span class="p">])</span>
+                        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                            <span class="n">A_d_frame</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+                <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">acceptor_list</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;n&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)]):</span>
+                        <span class="n">A_a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;A&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)])</span>
+                        <span class="n">I_a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;I&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)])</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">A_a_frame</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;A&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;_frame&quot;</span><span class="p">])</span>
+                        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                            <span class="n">A_a_frame</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+                <span class="n">sys</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="n">A_a</span><span class="p">,</span> <span class="n">A_d</span><span class="p">]</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">I</span> <span class="o">=</span> <span class="p">[</span><span class="n">I_a</span><span class="p">,</span> <span class="n">I_d</span><span class="p">]</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">A_frame</span> <span class="o">=</span> <span class="p">[</span><span class="n">A_a_frame</span><span class="p">,</span> <span class="n">A_d_frame</span><span class="p">]</span>
+                <span class="k">return</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025 M. Sc. Theresia Quintes.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction &mdash; TEACUPS 2025 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+    <link rel="canonical" href="https://theresiaquintes.github.io/teacups/introduction.html" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Getting started" href="getting_started.html" />
+    <link rel="prev" title="Welcome to teacups’ documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> TEACUPS
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-is-teacups">What is teacups?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-are-its-features">What are its features?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#literature">Literature</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spinsystem.html">Spin System (Sys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experimental.html">Experimental (Exp)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulation_options.html">Simulation Options (SimOpt)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="limitations_issiues.html">Limitations and known issiues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TEACUPS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Introduction</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/introduction.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h1>
+<section id="what-is-teacups">
+<h2>What is teacups?<a class="headerlink" href="#what-is-teacups" title="Permalink to this heading"></a></h2>
+<p>Teacups stands for <em>Time resolved EPR: Algebraic Calculations for Unequally Populated Spin Systems</em>. It is a Python3 package for the simulation of timeresolved, transient EPR spectra of spinporalized spin species.</p>
+</section>
+<section id="what-are-its-features">
+<h2>What are its features?<a class="headerlink" href="#what-are-its-features" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Until now four spin systems can be calculated</dt><dd><ul>
+<li><p>Doublets <code class="docutils literal notranslate"><span class="pre">'doub'</span></code></p></li>
+<li><p>Triplets <code class="docutils literal notranslate"><span class="pre">'trip'</span></code></p></li>
+<li><p>Spin correlated radical pairs <code class="docutils literal notranslate"><span class="pre">'rp'</span></code></p></li>
+<li><p>Triplet-Doublet-Pairs <code class="docutils literal notranslate"><span class="pre">'tdp'</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Calculations can be done in</dt><dd><ul>
+<li><p>Hilbert space → fast calculations, coherent dynamics</p></li>
+<li><p>Lioville space → slower calculations, include incoherent dynamics</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Relaxation behaviour can be simulated</dt><dd><ul>
+<li><p>phenomenological using relaxation times T<sub>1</sub> and  T<sub>2</sub></p></li>
+<li><p>explicit by defining transitions between the systems eigenstates</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>The following results can be gained:</dt><dd><ul>
+<li><p>3D-EPR-spectrum (intensity dependent on time and magnetic field)</p></li>
+<li><p>Population evolution (evolution of the populations of the eigenstates)</p></li>
+<li><p>Eigenvalues of the spin system</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this heading"></a></h2>
+<p>You will need the following installed on your system to run a TEACUPS-simulation:</p>
+<ul class="simple">
+<li><p>Python3</p></li>
+<li><p>numpy</p></li>
+<li><p>scipy</p></li>
+<li><p>matplotlib</p></li>
+<li><p>tqdm</p></li>
+<li><p>psutil</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>So far, the programme package has been run under an Ubuntu Linux distribution and Windows 10.</p>
+</div>
+</section>
+<section id="literature">
+<h2>Literature<a class="headerlink" href="#literature" title="Permalink to this heading"></a></h2>
+<p>To get an overview about teacups and its theoretical background you can consult this <a class="reference download internal" download="" href="_downloads/95b57e2c6af14ccb5e9a0ad5b6bd459f/teacups_main.pdf"><code class="xref download docutils literal notranslate"><span class="pre">paper</span></code></a> and the <a class="reference download internal" download="" href="_downloads/4de1f55112ffe9722580d2cd66f3a5e7/teacups_SI.pdf"><code class="xref download docutils literal notranslate"><span class="pre">SI</span></code></a>.</p>
+<p>All Simulationarguments are summarized in the <a class="reference download internal" download="" href="_downloads/7d69dfccbf540b0e705373a625109db3/quickreference.pdf"><code class="xref download docutils literal notranslate"><span class="pre">quick</span> <span class="pre">reference</span></code></a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to teacups’ documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="getting_started.html" class="btn btn-neutral float-right" title="Getting started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025 M. Sc. Theresia Quintes.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
