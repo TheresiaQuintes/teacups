@@ -52,5 +52,7 @@ You can download teacups via git:
 
 Documentation
 -------------
-The full documentation including advice on installation and usage of the package can be found at `https://theresiaquintes.github.io/teacups/`.
+The full documentation including advice on installation and usage of the package can be found at:
+
+      `https://theresiaquintes.github.io/teacups/`.
 
