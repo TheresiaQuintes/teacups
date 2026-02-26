@@ -153,7 +153,8 @@ def teacups(Sys: object, Exp: object, SimOpt: object) -> 'np.ndarray':
             sap.powder_average(opt, cal)
 
     # do Voigt convolution
-    cal.spec_sim = co.voigt_convolution(sys.width_gauss, cal.spec_sim)
+    cal.spec_sim = co.voigt_convolution(sys.sigma_time, sys.width_gauss,
+                                        cal.spec_sim)
 
     # calculate decay of the signal in hilbert space
     if SimOpt.space == 'hilbert':

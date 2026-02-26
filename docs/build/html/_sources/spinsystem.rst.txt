@@ -325,6 +325,15 @@ Sys.width_gauss
 * e.g.::
 	
 	Sys.width_gauss = 1  # mT	            
+
+Sys.sigma_time
+^^^^^^^^^^^^^^^
+* After the spectrum is generated, it is convoluted with a gaussian function along the time axis. The width of this function can be set in Sys.sigma_time. If a perfect time resolution is desired, set ``Sys.sigma_time = 0``. If it is chosen to be greater than zero, a worse time resoltion is simulated, which can be important for simulating experimental data.
+	* Float in s
+* Obligatory for all simulations
+* e.g.::
+	
+	Sys.width_gauss = 0.1e-6  # s	            
 	
 
 Hyperfine interaction

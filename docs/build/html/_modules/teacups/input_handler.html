@@ -1,25 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="../../">
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>teacups.input_handler &mdash; TEACUPS 2025 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+    <link rel="canonical" href="https://theresiaquintes.github.io/teacups/_modules/teacups/input_handler.html" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=cb975c41"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="../../_static/copybutton.js?v=f281be69"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -30,18 +29,14 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="../../index.html" class="icon icon-home">
-            TEACUPS
+            <a href="../../index.html" class="icon icon-home"> TEACUPS
           </a>
               <div class="version">
                 2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -71,7 +66,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
       <li class="breadcrumb-item active">teacups.input_handler</li>
       <li class="wy-breadcrumbs-aside">
@@ -92,9 +87,7 @@
 <span class="n">COMPLEX_TYPE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">complex64</span>
 <span class="n">FLOAT_TYPE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
 
-<div class="viewcode-block" id="Calculations">
-<a class="viewcode-back" href="../../developer.html#teacups.input_handler.Calculations">[docs]</a>
-<span class="k">class</span> <span class="nc">Calculations</span><span class="p">:</span>
+<div class="viewcode-block" id="Calculations"><a class="viewcode-back" href="../../developer.html#teacups.input_handler.Calculations">[docs]</a><span class="k">class</span> <span class="nc">Calculations</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An object of class Calculations has no attributes at the beginning. The</span>
 <span class="sd">    object of the Calculations-Class is used during the simulation by several</span>
@@ -105,10 +98,7 @@
         <span class="k">return</span></div>
 
 
-
-<div class="viewcode-block" id="input_object_handler">
-<a class="viewcode-back" href="../../developer.html#teacups.input_handler.input_object_handler">[docs]</a>
-<span class="k">def</span> <span class="nf">input_object_handler</span><span class="p">(</span><span class="n">Sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">Exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">Opt</span><span class="p">:</span> <span class="nb">object</span>
+<div class="viewcode-block" id="input_object_handler"><a class="viewcode-back" href="../../developer.html#teacups.input_handler.input_object_handler">[docs]</a><span class="k">def</span> <span class="nf">input_object_handler</span><span class="p">(</span><span class="n">Sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">Exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">Opt</span><span class="p">:</span> <span class="nb">object</span>
                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">object</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">object</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Build copys of the three input objects, that contain all simulation</span>
@@ -146,10 +136,7 @@
     <span class="k">return</span> <span class="n">sys</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span></div>
 
 
-
-<div class="viewcode-block" id="scale_inputs">
-<a class="viewcode-back" href="../../developer.html#teacups.input_handler.scale_inputs">[docs]</a>
-<span class="k">def</span> <span class="nf">scale_inputs</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="scale_inputs"><a class="viewcode-back" href="../../developer.html#teacups.input_handler.scale_inputs">[docs]</a><span class="k">def</span> <span class="nf">scale_inputs</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Change the unit of the attributes of the input to Hz or T.</span>
 
@@ -205,13 +192,14 @@
     <span class="n">std</span> <span class="o">=</span> <span class="n">std</span><span class="o">/</span><span class="n">conversion</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">width_gauss</span> <span class="o">=</span> <span class="n">std</span>
 
+    <span class="c1"># convert sigma_time to pixels</span>
+    <span class="n">conversion_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">t_scale</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">exp</span><span class="o">.</span><span class="n">t_scale</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="n">exp</span><span class="o">.</span><span class="n">t_points</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">sigma_time</span> <span class="o">/=</span> <span class="n">conversion_time</span>
+
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
-
-<div class="viewcode-block" id="predefinitions">
-<a class="viewcode-back" href="../../developer.html#teacups.input_handler.predefinitions">[docs]</a>
-<span class="k">def</span> <span class="nf">predefinitions</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="predefinitions"><a class="viewcode-back" href="../../developer.html#teacups.input_handler.predefinitions">[docs]</a><span class="k">def</span> <span class="nf">predefinitions</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Predefine arrays needed for the calculations: A linear spaced t-axis,</span>
 <span class="sd">    and an empty signal-array.</span>
@@ -247,10 +235,7 @@
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
-
-<div class="viewcode-block" id="initialize_spin_system">
-<a class="viewcode-back" href="../../developer.html#teacups.input_handler.initialize_spin_system">[docs]</a>
-<span class="k">def</span> <span class="nf">initialize_spin_system</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="initialize_spin_system"><a class="viewcode-back" href="../../developer.html#teacups.input_handler.initialize_spin_system">[docs]</a><span class="k">def</span> <span class="nf">initialize_spin_system</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set up the spin quantum numer s for a given spinsystem.</span>
 
@@ -283,10 +268,7 @@
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
-
-<div class="viewcode-block" id="create_grid">
-<a class="viewcode-back" href="../../developer.html#teacups.input_handler.create_grid">[docs]</a>
-<span class="k">def</span> <span class="nf">create_grid</span><span class="p">(</span><span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="create_grid"><a class="viewcode-back" href="../../developer.html#teacups.input_handler.create_grid">[docs]</a><span class="k">def</span> <span class="nf">create_grid</span><span class="p">(</span><span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create the orientational grid and set up pairs of theta and phi for each</span>
 <span class="sd">    angle point. The variable grid_points is changed from the input value</span>
@@ -345,10 +327,7 @@
     <span class="k">return</span></div>
 
 
-
-<div class="viewcode-block" id="split_grid">
-<a class="viewcode-back" href="../../developer.html#teacups.input_handler.split_grid">[docs]</a>
-<span class="k">def</span> <span class="nf">split_grid</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="split_grid"><a class="viewcode-back" href="../../developer.html#teacups.input_handler.split_grid">[docs]</a><span class="k">def</span> <span class="nf">split_grid</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find the memory-bottleneck for a routine and split the grid into a number</span>
 <span class="sd">    of chunks defined by the available memory.</span>
@@ -394,7 +373,8 @@
     <span class="n">bottleneck</span> <span class="o">=</span> <span class="n">mem</span><span class="o">.</span><span class="n">define_bottleneck</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>
     <span class="n">bp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">)</span>
     <span class="n">gp</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span>
-    <span class="n">chunk_size</span> <span class="o">=</span> <span class="n">mem</span><span class="o">.</span><span class="n">chunk_size</span><span class="p">(</span><span class="n">bottleneck</span><span class="p">,</span> <span class="n">bp</span><span class="p">,</span> <span class="n">gp</span><span class="p">)</span>
+    <span class="n">chunk_size</span> <span class="o">=</span> <span class="n">mem</span><span class="o">.</span><span class="n">chunk_size</span><span class="p">(</span><span class="n">bottleneck</span><span class="p">,</span> <span class="n">bp</span><span class="p">,</span> <span class="n">gp</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">)</span>
 
     <span class="n">cal</span><span class="o">.</span><span class="n">phi_split</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">phi</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">)</span>
     <span class="n">cal</span><span class="o">.</span><span class="n">theta_split</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">theta</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">)</span>
@@ -404,10 +384,7 @@
     <span class="k">return</span></div>
 
 
-
-<div class="viewcode-block" id="hyperfine_converter">
-<a class="viewcode-back" href="../../developer.html#teacups.input_handler.hyperfine_converter">[docs]</a>
-<span class="k">def</span> <span class="nf">hyperfine_converter</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="hyperfine_converter"><a class="viewcode-back" href="../../developer.html#teacups.input_handler.hyperfine_converter">[docs]</a><span class="k">def</span> <span class="nf">hyperfine_converter</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Allow flexible input of hyperfine parameters. Function has the following</span>
 <span class="sd">    possibilities for handling hyperfine parameters:</span>
@@ -538,7 +515,6 @@
                 <span class="n">sys</span><span class="o">.</span><span class="n">I</span> <span class="o">=</span> <span class="p">[</span><span class="n">I_a</span><span class="p">,</span> <span class="n">I_d</span><span class="p">]</span>
                 <span class="n">sys</span><span class="o">.</span><span class="n">A_frame</span> <span class="o">=</span> <span class="p">[</span><span class="n">A_a_frame</span><span class="p">,</span> <span class="n">A_d_frame</span><span class="p">]</span>
                 <span class="k">return</span></div>
-
 </pre></div>
 
            </div>

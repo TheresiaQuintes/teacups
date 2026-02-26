@@ -85,6 +85,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#line-width">Line width</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#sys-width-gauss">Sys.width_gauss</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sys-sigma-time">Sys.sigma_time</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#hyperfine-interaction">Hyperfine interaction</a><ul>
@@ -635,6 +636,24 @@
 <li><p>Obligatory for all simulations</p></li>
 <li><p>e.g.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">width_gauss</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># mT</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="sys-sigma-time">
+<h3>Sys.sigma_time<a class="headerlink" href="#sys-sigma-time" title="Permalink to this heading"></a></h3>
+<ul>
+<li><dl class="simple">
+<dt>After the spectrum is generated, it is convoluted with a gaussian function along the time axis. The width of this function can be set in Sys.sigma_time. If a perfect time resolution is desired, set <code class="docutils literal notranslate"><span class="pre">Sys.sigma_time</span> <span class="pre">=</span> <span class="pre">0</span></code>. If it is chosen to be greater than zero, a worse time resoltion is simulated, which can be important for simulating experimental data.</dt><dd><ul class="simple">
+<li><p>Float in s</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Obligatory for all simulations</p></li>
+<li><p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sys</span><span class="o">.</span><span class="n">width_gauss</span> <span class="o">=</span> <span class="mf">0.1e-6</span>  <span class="c1"># s</span>
 </pre></div>
 </div>
 </li>

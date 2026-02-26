@@ -10,6 +10,7 @@ class Sys:
         self.g = [1.95, 2, 2.1]
 
         self.width_gauss = 3
+        self.sigma_time = 0
         self.decay = 1e-6
 
         self.dynamics = None

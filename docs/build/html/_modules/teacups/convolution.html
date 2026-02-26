@@ -82,18 +82,22 @@
 <span class="kn">import</span> <span class="nn">scipy.ndimage</span> <span class="k">as</span> <span class="nn">snd</span>
 
 
-<div class="viewcode-block" id="voigt_convolution"><a class="viewcode-back" href="../../developer.html#teacups.convolution.voigt_convolution">[docs]</a><span class="k">def</span> <span class="nf">voigt_convolution</span><span class="p">(</span><span class="n">width</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+<div class="viewcode-block" id="voigt_convolution"><a class="viewcode-back" href="../../developer.html#teacups.convolution.voigt_convolution">[docs]</a><span class="k">def</span> <span class="nf">voigt_convolution</span><span class="p">(</span><span class="n">sigma_time</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the Voigt profile of a Lorentzian function by convolution of the</span>
 <span class="sd">    existing Lorentzian function and a Gaussian distribution with a given FWHH.</span>
 <span class="sd">    A 2D-spectrum is convolved with the Gaussian function along its second</span>
-<span class="sd">    axis, which should be the B-field-axis.</span>
+<span class="sd">    axis, which should be the B-field-axis. Additional the spectrum is convolved</span>
+<span class="sd">    with a second Gaussian distribution along the first axis (time-axis) for</span>
+<span class="sd">    simulating the time resoltuion of the signal.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    width_time : float</span>
+<span class="sd">        Standardderivation of the Gauß-Filter, Time resolution of the signal.</span>
+<span class="sd">        In pixels.</span>
 <span class="sd">    width : float</span>
-<span class="sd">        Gaussian line width, standard deviation. Has to have the same</span>
-<span class="sd">        unit as the second axis of the spectrum.</span>
+<span class="sd">        Gaussian line width, standard deviation. In pixels.</span>
 <span class="sd">    spectrum : np.ndarray</span>
 <span class="sd">        2D-Array containing values of the ordinate of a spectrum.</span>
 <span class="sd">        In case of TREPR spectra this would be the intensity for each time and</span>
@@ -110,7 +114,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">spectrum_conv</span> <span class="o">=</span> <span class="n">snd</span><span class="o">.</span><span class="n">gaussian_filter</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="p">])</span>
+    <span class="n">spectrum_conv</span> <span class="o">=</span> <span class="n">snd</span><span class="o">.</span><span class="n">gaussian_filter</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="p">[</span><span class="n">sigma_time</span><span class="p">,</span> <span class="n">width</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">spectrum_conv</span></div>
 </pre></div>

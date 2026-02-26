@@ -112,6 +112,10 @@ def scale_inputs(sys: object, exp: object, opt: object) -> None:
     std = std/conversion
     sys.width_gauss = std
 
+    # convert sigma_time to pixels
+    conversion_time = (exp.t_scale[1]-exp.t_scale[0])/exp.t_points
+    sys.sigma_time /= conversion_time
+
     return None
 
 
@@ -289,7 +293,7 @@ def split_grid(sys: object, exp: object, opt: object, cal: object) -> None:
     bottleneck = mem.define_bottleneck(sys)
     bp = len(exp.B_z)
     gp = opt.grid_points
-    chunk_size = mem.chunk_size(bottleneck, bp, gp)*3
+    chunk_size = mem.chunk_size(bottleneck, bp, gp)*10
     print(chunk_size)
 
     cal.phi_split = np.array_split(cal.phi, chunk_size)
