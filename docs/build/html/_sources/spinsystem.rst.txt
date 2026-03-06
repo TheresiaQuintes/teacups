@@ -333,7 +333,8 @@ Sys.sigma_time
 * Obligatory for all simulations
 * e.g.::
 	
-	Sys.width_gauss = 0.1e-6  # s	            
+	Sys.width_gauss = 0.1e-6  # s
+* Consider to set ``SimOpt.extend_t = True``
 	
 
 Hyperfine interaction

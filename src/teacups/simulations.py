@@ -154,7 +154,10 @@ def teacups(Sys: object, Exp: object, SimOpt: object) -> 'np.ndarray':
 
     # do Voigt convolution
     cal.spec_sim = co.voigt_convolution(sys.sigma_time, sys.width_gauss,
-                                        cal.spec_sim)
+                                        cal.spec_sim, opt.extend_t)
+
+    cal.t = co.extend_time_axis(cal.t, cal.spec_sim)
+    Exp.t = cal.t
 
     # calculate decay of the signal in hilbert space
     if SimOpt.space == 'hilbert':

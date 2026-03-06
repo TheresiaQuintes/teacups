@@ -24,6 +24,7 @@ the following attributes are preallocated and can be used as a starting point, w
 * eigval_mode: False
 * cpu_cores: 1
 * CUPY: False
+* extend_t: False
 
 In the following all possible attributes are named. For each attribute an explanation, cases where it is needed and an example are given. You can get a quick reference file with all attributes :download:`here <./../quickreference/quickreference.pdf>`.
 
@@ -125,6 +126,14 @@ SimOpt.eigval_mode
 * The shape of the returned eigval-array is::
 	B-points x grid-points x eigenvalues
 
+SimOpt.extend_t
+^^^^^^^^^^^^^^^
+* If Sys.sigma_time is set the signal can be extended to negative values to see the full baseline. Set extend_t to True:
+* e.g.::
+	
+	Sys.sigma_time = 0.1e-6
+	SimOpt.extend_t = True
+* The new t-axis is saved in ``Exp.t``
 
 Calculation settings
 --------------------
@@ -153,3 +162,4 @@ SimOpt.CUPY
 * e.g.::
 	
 	SimOpt.CUPY = False
+

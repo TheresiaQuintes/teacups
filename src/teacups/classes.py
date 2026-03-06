@@ -39,3 +39,4 @@ class SimOpt:
         self.eigval_mode = False
         self.cpu_cores = 1
         self.CUPY = False
+        self.extend_t = False

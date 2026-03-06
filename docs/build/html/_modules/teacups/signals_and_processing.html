@@ -467,6 +467,8 @@
 <span class="sd">    None</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">b_trace</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
         <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span><span class="p">[:,</span> <span class="n">b_trace</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
             <span class="o">-</span><span class="n">cal</span><span class="o">.</span><span class="n">t</span><span class="o">/</span><span class="n">sys</span><span class="o">.</span><span class="n">decay</span><span class="p">)</span><span class="o">*</span><span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span><span class="p">[:,</span> <span class="n">b_trace</span><span class="p">]</span></div>

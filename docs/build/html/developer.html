@@ -1853,8 +1853,33 @@ is True and SimOpt.space is ‘liouville’.</p></li>
 <h3>convolution.py<a class="headerlink" href="#convolution-py" title="Permalink to this heading"></a></h3>
 <p>The functions in this module are written to convolve a calculated 2D-spectrum along the B-axis. Gaussian convolution or isotrope hyperfine convolution are provided.</p>
 <span class="target" id="module-teacups.convolution"></span><dl class="py function">
+<dt class="sig sig-object py" id="teacups.convolution.extend_time_axis">
+<span class="sig-prename descclassname"><span class="pre">teacups.convolution.</span></span><span class="sig-name descname"><span class="pre">extend_time_axis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/teacups/convolution.html#extend_time_axis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#teacups.convolution.extend_time_axis" title="Permalink to this definition"></a></dt>
+<dd><p>If the time axis is shorter than the time-dimension of the spectrum it gets
+extended by negative values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>np.ndarray</em>) – Time axis.</p></li>
+<li><p><strong>spec</strong> (<em>np.ndarray</em>) – 2D-Array containing values of the ordinate of a spectrum.
+In case of TREPR spectra this would be the intensity for each time and
+magnetic field point. The convolution is carried out along the
+second axis.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>t_extended</strong> – Time axis. If it has been shorter than the first dimension of spec
+before it is extended by negative values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="teacups.convolution.voigt_convolution">
-<span class="sig-prename descclassname"><span class="pre">teacups.convolution.</span></span><span class="sig-name descname"><span class="pre">voigt_convolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/teacups/convolution.html#voigt_convolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#teacups.convolution.voigt_convolution" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">teacups.convolution.</span></span><span class="sig-name descname"><span class="pre">voigt_convolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extend_t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/teacups/convolution.html#voigt_convolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#teacups.convolution.voigt_convolution" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the Voigt profile of a Lorentzian function by convolution of the
 existing Lorentzian function and a Gaussian distribution with a given FWHH.
 A 2D-spectrum is convolved with the Gaussian function along its second
@@ -1871,6 +1896,8 @@ In pixels.</p></li>
 In case of TREPR spectra this would be the intensity for each time and
 magnetic field point. The convolution is carried out along the
 second axis.</p></li>
+<li><p><strong>extend_t</strong> (<em>bool</em>) – If true the time axis is extended by a zero-baseline with
+5*time_sigma pixels. Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

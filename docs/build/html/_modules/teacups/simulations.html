@@ -234,7 +234,10 @@
 
     <span class="c1"># do Voigt convolution</span>
     <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span> <span class="o">=</span> <span class="n">co</span><span class="o">.</span><span class="n">voigt_convolution</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">sigma_time</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">width_gauss</span><span class="p">,</span>
-                                        <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span><span class="p">)</span>
+                                        <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">extend_t</span><span class="p">)</span>
+
+    <span class="n">cal</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">co</span><span class="o">.</span><span class="n">extend_time_axis</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span><span class="p">)</span>
+    <span class="n">Exp</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">t</span>
 
     <span class="c1"># calculate decay of the signal in hilbert space</span>
     <span class="k">if</span> <span class="n">SimOpt</span><span class="o">.</span><span class="n">space</span> <span class="o">==</span> <span class="s1">&#39;hilbert&#39;</span><span class="p">:</span>
