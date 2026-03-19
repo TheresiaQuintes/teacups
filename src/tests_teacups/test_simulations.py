@@ -125,7 +125,7 @@ class TestTeacups:
         Exp.B_mw = 0.2
 
         # set up simulation SimOption parameters
-        SimOpt.grid_points = 1
+        SimOpt.grid_points = 3
         SimOpt.space = 'hilbert'
 
         # do simulation
@@ -206,7 +206,7 @@ class TestTeacups:
         Exp.B_mw = 0.00001
         Exp.freq_mw = 9.5*1e9
 
-        SimOpt.grid_points = 1
+        SimOpt.grid_points = 3
         SimOpt.space = 'hilbert'
 
         # do simulation
@@ -501,7 +501,7 @@ class TestTeacups:
         Exp.freq_mw = 9.5*1e9
         Exp.cpu_cores = 0
 
-        SimOpt.grid_points = 2
+        SimOpt.grid_points = 3
         SimOpt.sym = "D2h"
         SimOpt.grid = "sophe"
         SimOpt.space = 'hilbert'

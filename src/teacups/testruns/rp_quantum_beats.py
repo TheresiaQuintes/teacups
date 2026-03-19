@@ -33,7 +33,6 @@ Sys.D_frame = [0, 1.012, -0.017]
 Sys.J_ex = 0
 
 Sys.width_gauss = 0.08
-Sys.sigma_time = 0.1e-6
 
 Exp.B_z = np.linspace(350.5, 352.3, 800)
 Exp.t_scale = [0, 2e-6]
@@ -60,5 +59,5 @@ plt.figure()
 plt.ylabel("norm. intensity")
 plt.xlabel("$t$ / $\mu$s")
 plt.plot(np.linspace(
-    Exp.t)*1e6, spec[:, 269].real)
+    Exp.t_scale[0], Exp.t_scale[1], Exp.t_points)*1e6, spec[:, 269].real)
 # plt.savefig("rp_quantum_beats_t.pdf")

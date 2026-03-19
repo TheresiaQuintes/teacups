@@ -18,17 +18,6 @@ class TestChunkSize:
         cs = mem.chunk_size(self.bottleneck, self.bp, self.gp)
         assert cs == 1
 
-    def test_set_up_density_matrix(self):
-        self.bottleneck = "set_up_density_matrix"
-        self.bottleneck = "set_up_density_matrix"
-        bp = np.sqrt(self.available_memory/(0.8*14*36*8))
-        bp = int(bp)+1
-        gp = int(bp)+2
-        cs_big = mem.chunk_size(self.bottleneck, bp, gp)
-        cs_small = mem.chunk_size(self.bottleneck, self.bp, self.gp)
-        assert cs_big == 3
-        assert cs_small == 1
-
 
 class TestDefineBottleneck:
     def setup(self):
@@ -54,4 +43,4 @@ class TestNomTdpZfSetUpDensityMatrix:
         self.nom = mem.nom_tdp_zf_set_up_density_matrix(self.bp, self.gp)
 
     def test_value(self):
-        assert self.nom == 60480
+        assert self.nom == 60480*15

@@ -14,6 +14,7 @@ class Sys:
         self.D_tri = 5
         self.E_tri = 6
         self.width_gauss = 7
+        self.sigma_time = 4
         return
 
 
@@ -74,6 +75,9 @@ class TestScaleInputs:
     def test_width_gauss(self):
         std = 0.21/(2*np.sqrt(2*np.log(2)))
         assert round(self.sys.width_gauss, 8) == round(std, 8)
+
+    def test_sigma_time(self):
+        assert self.sys.sigma_time == 5
 
 
 class TestPredefinitions:
@@ -195,9 +199,10 @@ class TestSplitGrid:
         self.sys.spin_system = "bla"
         self.sys.precursor = "blub"
         self.opt.grid = "piep"
-        self.cal.theta = np.array([1, 2, 3])
-        self.cal.phi = np.array([4, 5, 6])
-        self.cal.weights = np.array([7, 8, 9])
+        self.cal.theta = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+                                   14, 15, 16, 17, 18, 19])
+        self.cal.phi = np.array([4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
+        self.cal.weights = np.array([7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
         inp.split_grid(self.sys, self.exp, self.opt, self.cal)
 
     def test_type(self):
@@ -205,19 +210,19 @@ class TestSplitGrid:
         assert type(self.cal.theta_split) == list
 
     def test_len(self):
-        assert len(self.cal.phi_split) == 1
-        assert len(self.cal.theta_split) == 1
+        assert len(self.cal.phi_split) == 10
+        assert len(self.cal.theta_split) == 10
 
     def test_phi(self):
-        np.testing.assert_array_equal(self.cal.phi, self.cal.phi_split[0])
+        np.testing.assert_array_equal(self.cal.phi[0], self.cal.phi_split[0])
 
     def test_theta(self):
-        np.testing.assert_array_equal(self.cal.theta, self.cal.theta_split[0])
+        np.testing.assert_array_equal(self.cal.theta[0:2], self.cal.theta_split[0])
 
     def test_weights(self):
         self.opt.grid = "sophe"
         inp.split_grid(self.sys, self.exp, self.opt, self.cal)
-        np.testing.assert_array_equal(self.cal.weights,
+        np.testing.assert_array_equal(self.cal.weights[0],
                                       self.cal.weights_split[0])
 
 
