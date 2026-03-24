@@ -30,6 +30,7 @@ git commit -m "Update of Documentation"
 
 echo "📤 Pushing to gh-pages..."
 git push origin gh-pages
+git push gh gh-pages
 
 echo "🔙 Switching back to master..."
 git checkout master
