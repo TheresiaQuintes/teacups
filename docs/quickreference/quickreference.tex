@@ -44,6 +44,7 @@ Sys.g\_tri\_frame & euler angles, rotate g\_tri to the lab. frame & list of floa
 Sys.g & diagonal elements of the g-tensor of a doublet & list of floats\\
 Sys.g\_frame & euler angles, rotate g to the lab. frame & list of floats\\
 Sys.width\_gauss & gaussian line width in mT & float\\
+Sys.sigma\_time & time resolution in s & float \\
 \midrule
 
 Sys.donor\_list & index of cores assigned to the donor & list of str/int\\
@@ -93,6 +94,7 @@ SimOpt.pop\_evolution & Decides wether the population evolution is calculated an
 SimOpt.eigval\_mode & Decides wether only the eigenvalues shall be calculated & boolean\\
 SimOpt.cpu\_cores & Number of CPU cores used for time evolution, 0 uses all available cores & integer \\
 SimOpt.CUPY & Use GPU and Cupy for faster calcuations & boolean\\
+SimOpt.extend\_t & extend the time axis to negative values to see the full baseline & boolean \\
 
 
 

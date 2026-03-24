@@ -164,6 +164,7 @@
 <li><p>Sys.precursor (o)</p></li>
 <li><p>Sys.population (o)</p></li>
 <li><p>Sys.width_gauss (r)</p></li>
+<li><p>Sys.sigma_time (r)</p></li>
 <li><p>Sys.”spin system parameters” (o)</p></li>
 <li><p>Exp.B_z (r)</p></li>
 <li><p>Exp.t_scale (r)</p></li>
@@ -185,7 +186,7 @@
 </section>
 <section id="example-skripts">
 <h3>Example Skripts<a class="headerlink" href="#example-skripts" title="Permalink to this heading"></a></h3>
-<p>In the following four example scripts for each of the spin systems focussing on different time evolutions are provided. These can be used as a starting point for your own simulations.</p>
+<p>In the following example scripts can be used as a starting point for your own simulations.</p>
 <section id="doublet-transient-nutations">
 <h4>Doublet (transient nutations)<a class="headerlink" href="#doublet-transient-nutations" title="Permalink to this heading"></a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">teacups.simulations</span> <span class="k">as</span> <span class="nn">sim</span>
@@ -476,7 +477,6 @@
 <span class="n">Sys</span><span class="o">.</span><span class="n">J_ex</span> <span class="o">=</span> <span class="mi">0</span>
 
 <span class="n">Sys</span><span class="o">.</span><span class="n">width_gauss</span> <span class="o">=</span> <span class="mf">0.08</span>
-<span class="n">Sys</span><span class="o">.</span><span class="n">sigma_time</span> <span class="o">=</span> <span class="mf">0.1e-6</span>
 
 <span class="n">Exp</span><span class="o">.</span><span class="n">B_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">350.5</span><span class="p">,</span> <span class="mf">352.3</span><span class="p">,</span> <span class="mi">800</span><span class="p">)</span>
 <span class="n">Exp</span><span class="o">.</span><span class="n">t_scale</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">2e-6</span><span class="p">]</span>
@@ -497,18 +497,34 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;$B_z / \mathrm</span><span class="si">{mT}</span><span class="s2">$&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Int./a.u.&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">,</span> <span class="n">spec</span><span class="p">[</span><span class="mi">150</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
-<span class="c1"># plt.savefig(&quot;rp_quantum_beats_B.pdf&quot;)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;rp_quantum_beats_B.pdf&quot;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;norm. intensity&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;$t$ / $\mu$s&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
-    <span class="n">Exp</span><span class="o">.</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="mf">1e6</span><span class="p">,</span> <span class="n">spec</span><span class="p">[:,</span> <span class="mi">269</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
-<span class="c1"># plt.savefig(&quot;rp_quantum_beats_t.pdf&quot;)</span>
+    <span class="n">Exp</span><span class="o">.</span><span class="n">t_scale</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Exp</span><span class="o">.</span><span class="n">t_scale</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Exp</span><span class="o">.</span><span class="n">t_points</span><span class="p">)</span><span class="o">*</span><span class="mf">1e6</span><span class="p">,</span> <span class="n">spec</span><span class="p">[:,</span> <span class="mi">269</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;rp_quantum_beats_t.pdf&quot;</span><span class="p">)</span>
+
+<span class="c1"># %% Reproduction of a worse time resolution</span>
+
+<span class="n">Sys</span><span class="o">.</span><span class="n">sigma_time</span> <span class="o">=</span> <span class="mf">1e-6</span>
+<span class="n">SimOpt</span><span class="o">.</span><span class="n">extend_t</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="c1"># do simulation</span>
+<span class="n">spec</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">teacups</span><span class="p">(</span><span class="n">Sys</span><span class="p">,</span> <span class="n">Exp</span><span class="p">,</span> <span class="n">SimOpt</span><span class="p">)</span>
+<span class="n">spec</span> <span class="o">=</span> <span class="n">spec</span><span class="o">/</span><span class="nb">abs</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;norm. intensity&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;$t$ / $\mu$s&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Exp</span><span class="o">.</span><span class="n">t</span><span class="o">*</span><span class="mf">1e6</span><span class="p">,</span> <span class="n">spec</span><span class="p">[:,</span> <span class="mi">269</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;rp_no_quantum_beats_t.pdf&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><a class="reference download internal" download="" href="_downloads/1b3d729d3872eac2c61814a0a850b3d5/rp_quantum_beats_t.pdf"><code class="xref download docutils literal notranslate"><span class="pre">spectrum</span> <span class="pre">(time)</span></code></a></p>
 <p><a class="reference download internal" download="" href="_downloads/0937b3e06b4b0f3975b8a0bf098bd694/rp_quantum_beats_B.pdf"><code class="xref download docutils literal notranslate"><span class="pre">spectrum</span> <span class="pre">(magnetic</span> <span class="pre">field)</span></code></a></p>
+<p><a class="reference download internal" download="" href="_downloads/b278e96509bcf00585652b5db752207a/rp_no_quantum_beats_t.pdf"><code class="xref download docutils literal notranslate"><span class="pre">spectrum</span> <span class="pre">(bad</span> <span class="pre">time</span> <span class="pre">resolution)</span></code></a></p>
 </section>
 <section id="radical-pair-early-dynamics">
 <h4>Radical pair (early dynamics)<a class="headerlink" href="#radical-pair-early-dynamics" title="Permalink to this heading"></a></h4>

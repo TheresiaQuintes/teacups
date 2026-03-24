@@ -63,6 +63,7 @@ In the following some important attributes are listed. They are either obligator
 * Sys.precursor (o)
 * Sys.population (o)
 * Sys.width_gauss (r)
+* Sys.sigma_time (r)
 * Sys."spin system parameters" (o)
 
 * Exp.B_z (r)
@@ -85,7 +86,7 @@ You can now end your skript by running the simulation. Dependent on the input fo
 
 Example Skripts
 ---------------
-In the following four example scripts for each of the spin systems focussing on different time evolutions are provided. These can be used as a starting point for your own simulations.
+In the following example scripts can be used as a starting point for your own simulations.
 
 Doublet (transient nutations)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -130,6 +131,8 @@ Radical pair (quantum beats)
 :download:`spectrum (time) <./../../src/teacups/testruns/rp_quantum_beats_t.pdf>`
 
 :download:`spectrum (magnetic field) <./../../src/teacups/testruns/rp_quantum_beats_B.pdf>`
+
+:download:`spectrum (bad time resolution) <./../../src/teacups/testruns/rp_no_quantum_beats_t.pdf>`
 
 
 Radical pair (early dynamics)

@@ -53,11 +53,26 @@ plt.figure()
 plt.xlabel("$B_z / \mathrm{mT}$")
 plt.ylabel("Int./a.u.")
 plt.plot(Exp.B_z, spec[150].real)
-# plt.savefig("rp_quantum_beats_B.pdf")
+plt.savefig("rp_quantum_beats_B.pdf")
 
 plt.figure()
 plt.ylabel("norm. intensity")
 plt.xlabel("$t$ / $\mu$s")
 plt.plot(np.linspace(
     Exp.t_scale[0], Exp.t_scale[1], Exp.t_points)*1e6, spec[:, 269].real)
-# plt.savefig("rp_quantum_beats_t.pdf")
+plt.savefig("rp_quantum_beats_t.pdf")
+
+# %% Reproduction of a worse time resolution
+
+Sys.sigma_time = 0.1e-6
+SimOpt.extend_t = True
+
+# do simulation
+spec = sim.teacups(Sys, Exp, SimOpt)
+spec = spec/abs(spec).real.max()
+
+plt.figure()
+plt.ylabel("norm. intensity")
+plt.xlabel("$t$ / $\mu$s")
+plt.plot(Exp.t*1e6, spec[:, 269].real)
+plt.savefig("rp_no_quantum_beats_t.pdf")
