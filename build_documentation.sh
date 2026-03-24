@@ -9,6 +9,7 @@ echo "🚀 Building Sphinx documentation..."
 cd docs
 make clean
 make html
+git restore *
 cd ..
 
 echo "📦 Switching to gh-pages branch..."
