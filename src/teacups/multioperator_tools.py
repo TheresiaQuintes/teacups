@@ -3,20 +3,16 @@ import numpy as np
 COMPLEX_TYPE = np.complex64
 FLOAT_TYPE = np.float32
 
+
 class Multimatrix:
-    def __init__(self, dimension, grid_points: int, b_points: 'np.ndarray'):
-
+    def __init__(self, dimension, grid_points: int, b_points: "np.ndarray"):
         self.dimension = dimension
-        self.angle_shape = (grid_points, self.dimension,
-                            self.dimension)
-        self.B_angle_shape = (b_points, grid_points,
-                              self.dimension, self.dimension)
+        self.angle_shape = (grid_points, self.dimension, self.dimension)
+        self.B_angle_shape = (b_points, grid_points, self.dimension, self.dimension)
 
-        self.matrix = np.zeros(
-            (self.dimension, self.dimension), dtype=COMPLEX_TYPE)
+        self.matrix = np.zeros((self.dimension, self.dimension), dtype=COMPLEX_TYPE)
         self.angle_matrix = np.zeros((self.angle_shape), dtype=COMPLEX_TYPE)
-        self.B_angle_matrix = np.zeros(
-            (self.B_angle_shape), dtype=COMPLEX_TYPE)
+        self.B_angle_matrix = np.zeros((self.B_angle_shape), dtype=COMPLEX_TYPE)
 
     def matrix_changed(self) -> None:
         """
@@ -40,10 +36,8 @@ class Multimatrix:
         None.
 
         """
-        self.angle_matrix = np.broadcast_to(
-            self.matrix, self.angle_shape).copy()
-        self.B_angle_matrix = np.broadcast_to(
-            self.matrix, self.B_angle_shape).copy()
+        self.angle_matrix = np.broadcast_to(self.matrix, self.angle_shape).copy()
+        self.B_angle_matrix = np.broadcast_to(self.matrix, self.B_angle_shape).copy()
 
         return None
 
@@ -65,12 +59,12 @@ class Multimatrix:
 
         """
         self.B_angle_matrix = np.broadcast_to(
-            self.angle_matrix, self.B_angle_shape).copy()
+            self.angle_matrix, self.B_angle_shape
+        ).copy()
 
         return None
 
-
-    def scalar(self, factors: 'np.ndarray') -> None:
+    def scalar(self, factors: "np.ndarray") -> None:
         """
         Build the scalar product of the whole B_angle_matrix
         (this means each number in the array) with the product of all factors.
@@ -95,7 +89,7 @@ class Multimatrix:
 
         return None
 
-    def product(self, scd_matrix: 'np.ndarray', left=False) -> None:
+    def product(self, scd_matrix: "np.ndarray", left=False) -> None:
         """
         Build the matrix product of each matrix in B_angle_matrix and a second
         matrix being multiplied either from right (default) or from left side.
@@ -123,9 +117,11 @@ class Multimatrix:
         if scd_matrix.shape != self.matrix.shape:
             if scd_matrix.shape != self.angle_shape:
                 if scd_matrix.shape != self.B_angle_shape:
-                    raise IndexError("Multiplied matrix has to have either\
+                    raise IndexError(
+                        "Multiplied matrix has to have either\
                                      the shape of the matrix, angle_matrix\
-                                     or B_angle_matrix attribute.")
+                                     or B_angle_matrix attribute."
+                    )
 
         if not left:
             self.B_angle_matrix = self.B_angle_matrix[:, :] @ scd_matrix
@@ -134,8 +130,9 @@ class Multimatrix:
 
         return None
 
-    def basis_transformation(self, trans: 'np.ndarray', inverse_left=True,
-                            orthonormal=False) -> None:
+    def basis_transformation(
+        self, trans: "np.ndarray", inverse_left=True, orthonormal=False
+    ) -> None:
         """
         Change the basis of all matrices in B_angle_matrix.
         trans is the transformation matrix: m = trans^-1 @ m @ trans.
@@ -164,29 +161,35 @@ class Multimatrix:
         if trans.shape != self.matrix.shape:
             if trans.shape != self.angle_shape:
                 if trans.shape != self.B_angle_shape:
-                    raise IndexError("Transformation matrix has to have either\
+                    raise IndexError(
+                        "Transformation matrix has to have either\
                                      the shape of the matrix, angle_matrix\
-                                     or B_angle_matrix attribute.")
+                                     or B_angle_matrix attribute."
+                    )
 
         if inverse_left is True:
             if not orthonormal:
-                self.B_angle_matrix = (np.linalg.inv(trans) @
-                                       self.B_angle_matrix[:, :] @ trans)
+                self.B_angle_matrix = (
+                    np.linalg.inv(trans) @ self.B_angle_matrix[:, :] @ trans
+                )
             else:
-                self.B_angle_matrix = np.conj(trans.T) @ self.B_angle_matrix[:, :]\
-                    @ trans
+                self.B_angle_matrix = (
+                    np.conj(trans.T) @ self.B_angle_matrix[:, :] @ trans
+                )
 
         else:
             if not orthonormal:
-                self.B_angle_matrix = trans @ self.B_angle_matrix[:, :] @\
-                    (np.linalg.inv(trans))
+                self.B_angle_matrix = (
+                    trans @ self.B_angle_matrix[:, :] @ (np.linalg.inv(trans))
+                )
             else:
-                self.B_angle_matrix = trans @ self.B_angle_matrix[:, :]\
-                    @ np.conj(trans.T)
+                self.B_angle_matrix = (
+                    trans @ self.B_angle_matrix[:, :] @ np.conj(trans.T)
+                )
 
 
 class Multioperator_(Multimatrix):
-    def __init__(self, dimension, grid_points: int, b_points: 'np.ndarray'):
+    def __init__(self, dimension, grid_points: int, b_points: "np.ndarray"):
         Multimatrix.__init__(self, dimension, grid_points, b_points)
         self.B_angle_vector = self.build_vector()
         self.B_angle_superop = self.build_superoperator()
@@ -208,8 +211,12 @@ class Multioperator_(Multimatrix):
 
         """
         self.B_angle_vector = self.B_angle_matrix.reshape(
-            (self.B_angle_matrix.shape[0], self.B_angle_matrix.shape[1],
-             self.dimension**2))
+            (
+                self.B_angle_matrix.shape[0],
+                self.B_angle_matrix.shape[1],
+                self.dimension**2,
+            )
+        )
 
         return None
 
@@ -247,7 +254,6 @@ class Multioperator_(Multimatrix):
             self.B_angle_superop = np.kron(eye, self.B_angle_matrix[:, :])
 
         return None
-
 
 
 class Multioperator(Multioperator_):
@@ -307,7 +313,7 @@ class Multioperator(Multioperator_):
 
     """
 
-    def __init__(self, spinop: object, grid_points: int, B: 'np.ndarray'):
+    def __init__(self, spinop: object, grid_points: int, B: "np.ndarray"):
         Multioperator_.__init__(self, spinop.dimension, grid_points, len(B))
         self.spinop = spinop
         self.B = B
@@ -340,13 +346,13 @@ class Multioperator(Multioperator_):
         None.
 
         """
-        sx = np.broadcast_to(self.spinop.get('x'), (self.angle_shape))
-        sy = np.broadcast_to(self.spinop.get('y'), (self.angle_shape))
-        sz = np.broadcast_to(self.spinop.get('z'), (self.angle_shape))
+        sx = np.broadcast_to(self.spinop.get("x"), (self.angle_shape))
+        sy = np.broadcast_to(self.spinop.get("y"), (self.angle_shape))
+        sz = np.broadcast_to(self.spinop.get("z"), (self.angle_shape))
         tx = tensor.multirot[:, 0, 2, np.newaxis, np.newaxis]
         ty = tensor.multirot[:, 1, 2, np.newaxis, np.newaxis]
         tz = tensor.multirot[:, 2, 2, np.newaxis, np.newaxis]
-        self.angle_matrix = sx*tx + sy*ty + sz*tz
+        self.angle_matrix = sx * tx + sy * ty + sz * tz
         self.angle_matrix = self.angle_matrix.astype(COMPLEX_TYPE)
 
         self.angle_matrix_changed()
@@ -389,14 +395,14 @@ class Multioperator(Multioperator_):
         if self.spinop.dimension != spinop2.dimension:
             raise IndexError("Spinoperator dimensions must not differ.")
 
-        sx1 = np.broadcast_to(self.spinop.get('x'), (self.angle_shape))
-        sy1 = np.broadcast_to(self.spinop.get('y'), (self.angle_shape))
-        sz1 = np.broadcast_to(self.spinop.get('z'), (self.angle_shape))
+        sx1 = np.broadcast_to(self.spinop.get("x"), (self.angle_shape))
+        sy1 = np.broadcast_to(self.spinop.get("y"), (self.angle_shape))
+        sz1 = np.broadcast_to(self.spinop.get("z"), (self.angle_shape))
         S1 = np.array([sx1, sy1, sz1])
 
-        sx2 = np.broadcast_to(spinop2.get('x'), (self.angle_shape))
-        sy2 = np.broadcast_to(spinop2.get('y'), (self.angle_shape))
-        sz2 = np.broadcast_to(spinop2.get('z'), (self.angle_shape))
+        sx2 = np.broadcast_to(spinop2.get("x"), (self.angle_shape))
+        sy2 = np.broadcast_to(spinop2.get("y"), (self.angle_shape))
+        sz2 = np.broadcast_to(spinop2.get("z"), (self.angle_shape))
 
         S2 = np.array([sx2, sy2, sz2])
 
@@ -412,9 +418,7 @@ class Multioperator(Multioperator_):
         tzy = tensor.multirot[:, 2, 1, np.newaxis, np.newaxis]
         tzz = tensor.multirot[:, 2, 2, np.newaxis, np.newaxis]
 
-        tensor_ges = np.array([[txx, txy, txz],
-                               [tyx, tyy, tyz],
-                               [tzx, tzy, tzz]])
+        tensor_ges = np.array([[txx, txy, txz], [tyx, tyy, tyz], [tzx, tzy, tzz]])
 
         ham = 0
         for i in range(0, 3):
@@ -462,15 +466,16 @@ class Multioperator(Multioperator_):
         if self.spinop.dimension != spinop2.dimension:
             raise IndexError("Spinoperator dimensions must not differ.")
 
-        self.matrix = J_ex * (self.spinop.get('x')@spinop2.get('x')
-                                + self.spinop.get('y')@spinop2.get('y')
-                                + self.spinop.get('z')@spinop2.get('z'))
+        self.matrix = J_ex * (
+            self.spinop.get("x") @ spinop2.get("x")
+            + self.spinop.get("y") @ spinop2.get("y")
+            + self.spinop.get("z") @ spinop2.get("z")
+        )
         self.matrix = self.matrix.astype(COMPLEX_TYPE)
 
         self.matrix_changed()
         self.build_vector()
         self.build_superoperator()
-
 
         return None
 
@@ -514,8 +519,7 @@ class Multioperator(Multioperator_):
         None.
 
         """
-        self.matrix = self.spinop.get('x') * \
-            omega_nut - self.spinop.get('z')*omega_mw
+        self.matrix = self.spinop.get("x") * omega_nut - self.spinop.get("z") * omega_mw
 
         self.matrix_changed()
         self.build_vector()
@@ -554,8 +558,8 @@ class Multioperator(Multioperator_):
         self.create_linear_operator(g_tensor)
         self.angle_matrix_changed()
         self.B_angle_matrix *= np.broadcast_to(
-            self.B[:, np.newaxis, np.newaxis, np.newaxis],
-            self.B_angle_shape)
+            self.B[:, np.newaxis, np.newaxis, np.newaxis], self.B_angle_shape
+        )
 
         self.build_vector()
         self.build_superoperator()

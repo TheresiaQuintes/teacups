@@ -16,8 +16,8 @@ Sys.width_gauss = 3
 Sys.decay = 5e-6
 
 
-Sys.spin_system = 'doub'
-Sys.precursor = 'eigen'
+Sys.spin_system = "doub"
+Sys.precursor = "eigen"
 Sys.population = [1, 0]
 
 # set up Experimental parameters
@@ -28,11 +28,11 @@ Exp.B_mw = 0.2
 
 # set up simulation SimOption parameters
 SimOpt.grid_points = 1
-SimOpt.space = 'hilbert'
+SimOpt.space = "hilbert"
 
 # do simulation
 spec = sim.teacups(Sys, Exp, SimOpt)
-spec = spec/abs(spec).real.max()
+spec = spec / abs(spec).real.max()
 
 
 # %%
@@ -48,7 +48,6 @@ plt.plot(Exp.B_z, spec[25].real)
 plt.figure()
 plt.ylabel("Int./a.u.")
 plt.xlabel("$t / \mu\mathrm{s}$")
-plt.plot(np.linspace(
-    Exp.t_scale[0], Exp.t_scale[1], Exp.t_points), spec[:, 1415].real)
+plt.plot(np.linspace(Exp.t_scale[0], Exp.t_scale[1], Exp.t_points), spec[:, 1415].real)
 
 # plt.savefig("doublet_transient_nutations_t.pdf")

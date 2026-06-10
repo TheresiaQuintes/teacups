@@ -41,36 +41,40 @@ def propagation(sys: object, opt: object, cal: object) -> None:
 
     """
 
-    if opt.space == 'hilbert':
-        step = cal.t[1]-cal.t[0]
+    if opt.space == "hilbert":
+        step = cal.t[1] - cal.t[0]
         propagation = np.zeros(cal.ham.shape, dtype=COMPLEX_TYPE)
 
         eigval, vec = np.linalg.eigh(cal.ham)
-        exp_arg = 1j*eigval
+        exp_arg = 1j * eigval
 
         n = propagation.shape[-1]
-        propagation[:, :, range(n), range(n)] = np.exp(exp_arg*step)
-        print('exponential ready...')
+        propagation[:, :, range(n), range(n)] = np.exp(exp_arg * step)
+        print("exponential ready...")
 
-        propagation = vec @ propagation @ np.conj(
-            np.transpose(vec, (0, 1, 3, 2)))
-        print('propagator ready...')
+        propagation = vec @ propagation @ np.conj(np.transpose(vec, (0, 1, 3, 2)))
+        print("propagator ready...")
 
-    elif opt.space == 'liouville':
-        step = cal.t[1]-cal.t[0]
+    elif opt.space == "liouville":
+        step = cal.t[1] - cal.t[0]
 
-        cal.ham_superop *= -1j*step
-        print('superoperator ready...')
+        cal.ham_superop *= -1j * step
+        print("superoperator ready...")
 
         eigval, vec = np.linalg.eig(cal.ham_superop)
-        print('eigenvalues ready...')
+        print("eigenvalues ready...")
 
-        propagation = vec @ (np.exp(eigval)[:, :, np.newaxis] *
-                             np.eye(eigval.shape[-1], dtype=COMPLEX_TYPE))\
+        propagation = (
+            vec
+            @ (
+                np.exp(eigval)[:, :, np.newaxis]
+                * np.eye(eigval.shape[-1], dtype=COMPLEX_TYPE)
+            )
             @ np.linalg.inv(vec)
-        print('propagator ready...')
+        )
+        print("propagator ready...")
     else:
-        print('opt.space has to be either hilbert or liouville')
+        print("opt.space has to be either hilbert or liouville")
 
     cal.propagation = np.array(propagation)
 
@@ -124,22 +128,25 @@ def make_signal(exp: object, opt: object, cal: object) -> None:
     None.
 
     """
-    cal.signal = np.zeros((len(cal.t), len(exp.B_z), opt.grid_points),
-                          dtype=COMPLEX_TYPE)
+    cal.signal = np.zeros(
+        (len(cal.t), len(exp.B_z), opt.grid_points), dtype=COMPLEX_TYPE
+    )
     time_evolution_multicore(opt, cal)
 
     # calculate population evolution
-    if opt.pop_evolution is True and opt.space == 'liouville':
+    if opt.pop_evolution is True and opt.space == "liouville":
         print("starting population evolution...")
         rho_prop = cal.rho[0, 0, :, np.newaxis]
         cal.pop_evolution = []
         for i in range(0, len(cal.t)):
-            pop_matrix = np.conj(np.transpose(cal.eigvec[0, 0])) @\
-                rho_prop.reshape((cal.s.dimension, cal.s.dimension)) @\
-                cal.eigvec[0, 0]
+            pop_matrix = (
+                np.conj(np.transpose(cal.eigvec[0, 0]))
+                @ rho_prop.reshape((cal.s.dimension, cal.s.dimension))
+                @ cal.eigvec[0, 0]
+            )
             pops = np.diag(pop_matrix)
             cal.pop_evolution.append(pops)
-            rho_prop = cal.propagation[0, 0]@rho_prop
+            rho_prop = cal.propagation[0, 0] @ rho_prop
         cal.pop_evolution = np.array(cal.pop_evolution)
         print("population evolution ready...")
 
@@ -169,8 +176,7 @@ def time_evolution_hilbert(cal: object) -> "np.ndarray":
     rho_prop = cal.rho.copy()
     propagation_invers = np.linalg.inv(cal.propagation)
     for i in tqdm(range(len(cal.t))):
-        cal.signal[i] = np.trace(
-            (rho_prop @ cal.observable), axis1=-1, axis2=-2)
+        cal.signal[i] = np.trace((rho_prop @ cal.observable), axis1=-1, axis2=-2)
         rho_prop = propagation_invers @ rho_prop @ cal.propagation
     return cal.signal
 
@@ -199,7 +205,7 @@ def time_evolution_liouville(cal: object) -> "np.ndarray":
     rho_prop = cal.rho[:, :, :, np.newaxis]
     for i in tqdm(range(0, len(cal.t))):
         cal.signal[i] = np.dot(rho_prop[:, :, :, 0], cal.observable)
-        rho_prop = cal.propagation@rho_prop
+        rho_prop = cal.propagation @ rho_prop
     return cal.signal
 
 
@@ -231,9 +237,9 @@ def time_evolution_multicore(opt: object, cal: object) -> None:
     None
 
     """
-    if opt.space == 'hilbert':
+    if opt.space == "hilbert":
         multicore_sim = multicore(time_evolution_hilbert)
-    elif opt.space == 'liouville':
+    elif opt.space == "liouville":
         multicore_sim = multicore(time_evolution_liouville)
     cal.signal = multicore_sim(opt, cal)
     return
@@ -287,8 +293,8 @@ def multicore(time_evolution_function: callable) -> callable:
         for core in range(opt.cpu_cores):
             Calculations = deepcopy(cal)
             start = core * points_per_core
-            if core+1 < opt.cpu_cores:
-                end = (core+1) * points_per_core
+            if core + 1 < opt.cpu_cores:
+                end = (core + 1) * points_per_core
                 Calculations.propagation = cal.propagation[:, start:end]
                 Calculations.rho = cal.rho[:, start:end]
                 Calculations.signal = cal.signal[:, :, start:end]
@@ -350,8 +356,8 @@ def powder_average(opt: object, cal: object) -> None:
     None
 
     """
-    if opt.grid == 'sophe':
-        weightened_signal = cal.signal*cal.weights
+    if opt.grid == "sophe":
+        weightened_signal = cal.signal * cal.weights
         signal_powder_average = np.sum(weightened_signal, (-1))
         cal.spec_sim += signal_powder_average
 
@@ -388,5 +394,4 @@ def signal_hilbert_decay(sys: object, cal: object) -> None:
 
     """
     for b_trace in range(0, cal.spec_sim.shape[1]):
-        cal.spec_sim[:, b_trace] = np.exp(
-            -cal.t/sys.decay)*cal.spec_sim[:, b_trace]
+        cal.spec_sim[:, b_trace] = np.exp(-cal.t / sys.decay) * cal.spec_sim[:, b_trace]

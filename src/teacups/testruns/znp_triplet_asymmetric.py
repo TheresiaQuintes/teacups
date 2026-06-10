@@ -17,38 +17,35 @@ Sys.g_tri = [2.008, 2.008, 2.008]
 Sys.D_tri = 898
 Sys.E_tri = -161
 
-Sys.spin_system = 'trip'
-Sys.precursor = 'zf'
+Sys.spin_system = "trip"
+Sys.precursor = "zf"
 Sys.population = [0.95, 0, 0.05]
 
 Sys.decay = 1e-6
-Sys.dynamics = np.array([[0, 0.25e6, 0],
-                         [0.25e6, 0, 0.01e6],
-                         [0, 0.01e6, 0]])
+Sys.dynamics = np.array([[0, 0.25e6, 0], [0.25e6, 0, 0.01e6], [0, 0.01e6, 0]])
 
 Sys.width_gauss = 2
 
 # set up Experimental parameters
-Exp.B_z = np.linspace(295, 395, 256*4)
+Exp.B_z = np.linspace(295, 395, 256 * 4)
 Exp.t_scale = [1.9e-6, 3.8e-6]
 Exp.t_points = 476
 Exp.B_mw = 0.0001
 
 # set up simulation SimOption parameters
 SimOpt.grid_points = 40
-SimOpt.grid = 'sophe'
+SimOpt.grid = "sophe"
 SimOpt.sym = "D2h"
-SimOpt.space = 'liouville'
+SimOpt.space = "liouville"
 SimOpt.pop_evolution = True
 SimOpt.cpu_cores = 0
-
 
 
 # do simulation
 spec, pop = sim.teacups(Sys, Exp, SimOpt)
 
-#%%
-sim = spec.real/max(abs(spec[25].real))
+# %%
+sim = spec.real / max(abs(spec[25].real))
 t = np.linspace(1.9e-6, 3.8e-6, 476)
 
 plt.figure()
@@ -59,10 +56,10 @@ plt.ylabel("population of states")
 # plt.savefig("znp_triplet_asymmetric_pop.pdf")
 
 
-#%%
+# %%
 plt.figure()
 for i in range(0, 451, 150):
-    plt.plot(Exp.B_z, sim[25+i], label=str(t[25+i]))
+    plt.plot(Exp.B_z, sim[25 + i], label=str(t[25 + i]))
 
 plt.legend()
 plt.xlabel("$B_z$ / mT")

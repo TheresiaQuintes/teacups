@@ -2,8 +2,9 @@ import numpy as np
 import scipy.ndimage as snd
 
 
-def voigt_convolution(sigma_time: float, width: float, spectrum: 'np.ndarray',
-                      extend_t=False) -> 'np.ndarray':
+def voigt_convolution(
+    sigma_time: float, width: float, spectrum: "np.ndarray", extend_t=False
+) -> "np.ndarray":
     """
     Calculate the Voigt profile of a Lorentzian function by convolution of the
     existing Lorentzian function and a Gaussian distribution with a given FWHH.
@@ -37,8 +38,10 @@ def voigt_convolution(sigma_time: float, width: float, spectrum: 'np.ndarray',
         convolution alogrithm of SciPy.
 
     """
-    pad_t = int(5*sigma_time)
-    spec_pad = np.pad(spectrum, ((pad_t, 0), (0, 0)), mode='constant', constant_values=0)
+    pad_t = int(5 * sigma_time)
+    spec_pad = np.pad(
+        spectrum, ((pad_t, 0), (0, 0)), mode="constant", constant_values=0
+    )
     spec_conv_pad = snd.gaussian_filter(spec_pad, [sigma_time, width])
 
     if extend_t:
@@ -72,10 +75,10 @@ def extend_time_axis(t: np.ndarray, spec: np.ndarray) -> "np.ndarray":
 
     """
     if len(t) < spec.shape[0]:
-        dt = t[1]-t[0]
-        diff = spec.shape[0]-len(t)
+        dt = t[1] - t[0]
+        diff = spec.shape[0] - len(t)
 
-        t_neg = np.arange(-diff, 0)*dt
+        t_neg = np.arange(-diff, 0) * dt
         t_extended = np.concatenate((t_neg, t))
 
         return t_extended

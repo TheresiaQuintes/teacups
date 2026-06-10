@@ -1,11 +1,9 @@
-import sys
-sys.path.append("./..")
-
 import numpy as np
 import scipy.linalg as la
 import teacups.signals_and_processing as sap
 from copy import deepcopy
 import teacups.matrix_tools as mt
+
 
 class Sys:
     def __init__(self):
@@ -26,16 +24,17 @@ class Cal:
     def __init__(self):
         self.t = [1, 2, 3]
         ham = np.array([[0, 1], [1, 0]], dtype=np.complex64)
-        ham = np.array([ham, ham, ham+1])
-        self.ham = np.array([ham, ham+2, ham, ham])
+        ham = np.array([ham, ham, ham + 1])
+        self.ham = np.array([ham, ham + 2, ham, ham])
 
         ham_s = np.array([[1, 2], [3, 4]], dtype=np.complex64)
-        ham_s = np.array([ham_s, ham_s, ham_s+1])
-        self.ham_superop = np.array([ham_s, ham_s+2, ham_s, ham_s])
+        ham_s = np.array([ham_s, ham_s, ham_s + 1])
+        self.ham_superop = np.array([ham_s, ham_s + 2, ham_s, ham_s])
 
-        t1 = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]],
-                      dtype=np.complex64)
-        t2 = t1/2
+        t1 = np.array(
+            [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]], dtype=np.complex64
+        )
+        t2 = t1 / 2
         self.signal = np.array([t1, t2])
         return
 
@@ -49,9 +48,9 @@ def initialize_classes(self):
 
 
 class TestPropagationHilbert:
-    def setup(self):
+    def setup_method(self):
         initialize_classes(self)
-        self.opt.space = 'hilbert'
+        self.opt.space = "hilbert"
         sap.propagation(self.sys, self.opt, self.cal)
 
     def test_shape(self):
@@ -61,18 +60,18 @@ class TestPropagationHilbert:
         assert self.cal.propagation.dtype == "complex64"
 
     def test_value(self):
-        comp1 = la.expm(1j*np.array([[0, 1], [1, 0]], dtype=np.complex64))
-        comp2 = la.expm(1j*np.array([[1, 2], [2, 1]], dtype=np.complex64))
-        comp3 = la.expm(1j*np.array([[2, 3], [3, 2]], dtype=np.complex64))
+        comp1 = la.expm(1j * np.array([[0, 1], [1, 0]], dtype=np.complex64))
+        comp2 = la.expm(1j * np.array([[1, 2], [2, 1]], dtype=np.complex64))
+        comp3 = la.expm(1j * np.array([[2, 3], [3, 2]], dtype=np.complex64))
         np.testing.assert_allclose(comp1, self.cal.propagation[0, 0], atol=2e-6)
         np.testing.assert_allclose(comp2, self.cal.propagation[0, 2], atol=2e-6)
         np.testing.assert_allclose(comp3, self.cal.propagation[1, 1], atol=2e-6)
 
 
 class TestPropagationLiouville:
-    def setup(self):
+    def setup_method(self):
         initialize_classes(self)
-        self.opt.space = 'liouville'
+        self.opt.space = "liouville"
         self.cal.ham_superop = self.cal.ham
         sap.propagation(self.sys, self.opt, self.cal)
 
@@ -83,16 +82,16 @@ class TestPropagationLiouville:
         assert self.cal.propagation.dtype == "complex64"
 
     def test_value(self):
-        comp1 = la.expm(-1j*np.array([[0, 1], [1, 0]], dtype=np.complex64))
-        comp2 = la.expm(-1j*np.array([[1, 2], [2, 1]], dtype=np.complex64))
-        comp3 = la.expm(-1j*np.array([[2, 3], [3, 2]], dtype=np.complex64))
+        comp1 = la.expm(-1j * np.array([[0, 1], [1, 0]], dtype=np.complex64))
+        comp2 = la.expm(-1j * np.array([[1, 2], [2, 1]], dtype=np.complex64))
+        comp3 = la.expm(-1j * np.array([[2, 3], [3, 2]], dtype=np.complex64))
         np.testing.assert_allclose(comp1, self.cal.propagation[0, 0], atol=2e-6)
         np.testing.assert_allclose(comp2, self.cal.propagation[0, 2], atol=2e-6)
         np.testing.assert_allclose(comp3, self.cal.propagation[1, 1], atol=2e-6)
 
 
 class TestPowderAverageSophe:
-    def setup(self):
+    def setup_method(self):
         initialize_classes(self)
         self.cal.spec_sim = np.zeros((2, 4), dtype=np.complex64)
         self.cal.weights = [0.1, 0.2, 0.3]
@@ -107,19 +106,20 @@ class TestPowderAverageSophe:
         assert self.cal.spec_sim.dtype == "complex64"
 
     def test_value(self):
-        w = np.array([[0.1, 0.4, 0.9], [0.4, 1.0, 1.8],
-                            [0.7, 1.6, 2.7], [1, 2.2, 3.6]],
-                      dtype=np.complex64)
+        w = np.array(
+            [[0.1, 0.4, 0.9], [0.4, 1.0, 1.8], [0.7, 1.6, 2.7], [1, 2.2, 3.6]],
+            dtype=np.complex64,
+        )
 
         comp_t1 = np.array([w[0].sum(), w[1].sum(), w[2].sum(), w[3].sum()])
-        comp_t2 = comp_t1/2
+        comp_t2 = comp_t1 / 2
         comp = np.array([comp_t1, comp_t2])
 
         np.testing.assert_allclose(self.cal.spec_sim, comp)
 
 
 class TestPowderAverageFibonacci:
-    def setup(self):
+    def setup_method(self):
         initialize_classes(self)
         self.cal.spec_sim = np.zeros((2, 4), dtype=np.complex64)
         self.opt.grid = "fibonacci"
@@ -133,18 +133,19 @@ class TestPowderAverageFibonacci:
         assert self.cal.spec_sim.dtype == "complex64"
 
     def test_value(self):
-        w = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]],
-                      dtype=np.complex64)
+        w = np.array(
+            [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]], dtype=np.complex64
+        )
 
         comp_t1 = np.array([w[0].sum(), w[1].sum(), w[2].sum(), w[3].sum()])
-        comp_t2 = comp_t1/2
+        comp_t2 = comp_t1 / 2
         comp = np.array([comp_t1, comp_t2])
 
         np.testing.assert_allclose(self.cal.spec_sim, comp)
 
 
 class TestPowderAverageSingle:
-    def setup(self):
+    def setup_method(self):
         initialize_classes(self)
         self.cal.spec_sim = np.zeros((2, 4), dtype=np.complex64)
         self.opt.grid = "single"
@@ -157,21 +158,23 @@ class TestPowderAverageSingle:
         assert self.cal.spec_sim.dtype == "complex64"
 
     def test_value(self):
-        w = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]],
-                      dtype=np.complex64)
+        w = np.array(
+            [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]], dtype=np.complex64
+        )
 
         comp_t1 = np.array([w[0].sum(), w[1].sum(), w[2].sum(), w[3].sum()])
-        comp_t2 = comp_t1/2
+        comp_t2 = comp_t1 / 2
         comp = np.array([comp_t1, comp_t2])
 
         np.testing.assert_allclose(self.cal.spec_sim, comp)
 
 
 class TestSignalHilbertDecay:
-    def setup(self):
+    def setup_method(self):
         initialize_classes(self)
-        self.cal.spec_sim = np.array([[1, 2, 3, 4], [1, 2, 3, 4],
-                                      [1, 2, 3, 4]], dtype=np.complex64)
+        self.cal.spec_sim = np.array(
+            [[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]], dtype=np.complex64
+        )
         self.sys.decay = 2
         self.cal.t = np.log([1, 4, 9])
 
@@ -184,13 +187,14 @@ class TestSignalHilbertDecay:
         assert self.cal.spec_sim.dtype == "complex64"
 
     def test_value(self):
-        comp = np.array([[1, 2, 3, 4], [1/2, 2/2, 3/2, 4/2],
-                         [1/3, 2/3, 3/3, 4/3]])
+        comp = np.array(
+            [[1, 2, 3, 4], [1 / 2, 2 / 2, 3 / 2, 4 / 2], [1 / 3, 2 / 3, 3 / 3, 4 / 3]]
+        )
         np.testing.assert_allclose(self.cal.spec_sim, comp)
 
 
 class TestTimeEvolutionHilbert:
-    def setup(self):
+    def setup_method(self):
         initialize_classes(self)
         p1 = np.array([[0, -1], [1, 0]])
         p2 = np.array([[-1, 0], [0, 1]])
@@ -210,15 +214,12 @@ class TestTimeEvolutionHilbert:
         assert self.cal.signal.dtype == "complex64"
 
     def test_value(self):
-        comp = np.array([[[5, 5], [5, 5]],
-                        [[-5, -5], [-5, -5]],
-                        [[5, 5], [5, 5]]])
+        comp = np.array([[[5, 5], [5, 5]], [[-5, -5], [-5, -5]], [[5, 5], [5, 5]]])
         np.testing.assert_allclose(self.cal.signal, comp)
 
 
-
 class TestTimeEvolutionLiouville:
-    def setup(self):
+    def setup_method(self):
         initialize_classes(self)
         p1 = np.array([[0, -1], [1, 0]])
         p2 = np.array([[-1, 0], [0, 1]])
@@ -237,14 +238,12 @@ class TestTimeEvolutionLiouville:
         assert self.cal.signal.dtype == "complex64"
 
     def test_value(self):
-        comp = np.array([[[5, 5], [5, 5]],
-                        [[-1, 1], [1, -1]],
-                        [[-5, 5], [5, -5]]])
+        comp = np.array([[[5, 5], [5, 5]], [[-1, 1], [1, -1]], [[-5, 5], [5, -5]]])
         np.testing.assert_allclose(self.cal.signal, comp)
 
 
 class TestMakeSignalSignals:
-    def setup(self):
+    def setup_method(self):
         initialize_classes(self)
         self.exp.B_z = np.array([2, 3])
         self.opt.grid_points = 2
@@ -334,7 +333,7 @@ class TestMakeSignalSignals:
 
 
 class TestMakeSignalPopEvolution:
-    def setup(self):
+    def setup_method(self):
         initialize_classes(self)
         self.exp.B_z = np.array([2, 3, 4])
         self.opt.grid_points = 2
@@ -343,26 +342,25 @@ class TestMakeSignalPopEvolution:
         self.opt.space = "liouville"
 
         self.sup = np.arange(1, 17, dtype=np.complex64).reshape(4, 4)
-        self.sup_b_angle_matrix = np.array([[self.sup, self.sup],
-                                            [self.sup, self.sup],
-                                            [self.sup, self.sup]])
+        self.sup_b_angle_matrix = np.array(
+            [[self.sup, self.sup], [self.sup, self.sup], [self.sup, self.sup]]
+        )
         self.vec = np.array([1, 2, 3, 4], dtype=np.complex64)
-        self.vec_b_angle_matrix = np.array([[self.vec, self.vec],
-                                            [self.vec, self.vec],
-                                            [self.vec, self.vec]])
+        self.vec_b_angle_matrix = np.array(
+            [[self.vec, self.vec], [self.vec, self.vec], [self.vec, self.vec]]
+        )
         self.hil = np.array([[1, 2], [3, 4]], dtype=np.complex64)
-        self.hil_b_angle_matrix = np.array([[self.hil, self.hil],
-                                            [self.hil, self.hil],
-                                            [self.hil, self.hil]])
+        self.hil_b_angle_matrix = np.array(
+            [[self.hil, self.hil], [self.hil, self.hil], [self.hil, self.hil]]
+        )
 
         self.cal.propagation = self.sup_b_angle_matrix
         self.cal.rho = self.vec_b_angle_matrix
         self.cal.observable = self.vec
 
         self.cal.eigvec = self.hil_b_angle_matrix
-        self.cal.s = mt.Spinoperator(1/2)
+        self.cal.s = mt.Spinoperator(1 / 2)
         sap.make_signal(self.exp, self.opt, self.cal)
-
 
     def test_shape(self):
         assert self.cal.pop_evolution.shape == (3, 2)

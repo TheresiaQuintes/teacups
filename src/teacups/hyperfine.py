@@ -6,7 +6,8 @@ import teacups.signals_and_processing as sap
 import teacups.hamiltonians as ham
 
 import scipy.constants as const
-MU_B = const.physical_constants['Bohr magneton in Hz/T'][0]
+
+MU_B = const.physical_constants["Bohr magneton in Hz/T"][0]
 
 
 def set_up_hyperfine_tensors(sys: object, cal: object) -> None:
@@ -38,13 +39,16 @@ def set_up_hyperfine_tensors(sys: object, cal: object) -> None:
 
     """
     cal.A_tensor = []
-    if hasattr(sys, 'A_frame'):
+    if hasattr(sys, "A_frame"):
         for spin_count, spin in enumerate(sys.A):
             A_s = []
             for nuc_count, nuc in enumerate(spin):
                 A_tensor = cr.create_tensor(
-                    sys.A[spin_count][nuc_count], cal.phi, cal.theta,
-                    sys.A_frame[spin_count][nuc_count])
+                    sys.A[spin_count][nuc_count],
+                    cal.phi,
+                    cal.theta,
+                    sys.A_frame[spin_count][nuc_count],
+                )
                 A_s.append(A_tensor)
             cal.A_tensor.append(A_s)
     else:
@@ -52,15 +56,15 @@ def set_up_hyperfine_tensors(sys: object, cal: object) -> None:
             A_s = []
             for nuc_count, nuc in enumerate(spin):
                 A_tensor = cr.create_tensor(
-                    sys.A[spin_count][nuc_count], cal.phi, cal.theta)
+                    sys.A[spin_count][nuc_count], cal.phi, cal.theta
+                )
                 A_s.append(A_tensor)
             cal.A_tensor.append(A_s)
 
     return None
 
 
-def create_hf_hamiltonian(spins: list, coupling_nucs: list, hf_tensors: list
-                          ) -> list:
+def create_hf_hamiltonian(spins: list, coupling_nucs: list, hf_tensors: list) -> list:
     """
     Calculate the diagonal elements of a hyperfine interaction hamiltonian
     of any number of spins with any number of nuclei. Input parameters are
@@ -123,33 +127,38 @@ def create_hf_hamiltonian(spins: list, coupling_nucs: list, hf_tensors: list
     ham_hf = []
     for n, s in enumerate(spins):
         spin_matrices = mt.Spinoperator(s, coupling_nucs[n])
-        ham_hf_for_each_spin = np.zeros((
-            list(np.concatenate(hf_tensors).flat)[0].multirot.shape[0],
-            spin_matrices.dimension, spin_matrices.dimension),
-            dtype=np.complex128)
+        ham_hf_for_each_spin = np.zeros(
+            (
+                list(np.concatenate(hf_tensors).flat)[0].multirot.shape[0],
+                spin_matrices.dimension,
+                spin_matrices.dimension,
+            ),
+            dtype=np.complex128,
+        )
 
         for nuc in range(spin_matrices.matrix_coupling_spins.shape[0]):
             ham_hf_tmp = mut.Multioperator(
-                spin_matrices, hf_tensors[n][nuc].multirot.shape[0], [0])
+                spin_matrices, hf_tensors[n][nuc].multirot.shape[0], [0]
+            )
             try:
                 s2 = mt.Spinoperator(s, coupling_nucs[n])
                 s2.matrix = spin_matrices.matrix_coupling_spins[nuc]
-                ham_hf_tmp.create_bilinear_operator(
-                    hf_tensors[n][nuc],
-                    s2)
+                ham_hf_tmp.create_bilinear_operator(hf_tensors[n][nuc], s2)
             except IndexError:
                 pass
             ham_hf_for_each_spin += ham_hf_tmp.angle_matrix
 
         ham_hf_for_each_spin = ham_hf_for_each_spin[
-            :, range(spin_matrices.dimension), range(spin_matrices.dimension)]
+            :, range(spin_matrices.dimension), range(spin_matrices.dimension)
+        ]
         ham_hf.append(ham_hf_for_each_spin)
 
     return ham_hf
 
 
-def make_signal_with_hyperfine(sys: object, exp: object, opt: object,
-                               cal: object) -> None:
+def make_signal_with_hyperfine(
+    sys: object, exp: object, opt: object, cal: object
+) -> None:
     """
     Calculate the timeresolved signal of a trEPR-experiment a system consisting
     of one or two spins including hyperfine interactions. The Hamiltonian
@@ -188,41 +197,52 @@ def make_signal_with_hyperfine(sys: object, exp: object, opt: object,
     None
 
     """
-    dims = (np.array(sys.s))*2+1
+    dims = (np.array(sys.s)) * 2 + 1
 
     ham_total = cal.ham
     dim_total = ham_total.shape[-1]
 
     # system consisting of 2 spins
     if len(sys.s) == 2:
-        dimensions = [int(dim_total/dims[1]), int(dim_total/dims[0])]
-        combinations = [int(cal.ham_hf[0].shape[-1]/dimensions[0]),
-                        int(cal.ham_hf[1].shape[-1]/dimensions[1])]
+        dimensions = [int(dim_total / dims[1]), int(dim_total / dims[0])]
+        combinations = [
+            int(cal.ham_hf[0].shape[-1] / dimensions[0]),
+            int(cal.ham_hf[1].shape[-1] / dimensions[1]),
+        ]
 
-        ham_hf = hyperfine_of_coupled_system(cal.ham_hf, combinations,
-                                             dimensions, dim_total)
+        ham_hf = hyperfine_of_coupled_system(
+            cal.ham_hf, combinations, dimensions, dim_total
+        )
 
         for m_a in range(combinations[0]):
             for m_b in range(combinations[1]):
                 cal.ham = ham_total.copy()
                 ham_hf_tmp = ham_hf[0][m_a] + ham_hf[1][m_b]
 
-                if sys.spin_system == 'rp':
-                    ham_hf_tmp *= 2*np.pi
+                if sys.spin_system == "rp":
+                    ham_hf_tmp *= 2 * np.pi
                     cal.ham[:, :, 0, 0] -= ham_hf_tmp[:, 0]
                     cal.ham[:, :, 1, 2] -= ham_hf_tmp[:, 1]
                     cal.ham[:, :, 2, 1] -= ham_hf_tmp[:, 1]
                     cal.ham[:, :, 3, 3] -= -ham_hf_tmp[:, 0]
                 else:
-                    cal.ham[:, :, range(dim_total), range(dim_total)]\
-                        += ham_hf_tmp
+                    cal.ham[:, :, range(dim_total), range(dim_total)] += ham_hf_tmp
 
                 ham.set_up_commutator_superoperator(sys, opt, cal)
 
-                print('start propagation for combination ' + str(m_a+1) + '/' + str(combinations[0]) + ' ' + str(m_b+1) + '/'  + str(combinations[1]))
+                print(
+                    "start propagation for combination "
+                    + str(m_a + 1)
+                    + "/"
+                    + str(combinations[0])
+                    + " "
+                    + str(m_b + 1)
+                    + "/"
+                    + str(combinations[1])
+                )
                 sap.propagation(sys, opt, cal)
 
-                print('start making the signal...')
+                print("start making the signal...")
                 sap.make_signal(exp, opt, cal)
 
                 sap.powder_average(exp, opt, cal)
@@ -230,18 +250,24 @@ def make_signal_with_hyperfine(sys: object, exp: object, opt: object,
     # system consisting of 1 spin
     elif len(sys.s) == 1:
         dim_hf = cal.ham_hf[0].shape[-1]
-        combinations = int(dim_hf/dim_total)
+        combinations = int(dim_hf / dim_total)
 
         for m_i in range(combinations):
             cal.ham = ham_total.copy()
-            cal.ham[:, :, range(dim_total), range(dim_total)]\
-                += cal.ham_hf[0][:, m_i::combinations]
+            cal.ham[:, :, range(dim_total), range(dim_total)] += cal.ham_hf[0][
+                :, m_i::combinations
+            ]
 
             ham.set_up_commutator_superoperator(sys, opt, cal)
-            print('start propagation for combination ' + str(m_i+1) + '/' + str(combinations))
+            print(
+                "start propagation for combination "
+                + str(m_i + 1)
+                + "/"
+                + str(combinations)
+            )
             sap.propagation(sys, opt, cal)
 
-            print('start making the signal...')
+            print("start making the signal...")
             sap.make_signal(exp, opt, cal)
 
             sap.powder_average(opt, cal)
@@ -249,8 +275,9 @@ def make_signal_with_hyperfine(sys: object, exp: object, opt: object,
     return None
 
 
-def hyperfine_of_coupled_system(hams_hf: list, combinations: list,
-                                dimensions: list, dim_total: float) -> list:
+def hyperfine_of_coupled_system(
+    hams_hf: list, combinations: list, dimensions: list, dim_total: float
+) -> list:
     """
     Calculate the hyperfine hamiltonian of a spin system of two coupled spins.
     For each spin M_i hamiltonians are calculated, where M_i is the the total
@@ -307,18 +334,18 @@ def hyperfine_of_coupled_system(hams_hf: list, combinations: list,
     ham_b = np.zeros((combinations[1], grid_points, dim_total), dtype=complex)
 
     for a in range(combinations[0]):
-        ham_tmp = np.zeros((grid_points, dimensions[0], dimensions[0]),
-                           dtype=complex)
-        ham_tmp[:, range(dimensions[0]), range(dimensions[0])] =\
-            hams_hf[0][:, a::combinations[0]]
+        ham_tmp = np.zeros((grid_points, dimensions[0], dimensions[0]), dtype=complex)
+        ham_tmp[:, range(dimensions[0]), range(dimensions[0])] = hams_hf[0][
+            :, a :: combinations[0]
+        ]
         ham_tmp = np.kron(ham_tmp, np.eye(dimensions[1]))
         ham_a[a] = ham_tmp[:, range(dim_total), range(dim_total)]
 
     for b in range(combinations[1]):
-        ham_tmp = np.zeros((grid_points, dimensions[1], dimensions[1]),
-                           dtype=complex)
-        ham_tmp[:, range(dimensions[1]), range(dimensions[1])] =\
-            hams_hf[1][:, b::combinations[1]]
+        ham_tmp = np.zeros((grid_points, dimensions[1], dimensions[1]), dtype=complex)
+        ham_tmp[:, range(dimensions[1]), range(dimensions[1])] = hams_hf[1][
+            :, b :: combinations[1]
+        ]
         ham_tmp = np.kron(np.eye(dimensions[0]), ham_tmp)
         ham_b[b] = ham_tmp[:, range(dim_total), range(dim_total)]
 

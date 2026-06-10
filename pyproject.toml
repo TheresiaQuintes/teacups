@@ -1,0 +1,32 @@
+[project]
+name = "teacups"
+version = "2.2.1"
+description = "Simulation of timeresolved transient EPR spectra of spinpolarised spin species. "
+authors = [
+  { name = "Theresia Quintes", email = "theresia.quintes@physchem.uni-freiburg.de" }
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3,<4"
+dependencies = [
+    "numpy>=1.21",
+    "scipy>=1.7",
+    "matplotlib>=3.5",
+    "tqdm>=4.65",
+    "psutil>=5.9",
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["teacups*"]
+
+[project.urls]
+Repository = "https://github.com/TheresiaQuintes/teacups"
+Documentation = "https://theresiaquintes.github.io/teacups/"

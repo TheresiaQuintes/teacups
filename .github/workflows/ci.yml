@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Miniconda (MKL environment)
+        uses: conda-incubator/setup-miniconda@v4
+        with:
+          auto-activate-base: false
+          environment-file: environment.yml
+          activate-environment: teacups
+          channels: conda-forge,defaults
+          python-version: 3.12
+
+      - name: Show BLAS backend (debug)
+        shell: bash -l {0}
+        run: |
+          python -c "import numpy as np; np.__config__.show()"
+
+      - name: Install package (editable)
+        shell: bash -l {0}
+        run: |
+          pip install -e .
+
+      - name: Install dev tools
+        shell: bash -l {0}
+        run: |
+          pip install ruff pytest
+
+      - name: Run linting
+        shell: bash -l {0}
+        run: |
+          ruff check . --exclude src/teacups/epr_grid.py
+          ruff format --check .
+
+      - name: Run tests
+        shell: bash -l {0}
+        run: |
+          pytest -q
+
+      # Type check erst bei vollständiger Testabdeckung rein -> es sind größere Umstrukturierungen nötig
+      # - name: Type check
+      #   run: |
+      #     pip install mypy
+      #     mypy src/
+
+      - name: Build package
+        run: |
+          pip install build
+          python -m build

@@ -10,7 +10,7 @@ import teacups.hamiltonians as ham
 import teacups.density_matrices as dm
 
 
-def teacups(Sys: object, Exp: object, SimOpt: object) -> 'np.ndarray':
+def teacups(Sys: object, Exp: object, SimOpt: object) -> "np.ndarray":
     """
     Simulate a 2D transient EPR spectrum of a spinpolarized spin system.
 
@@ -64,7 +64,7 @@ def teacups(Sys: object, Exp: object, SimOpt: object) -> 'np.ndarray':
         print(chunk)
         cal.phi = cal.phi_split[chunk]
         cal.theta = cal.theta_split[chunk]
-        if opt.grid == 'sophe':
+        if opt.grid == "sophe":
             cal.weights = cal.weights_split[chunk]
         opt.grid_points = len(cal.phi)
 
@@ -76,13 +76,13 @@ def teacups(Sys: object, Exp: object, SimOpt: object) -> 'np.ndarray':
         cr.set_up_tensors(sys, cal)
 
         # set up spin system hamiltonian
-        if sys.spin_system == 'rp':
+        if sys.spin_system == "rp":
             cal.ham_sys = ham.set_up_rp_hamiltonian(sys, exp, opt, cal)
-        elif sys.spin_system == 'trip':
+        elif sys.spin_system == "trip":
             cal.ham_sys = ham.set_up_triplet_hamiltonian(exp, opt, cal)
-        elif sys.spin_system == 'doub':
+        elif sys.spin_system == "doub":
             cal.ham_sys = ham.set_up_doublet_hamiltonian(exp, opt, cal)
-        elif sys.spin_system == 'tdp':
+        elif sys.spin_system == "tdp":
             cal.ham_sys = ham.set_up_tdp_hamiltonian(sys, exp, opt, cal)
 
         # add microwave interaction
@@ -99,24 +99,23 @@ def teacups(Sys: object, Exp: object, SimOpt: object) -> 'np.ndarray':
         # clear memory
         keys = vars(cal).copy()
         for key in keys:
-            if key.endswith('_tensor'):
+            if key.endswith("_tensor"):
                 delattr(cal, key)
         delattr(cal, "g_iso")
 
         # calculate eigenvalues and eigenvectors of the spinsystem if needed
-        if opt.space == 'liouville':
+        if opt.space == "liouville":
             cal.eigvec = np.linalg.eigh(cal.ham_sys)[1]
 
         # clear memory
-        delattr(cal, 'ham_sys')
+        delattr(cal, "ham_sys")
 
         # build the signal including the hyperfine interactions if any nuclei
         # are given
         if list(it.chain(*sys.I)):
             hf.set_up_hyperfine_tensors(sys, cal)
 
-            cal.ham_hf = hf.create_hf_hamiltonian(
-                sys.s, sys.I, cal.A_tensor)
+            cal.ham_hf = hf.create_hf_hamiltonian(sys.s, sys.I, cal.A_tensor)
 
             # create signal
             hf.make_signal_with_hyperfine(sys, exp, opt, cal)
@@ -127,16 +126,16 @@ def teacups(Sys: object, Exp: object, SimOpt: object) -> 'np.ndarray':
             ham.set_up_commutator_superoperator(sys, opt, cal)
 
             # build propagation operator
-            print('starting the propagation...')
+            print("starting the propagation...")
             sap.propagation(sys, opt, cal)
 
             # clear memory
             delattr(cal, "ham")
-            if opt.space == 'liouville':
+            if opt.space == "liouville":
                 delattr(cal, "ham_superop")
 
             # time propagation
-            print('start making the signal...')
+            print("start making the signal...")
             sap.make_signal(exp, opt, cal)
 
             # clear memory
@@ -153,19 +152,19 @@ def teacups(Sys: object, Exp: object, SimOpt: object) -> 'np.ndarray':
             sap.powder_average(opt, cal)
 
     # do Voigt convolution
-    cal.spec_sim = co.voigt_convolution(sys.sigma_time, sys.width_gauss,
-                                        cal.spec_sim, opt.extend_t)
+    cal.spec_sim = co.voigt_convolution(
+        sys.sigma_time, sys.width_gauss, cal.spec_sim, opt.extend_t
+    )
 
     cal.t = co.extend_time_axis(cal.t, cal.spec_sim)
     Exp.t = cal.t
 
     # calculate decay of the signal in hilbert space
-    if SimOpt.space == 'hilbert':
+    if SimOpt.space == "hilbert":
         sap.signal_hilbert_decay(sys, cal)
 
-
     # return result
-    if SimOpt.pop_evolution is True and SimOpt.space == 'liouville':
+    if SimOpt.pop_evolution is True and SimOpt.space == "liouville":
         return cal.spec_sim, cal.pop_evolution
     else:
         return cal.spec_sim

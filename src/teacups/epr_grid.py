@@ -7,6 +7,7 @@
 
 @author: Florian Quintes
 """
+
 import numpy as np
 from scipy.spatial import SphericalVoronoi, geometric_slerp
 import matplotlib.pyplot as plt
@@ -26,9 +27,7 @@ class Grid:
         self._cartesian = False
         self._sv = None
 
-    def get_grid(
-        self, point_group: str = "Ci", cartesian: bool = False
-    ) -> np.array:
+    def get_grid(self, point_group: str = "Ci", cartesian: bool = False) -> np.array:
         """
         Get the grid for a given point group.
 
@@ -53,9 +52,7 @@ class Grid:
             self._cartesian = False
 
         if cartesian and not self._cartesian:
-            self._grid = spherical_to_cartesian(
-                self._grid[:, 1], self._grid[:, 2]
-            )
+            self._grid = spherical_to_cartesian(self._grid[:, 1], self._grid[:, 2])
             self._border_points = spherical_to_cartesian(
                 self._border_points[:, 1], self._border_points[:, 2]
             )
@@ -83,9 +80,7 @@ class Grid:
         if voronoi and self._sv is not None:
             self._sv.sort_vertices_of_regions()
             if not self._cartesian:
-                grid = spherical_to_cartesian(
-                    self._grid[:, 1], self._grid[:, 2]
-                )
+                grid = spherical_to_cartesian(self._grid[:, 1], self._grid[:, 2])
             else:
                 grid = self._grid
 
@@ -129,9 +124,7 @@ class Grid:
                     start = self._sv.vertices[region][i]
                     end = self._sv.vertices[region][(i + 1) % n]
                     result = geometric_slerp(start, end, t_vals)
-                    ax.plot(
-                        result[..., 0], result[..., 1], result[..., 2], c="k"
-                    )
+                    ax.plot(result[..., 0], result[..., 1], result[..., 2], c="k")
 
             ax.azim = 10
             ax.elev = 40
@@ -381,14 +374,10 @@ class Grid:
             coordinates = cartesian_to_spherical(
                 coordinates[:, 0], coordinates[:, 1], coordinates[:, 2]
             )
-            coordinates = spherical_to_cartesian(
-                coordinates[:, 1], coordinates[:, 2]
-            )
+            coordinates = spherical_to_cartesian(coordinates[:, 1], coordinates[:, 2])
 
         # Transform to cartesian
-        coordinates = spherical_to_cartesian(
-            coordinates[:, 1], coordinates[:, 2]
-        )
+        coordinates = spherical_to_cartesian(coordinates[:, 1], coordinates[:, 2])
 
         self._sv = SphericalVoronoi(coordinates, radius=1)
         areas = self._sv.calculate_areas()
@@ -412,9 +401,7 @@ class Grid:
             "Dooh",
             "O3",
         ]
-        pg_idx_dic = dict(
-            zip(point_group, np.linspace(0, 13, 14, dtype=np.int8))
-        )
+        pg_idx_dic = dict(zip(point_group, np.linspace(0, 13, 14, dtype=np.int8)))
 
         # phi in 1/4 *pi
         phi = [8, 8, 4, 8 / 3, 2, 4 / 3, 2, 2, 4 / 3, 1, 1, 2 / 3, 0, 0]
@@ -457,9 +444,7 @@ class Grid:
             for n in range(M):
                 if n == 0:
                     uprow = np.array([0])
-                    downrow = np.linspace(
-                        1, 1 + border, 1 + border, dtype=np.int32
-                    )
+                    downrow = np.linspace(1, 1 + border, 1 + border, dtype=np.int32)
                     start_2 = 1
                     stop_2 = 1 + border
                     uptris.append([0, downrow[0], downrow[1 % (1 + border)]])
@@ -469,9 +454,7 @@ class Grid:
                     stop = 1 * stop_2
                     start_2 = stop + 1
                     stop_2 = start_2 + (n + border)
-                    uprow = np.linspace(
-                        start, stop, stop - start + 1, dtype=np.int32
-                    )
+                    uprow = np.linspace(start, stop, stop - start + 1, dtype=np.int32)
                     downrow = np.linspace(
                         start_2, stop_2, stop_2 - start_2 + 1, dtype=np.int32
                     )
@@ -498,18 +481,14 @@ class Grid:
                     start_2 = 1
                     stop_2 = 2
                     for i in range(octants):
-                        uptris.append(
-                            [0, downrow[i], downrow[(i + 1) % octants]]
-                        )
+                        uptris.append([0, downrow[i], downrow[(i + 1) % octants]])
                     continue
                 else:
                     start = 1 * start_2
                     stop = 1 * stop_2
                     start_2 = stop + 1
                     stop_2 = start_2 + (n + 1) * octants - 1
-                    uprow = np.linspace(
-                        start, stop, stop - start + 1, dtype=np.int32
-                    )
+                    uprow = np.linspace(start, stop, stop - start + 1, dtype=np.int32)
                     downrow = np.linspace(
                         start_2, stop_2, stop_2 - start_2 + 1, dtype=np.int32
                     )
@@ -521,20 +500,14 @@ class Grid:
                         idx_top_left = uprow[(i - 1 + offset_up) % len(uprow)]
                         idx_top_right = uprow[(i + offset_up) % len(uprow)]
                         idx_bottom = downrow[(i + offset_low) % len(downrow)]
-                        downtris.append(
-                            [idx_top_left, idx_top_right, idx_bottom]
-                        )
+                        downtris.append([idx_top_left, idx_top_right, idx_bottom])
 
                     for i in range(len(downrow) // octants):
                         offset_up = k * n
                         offset_low = k * (n + 1)
                         idx_top = uprow[(i + offset_up) % len(uprow)]
-                        idx_down_left = downrow[
-                            (i + offset_low) % len(downrow)
-                        ]
-                        idx_down_right = downrow[
-                            (i + 1 + offset_low) % len(downrow)
-                        ]
+                        idx_down_left = downrow[(i + offset_low) % len(downrow)]
+                        idx_down_right = downrow[(i + 1 + offset_low) % len(downrow)]
                         uptris.append([idx_top, idx_down_left, idx_down_right])
 
         elif octants == 4:
@@ -547,18 +520,14 @@ class Grid:
                     start_2 = 1
                     stop_2 = 4
                     for i in range(octants):
-                        uptris.append(
-                            [0, downrow[i], downrow[(i + 1) % octants]]
-                        )
+                        uptris.append([0, downrow[i], downrow[(i + 1) % octants]])
                     continue
                 else:
                     start = 1 * start_2
                     stop = 1 * stop_2
                     start_2 = stop + 1
                     stop_2 = start_2 + (n + 1) * octants - 1
-                    uprow = np.linspace(
-                        start, stop, stop - start + 1, dtype=np.int32
-                    )
+                    uprow = np.linspace(start, stop, stop - start + 1, dtype=np.int32)
                     downrow = np.linspace(
                         start_2, stop_2, stop_2 - start_2 + 1, dtype=np.int32
                     )
@@ -570,20 +539,14 @@ class Grid:
                         idx_top_left = uprow[(i - 1 + offset_up) % len(uprow)]
                         idx_top_right = uprow[(i + offset_up) % len(uprow)]
                         idx_bottom = downrow[(i + offset_low) % len(downrow)]
-                        downtris.append(
-                            [idx_top_left, idx_top_right, idx_bottom]
-                        )
+                        downtris.append([idx_top_left, idx_top_right, idx_bottom])
 
                     for i in range(len(downrow) // octants):
                         offset_up = k * n
                         offset_low = k * (n + 1)
                         idx_top = uprow[(i + offset_up) % len(uprow)]
-                        idx_down_left = downrow[
-                            (i + offset_low) % len(downrow)
-                        ]
-                        idx_down_right = downrow[
-                            (i + 1 + offset_low) % len(downrow)
-                        ]
+                        idx_down_left = downrow[(i + offset_low) % len(downrow)]
+                        idx_down_right = downrow[(i + 1 + offset_low) % len(downrow)]
                         uptris.append([idx_top, idx_down_left, idx_down_right])
 
         elif octants == 8:
@@ -634,30 +597,20 @@ class Grid:
                         for i in range(1, len(uprow) // 4 + 1):
                             offset_up = k * n
                             offset_low = k * (n + 1)
-                            idx_top_left = uprow[
-                                (i - 1 + offset_up) % len(uprow)
-                            ]
+                            idx_top_left = uprow[(i - 1 + offset_up) % len(uprow)]
                             idx_top_right = uprow[(i + offset_up) % len(uprow)]
-                            idx_bottom = downrow[
-                                (i + offset_low) % len(downrow)
-                            ]
-                            downtris.append(
-                                [idx_top_left, idx_top_right, idx_bottom]
-                            )
+                            idx_bottom = downrow[(i + offset_low) % len(downrow)]
+                            downtris.append([idx_top_left, idx_top_right, idx_bottom])
 
                         for i in range(len(downrow) // 4):
                             offset_up = k * n
                             offset_low = k * (n + 1)
                             idx_top = uprow[(i + offset_up) % len(uprow)]
-                            idx_down_left = downrow[
-                                (i + offset_low) % len(downrow)
-                            ]
+                            idx_down_left = downrow[(i + offset_low) % len(downrow)]
                             idx_down_right = downrow[
                                 (i + 1 + offset_low) % len(downrow)
                             ]
-                            uptris.append(
-                                [idx_top, idx_down_left, idx_down_right]
-                            )
+                            uptris.append([idx_top, idx_down_left, idx_down_right])
 
         uptris = np.array(uptris)
         downtris = np.array(downtris)

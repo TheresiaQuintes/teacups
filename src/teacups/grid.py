@@ -2,7 +2,7 @@ import numpy as np
 from teacups.epr_grid import Grid
 
 
-def sphere_fibonacci_grid_points(ng: int, hemisphere=True) -> 'np.ndarray':
+def sphere_fibonacci_grid_points(ng: int, hemisphere=True) -> "np.ndarray":
     """
     Calculate Fibonacci spiral gridpoints on a hemisphere or full sphere.
 
@@ -67,14 +67,14 @@ def sphere_fibonacci_grid_points(ng: int, hemisphere=True) -> 'np.ndarray':
         xg[i, 2] = sphi[i]
 
     if hemisphere is True:
-        grid = xg[0:int(ng/2)]
+        grid = xg[0 : int(ng / 2)]
     else:
         grid = xg
         pass
     return grid
 
 
-def cartesian2sphereical(xyz: 'np.ndarray') -> 'np.ndarray':
+def cartesian2sphereical(xyz: "np.ndarray") -> "np.ndarray":
     """
     Convert a set of three cartesian coordinates (x, y and z) to a set of
     three spherical coordinates (r, theta and phi).
@@ -91,14 +91,14 @@ def cartesian2sphereical(xyz: 'np.ndarray') -> 'np.ndarray':
         This array contains the transformed sets of xyz. Its shape is (nx3).
 
     """
-    r = np.sqrt(xyz[:, 0]**2 + xyz[:, 1]**2 + xyz[:, 2]**2)
-    theta = np.arctan2(np.sqrt(xyz[:, 0]**2 + xyz[:, 1]**2), xyz[:, 2])
+    r = np.sqrt(xyz[:, 0] ** 2 + xyz[:, 1] ** 2 + xyz[:, 2] ** 2)
+    theta = np.arctan2(np.sqrt(xyz[:, 0] ** 2 + xyz[:, 1] ** 2), xyz[:, 2])
     phi = np.arctan2(xyz[:, 1], xyz[:, 0])
     rtp = np.array([r, theta, phi]).T
     return rtp
 
 
-def spherical2cartesian(rtp: 'np.ndarray') -> 'np.ndarray':
+def spherical2cartesian(rtp: "np.ndarray") -> "np.ndarray":
     """
     Convert a set of three spherical coordinates (r, theta and phi) to a set of
     three cartesian coordinates (x, y and z).
@@ -119,15 +119,15 @@ def spherical2cartesian(rtp: 'np.ndarray') -> 'np.ndarray':
     r = rtp[:, 0]
     t = rtp[:, 1]
     p = rtp[:, 2]
-    x = r*np.sin(t)*np.cos(p)
-    y = r*np.sin(t)*np.sin(p)
-    z = r*np.cos(t)
+    x = r * np.sin(t) * np.cos(p)
+    y = r * np.sin(t) * np.sin(p)
+    z = r * np.cos(t)
 
     xyz = np.array([x, y, z]).T
     return xyz
 
 
-def fibonacci_grid(grid_points: int) -> tuple['np.ndarray', 'np.ndarray']:
+def fibonacci_grid(grid_points: int) -> tuple["np.ndarray", "np.ndarray"]:
     """
     Get a number (grid_points) of angle pairs theta-phi describing points
     equally distributet on a fibonacci sphere. The radius is 1.
@@ -154,8 +154,9 @@ def fibonacci_grid(grid_points: int) -> tuple['np.ndarray', 'np.ndarray']:
     return theta, phi
 
 
-def sophe_grid(grid_size: int, sym: str) -> tuple['np.ndarray', 'np.ndarray',
-                                                  'np.ndarray']:
+def sophe_grid(
+    grid_size: int, sym: str
+) -> tuple["np.ndarray", "np.ndarray", "np.ndarray"]:
     """
     Calculate the angles phi and theta of a set of unique orientations on a
     sphere. The grid used is called SOPHE grid (see: D. Wang,
@@ -184,7 +185,7 @@ def sophe_grid(grid_size: int, sym: str) -> tuple['np.ndarray', 'np.ndarray',
         Associated weights for each orientation.
 
     """
-    grid = Grid('SOPHE', point_group=sym, knots=grid_size)
+    grid = Grid("SOPHE", point_group=sym, knots=grid_size)
     spherical = grid.get_grid(sym, cartesian=False)
     weights = grid.get_areas()
     theta, phi = spherical[:, 1], spherical[:, 2]
