@@ -544,7 +544,10 @@ class Spinoperator(Operator):
                 number_of_couplings = 1
             else:
                 number_of_couplings = len(coupling_spins)
-                coupling_spins = np.array(coupling_spins)
+                if number_of_couplings == 1:
+                    coupling_spins = coupling_spins[0]
+                else:
+                    coupling_spins = np.array(coupling_spins)
 
             # Calculate dimensions
             # TODO  np.array(, dtype=np.int64)?

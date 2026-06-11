@@ -126,6 +126,8 @@ def create_hf_hamiltonian(spins: list, coupling_nucs: list, hf_tensors: list) ->
     """
     ham_hf = []
     for n, s in enumerate(spins):
+        print(coupling_nucs)
+        print(coupling_nucs[n])
         spin_matrices = mt.Spinoperator(s, coupling_nucs[n])
         ham_hf_for_each_spin = np.zeros(
             (

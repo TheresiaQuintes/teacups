@@ -11,40 +11,25 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Setup Miniconda (MKL environment)
-        uses: conda-incubator/setup-miniconda@v4
+      - uses: actions/setup-python@v6
         with:
-          auto-activate-base: false
-          environment-file: environment.yml
-          activate-environment: teacups
-          channels: conda-forge,defaults
-          python-version: 3.12
+          python-version: "3.12"
+          cache: "pip"
 
-      - name: Show BLAS backend (debug)
-        shell: bash -l {0}
+      - name: Install package
         run: |
-          python -c "import numpy as np; np.__config__.show()"
-
-      - name: Install package (editable)
-        shell: bash -l {0}
-        run: |
-          pip install -e .
-
-      - name: Install dev tools
-        shell: bash -l {0}
-        run: |
-          pip install ruff pytest
+          pip install -e ".[dev]"
+          pip install ruff
+          pip install pytest
+            
 
       - name: Run linting
-        shell: bash -l {0}
         run: |
-          ruff check . --exclude src/teacups/epr_grid.py
+          ruff check . --exclude ./src/teacups/epr_grid.py
           ruff format --check .
 
       - name: Run tests
-        shell: bash -l {0}
-        run: |
-          pytest -q
+        run:  pytest
 
       # Type check erst bei vollständiger Testabdeckung rein -> es sind größere Umstrukturierungen nötig
       # - name: Type check
