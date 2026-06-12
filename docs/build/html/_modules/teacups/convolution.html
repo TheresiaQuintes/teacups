@@ -82,9 +82,10 @@
 <span class="kn">import</span> <span class="nn">scipy.ndimage</span> <span class="k">as</span> <span class="nn">snd</span>
 
 
-<div class="viewcode-block" id="voigt_convolution"><a class="viewcode-back" href="../../developer.html#teacups.convolution.voigt_convolution">[docs]</a><span class="k">def</span> <span class="nf">voigt_convolution</span><span class="p">(</span><span class="n">sigma_time</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span>
-                      <span class="n">extend_t</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="voigt_convolution"><a class="viewcode-back" href="../../developer.html#teacups.convolution.voigt_convolution">[docs]</a><span class="k">def</span> <span class="nf">voigt_convolution</span><span class="p">(</span>
+    <span class="n">sigma_time</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">:</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">,</span> <span class="n">extend_t</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the Voigt profile of a Lorentzian function by convolution of the</span>
 <span class="sd">    existing Lorentzian function and a Gaussian distribution with a given FWHH.</span>
 <span class="sd">    A 2D-spectrum is convolved with the Gaussian function along its second</span>
@@ -117,8 +118,10 @@
 <span class="sd">        convolution alogrithm of SciPy.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">pad_t</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">5</span><span class="o">*</span><span class="n">sigma_time</span><span class="p">)</span>
-    <span class="n">spec_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="p">((</span><span class="n">pad_t</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="n">constant_values</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">pad_t</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="n">sigma_time</span><span class="p">)</span>
+    <span class="n">spec_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span>
+        <span class="n">spectrum</span><span class="p">,</span> <span class="p">((</span><span class="n">pad_t</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;constant&quot;</span><span class="p">,</span> <span class="n">constant_values</span><span class="o">=</span><span class="mi">0</span>
+    <span class="p">)</span>
     <span class="n">spec_conv_pad</span> <span class="o">=</span> <span class="n">snd</span><span class="o">.</span><span class="n">gaussian_filter</span><span class="p">(</span><span class="n">spec_pad</span><span class="p">,</span> <span class="p">[</span><span class="n">sigma_time</span><span class="p">,</span> <span class="n">width</span><span class="p">])</span>
 
     <span class="k">if</span> <span class="n">extend_t</span><span class="p">:</span>
@@ -130,7 +133,7 @@
 
 
 <div class="viewcode-block" id="extend_time_axis"><a class="viewcode-back" href="../../developer.html#teacups.convolution.extend_time_axis">[docs]</a><span class="k">def</span> <span class="nf">extend_time_axis</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    If the time axis is shorter than the time-dimension of the spectrum it gets</span>
 <span class="sd">    extended by negative values.</span>
 
@@ -152,10 +155,10 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-        <span class="n">dt</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">diff</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 
-        <span class="n">t_neg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">diff</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">*</span><span class="n">dt</span>
+        <span class="n">t_neg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">diff</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">dt</span>
         <span class="n">t_extended</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">t_neg</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">t_extended</span>

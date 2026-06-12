@@ -86,7 +86,7 @@
 
 
 <div class="viewcode-block" id="Matrix"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Matrix">[docs]</a><span class="k">class</span> <span class="nc">Matrix</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A Matrix-object contains the dimension and the matrix of a square matrix.</span>
 
 <span class="sd">    Parameters</span>
@@ -126,8 +126,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dimension</span><span class="p">,</span> <span class="n">dimension</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span> <span class="o">=</span> <span class="n">dimension</span>
 
-<div class="viewcode-block" id="Matrix.scalar"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Matrix.scalar">[docs]</a>    <span class="k">def</span> <span class="nf">scalar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multipliers</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Matrix.scalar"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Matrix.scalar">[docs]</a>    <span class="k">def</span> <span class="nf">scalar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multipliers</span><span class="p">:</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Build scalar product of the matrix attribute with the product of all</span>
 <span class="sd">        multipliers.</span>
 
@@ -166,8 +166,8 @@
 
         <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="Matrix.product"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Matrix.product">[docs]</a>    <span class="k">def</span> <span class="nf">product</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scd_matrix</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Matrix.product"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Matrix.product">[docs]</a>    <span class="k">def</span> <span class="nf">product</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scd_matrix</span><span class="p">:</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Build matrix product of the matrix attribute and a second matrix</span>
 <span class="sd">        being multiplied either from right (default) or from left side.</span>
 
@@ -212,8 +212,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">scd_matrix</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Multiplied matrix must have same shape as&quot;</span> <span class="o">+</span>
-                             <span class="s2">&quot;matrix attribute.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
+                <span class="s2">&quot;Multiplied matrix must have same shape as&quot;</span> <span class="o">+</span> <span class="s2">&quot;matrix attribute.&quot;</span>
+            <span class="p">)</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">left</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">@</span> <span class="n">scd_matrix</span>
         <span class="k">else</span><span class="p">:</span>
@@ -221,9 +222,10 @@
 
         <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="Matrix.basis_transformation"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Matrix.basis_transformation">[docs]</a>    <span class="k">def</span> <span class="nf">basis_transformation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trans</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span>
-                             <span class="n">inverse_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">orthonormal</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Matrix.basis_transformation"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Matrix.basis_transformation">[docs]</a>    <span class="k">def</span> <span class="nf">basis_transformation</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">trans</span><span class="p">:</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">,</span> <span class="n">inverse_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">orthonormal</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Change the basis of matrix. trans is the transformation matrix:</span>
 
 <span class="sd">        .. math::</span>
@@ -268,8 +270,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">trans</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Transformationmatrix must have same shape as&quot;</span> <span class="o">+</span>
-                             <span class="s2">&quot;matrix attribute.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
+                <span class="s2">&quot;Transformationmatrix must have same shape as&quot;</span> <span class="o">+</span> <span class="s2">&quot;matrix attribute.&quot;</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">inverse_left</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">orthonormal</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -286,7 +289,7 @@
 
 
 <div class="viewcode-block" id="Tensor"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Tensor">[docs]</a><span class="k">class</span> <span class="nc">Tensor</span><span class="p">(</span><span class="n">Matrix</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An object from class Tensor is a special Matrix object. The matrix</span>
 <span class="sd">    attribute contains a diagonal 3x3 matrix. The diagonal elements</span>
 <span class="sd">    are given when setting up the object. The class Tensor provides functions</span>
@@ -328,7 +331,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span> <span class="o">=</span> <span class="mi">3</span>
 
 <div class="viewcode-block" id="Tensor.rotation"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Tensor.rotation">[docs]</a>    <span class="k">def</span> <span class="nf">rotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">psi</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Rotate the tensor attribute by Euler rotation. The result is given to</span>
 <span class="sd">        the attribute rot, while tensor remains unchanged.</span>
 
@@ -372,8 +375,8 @@
 
         <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="Tensor.multirotation"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Tensor.multirotation">[docs]</a>    <span class="k">def</span> <span class="nf">multirotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Tensor.multirotation"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Tensor.multirotation">[docs]</a>    <span class="k">def</span> <span class="nf">multirotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Rotate the tensor attribute to all combinations of theta and</span>
 <span class="sd">        phi. The  two arrays contain angles for each point that shall be</span>
 <span class="sd">        calculated. All results are saved in a new multirot attribute.</span>
@@ -406,7 +409,7 @@
 
 
 <div class="viewcode-block" id="Operator"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Operator">[docs]</a><span class="k">class</span> <span class="nc">Operator</span><span class="p">(</span><span class="n">Matrix</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An Operator object is an object of class matrix, which has two additional</span>
 <span class="sd">    attributes: The vector attribute and the superop attribute.</span>
 
@@ -435,7 +438,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">superop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_superoperator</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Operator.build_vector"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Operator.build_vector">[docs]</a>    <span class="k">def</span> <span class="nf">build_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Changing the dimension of the matrix attribute to a 1d vector</span>
 <span class="sd">        using .flatten()-function for numpy arrays. Lines are simply written</span>
 <span class="sd">        in only one long line.</span>
@@ -467,7 +470,7 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="Operator.build_superoperator"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Operator.build_superoperator">[docs]</a>    <span class="k">def</span> <span class="nf">build_superoperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">swap</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Double the dimension of the matrix operator (in case of use in a higher</span>
 <span class="sd">        dimensional space). Tensor product of operator with unit matrix of the</span>
 <span class="sd">        same dimension is built using the numpy.kron function.</span>
@@ -517,7 +520,7 @@
 
 
 <div class="viewcode-block" id="Spinoperator"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Spinoperator">[docs]</a><span class="k">class</span> <span class="nc">Spinoperator</span><span class="p">(</span><span class="n">Operator</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    By creating a spinoperator object the pauli matrices for a spin (with any</span>
 <span class="sd">    spin quantum number) are calculated. Optionally the spin is coupled to any</span>
 <span class="sd">    number of further arbitrary spins (e.g. nuclear spins). In this case the</span>
@@ -598,10 +601,10 @@
 <span class="sd">    [ 0. +0.j  -0. +0.j   0. +0.j  -0.5+0.j ]]]]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">coupling_spins</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;©Stephan Rein, modified by Theresia Quintes&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">coupling_spins</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;©Stephan Rein, modified by Theresia Quintes&quot;&quot;&quot;</span>
 
-        <span class="n">dim_spin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">spin</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">dim_spin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">spin</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="c1"># Pauli matrices for spin without further coupling spins</span>
         <span class="k">if</span> <span class="n">coupling_spins</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -617,37 +620,40 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Find number of couplings</span>
             <span class="c1"># TODO in try except</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">coupling_spins</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span>
-                    <span class="n">coupling_spins</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">coupling_spins</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">coupling_spins</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
                 <span class="n">number_of_couplings</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">number_of_couplings</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coupling_spins</span><span class="p">)</span>
-                <span class="n">coupling_spins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coupling_spins</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">number_of_couplings</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">coupling_spins</span> <span class="o">=</span> <span class="n">coupling_spins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">coupling_spins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coupling_spins</span><span class="p">)</span>
 
             <span class="c1"># Calculate dimensions</span>
             <span class="c1"># TODO  np.array(, dtype=np.int64)?</span>
-            <span class="n">dim_couplings</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">coupling_spins</span><span class="o">+</span><span class="mi">1</span>
+            <span class="n">dim_couplings</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">coupling_spins</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="n">dim_couplings_total</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">dim_couplings</span><span class="p">))</span>
-            <span class="n">dim_total</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dim_spin</span><span class="o">*</span><span class="n">dim_couplings_total</span><span class="p">)</span>
+            <span class="n">dim_total</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dim_spin</span> <span class="o">*</span> <span class="n">dim_couplings_total</span><span class="p">)</span>
 
             <span class="c1"># Allocate empty arrays</span>
-            <span class="n">pauli_coupling_spins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">number_of_couplings</span><span class="p">,</span>
-                                             <span class="mi">3</span><span class="p">,</span> <span class="n">dim_total</span><span class="p">,</span> <span class="n">dim_total</span><span class="p">),</span>
-                                            <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
-            <span class="n">pauli_spin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">dim_total</span><span class="p">,</span> <span class="n">dim_total</span><span class="p">),</span>
-                                  <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
+            <span class="n">pauli_coupling_spins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">number_of_couplings</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">dim_total</span><span class="p">,</span> <span class="n">dim_total</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span>
+            <span class="p">)</span>
+            <span class="n">pauli_spin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">dim_total</span><span class="p">,</span> <span class="n">dim_total</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
 
             <span class="c1"># Pauli matrix for spin</span>
             <span class="n">pauli_uncoupled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pauli_matrices</span><span class="p">(</span><span class="n">spin</span><span class="p">)</span>
-            <span class="n">pauli_spin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">pauli_uncoupled</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dim_couplings_total</span><span class="p">,</span>
-                                                         <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">))</span>
+            <span class="n">pauli_spin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span>
+                <span class="n">pauli_uncoupled</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dim_couplings_total</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
+            <span class="p">)</span>
 
             <span class="c1"># Pauli matrices for coupling spins</span>
             <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">number_of_couplings</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">number_of_couplings</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="n">pauli_uncoupled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pauli_matrices</span><span class="p">(</span><span class="n">coupling_spins</span><span class="p">)</span>
                     <span class="n">pauli_coupling_spins</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span>
-                        <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dim_spin</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">),</span>  <span class="n">pauli_uncoupled</span><span class="p">)</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dim_spin</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">),</span> <span class="n">pauli_uncoupled</span>
+                    <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">pauli_uncoupled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pauli_matrices</span><span class="p">(</span><span class="n">coupling_spins</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
                     <span class="n">pauli_tmp</span> <span class="o">=</span> <span class="n">pauli_uncoupled</span>
@@ -656,11 +662,13 @@
                         <span class="k">if</span> <span class="n">n_coup</span> <span class="o">!=</span> <span class="n">n</span><span class="p">:</span>
                             <span class="k">if</span> <span class="n">n_coup</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
                                 <span class="n">pauli_tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span>
-                                    <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">),</span> <span class="n">pauli_tmp</span><span class="p">)</span>
+                                    <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">),</span> <span class="n">pauli_tmp</span>
+                                <span class="p">)</span>
                             <span class="k">else</span><span class="p">:</span>
                                 <span class="n">pauli_tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">pauli_tmp</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dim</span><span class="p">))</span>
                     <span class="n">pauli_coupling_spins</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span>
-                        <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dim_spin</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">),</span> <span class="n">pauli_tmp</span><span class="p">)</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dim_spin</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">),</span> <span class="n">pauli_tmp</span>
+                    <span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">pauli_spin</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">matrix_coupling_spins</span> <span class="o">=</span> <span class="n">pauli_coupling_spins</span>
@@ -671,7 +679,7 @@
             <span class="k">return</span>
 
 <div class="viewcode-block" id="Spinoperator.pauli_matrices"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Spinoperator.pauli_matrices">[docs]</a>    <span class="k">def</span> <span class="nf">pauli_matrices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spin</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create the three Pauli matrices for each cartesian direction for a</span>
 <span class="sd">        given spin quantum number.</span>
 
@@ -705,34 +713,34 @@
 <span class="sd">        -----</span>
 <span class="sd">        ©Stephan Rein, modified by Theresia Quintes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dimension</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">spin</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">dimension</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">spin</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">dimension</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dimension</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 
         <span class="c1"># Preallocate empty arrays</span>
-        <span class="n">off_diagonal_elements</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">dimension</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
+        <span class="n">off_diagonal_elements</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">dimension</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
         <span class="n">sigma_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dimension</span><span class="p">,</span> <span class="n">dimension</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
         <span class="n">sigma_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dimension</span><span class="p">,</span> <span class="n">dimension</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
         <span class="n">sigma_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dimension</span><span class="p">,</span> <span class="n">dimension</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
 
         <span class="c1"># Calculate off-diagonal elements for sigma_x &amp; sigma_y matrices</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dimension</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-            <span class="n">off_diagonal_elements</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">dimension</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">i</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dimension</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">off_diagonal_elements</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">dimension</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">i</span><span class="p">))</span>
 
         <span class="c1"># Fill Pauli-matrices</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dimension</span><span class="p">):</span>
-            <span class="n">sigma_z</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dimension</span><span class="o">/</span><span class="mf">2.0</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mf">0.5</span>
-            <span class="k">if</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">dimension</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                <span class="n">sigma_x</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">off_diagonal_elements</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="n">sigma_y</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">off_diagonal_elements</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">sigma_z</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dimension</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="mf">0.5</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">dimension</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">sigma_x</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">off_diagonal_elements</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">sigma_y</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">off_diagonal_elements</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
-        <span class="n">sigma_x</span> <span class="o">=</span> <span class="n">sigma_x</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">sigma_x</span><span class="p">))</span>
-        <span class="n">sigma_y</span> <span class="o">=</span> <span class="n">sigma_y</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">sigma_y</span><span class="p">))</span>
+        <span class="n">sigma_x</span> <span class="o">=</span> <span class="n">sigma_x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">sigma_x</span><span class="p">))</span>
+        <span class="n">sigma_y</span> <span class="o">=</span> <span class="n">sigma_y</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">sigma_y</span><span class="p">))</span>
         <span class="n">sigma_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">sigma_y</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">sigma_x</span><span class="p">,</span> <span class="n">sigma_y</span><span class="p">,</span> <span class="n">sigma_z</span></div>
 
-<div class="viewcode-block" id="Spinoperator.get"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Spinoperator.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinate</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Spinoperator.get"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Spinoperator.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinate</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the spin operator matrices for each cartesian direction out of the</span>
 <span class="sd">        matrix attribute.</span>
 
@@ -762,18 +770,18 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># TODO dictionary?</span>
         <span class="c1"># BUG coordinate.lower() verwenden</span>
-        <span class="k">if</span> <span class="n">coordinate</span> <span class="o">==</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">coordinate</span> <span class="o">==</span> <span class="s2">&quot;x&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">coordinate</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">coordinate</span> <span class="o">==</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">coordinate</span> <span class="o">==</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">coordinate</span> <span class="o">==</span> <span class="s2">&quot;z&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only &#39;x&#39;, &#39;y&#39; and &#39;z&#39; are allowed coordinates.&quot;</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Hamiltonian"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Hamiltonian">[docs]</a><span class="k">class</span> <span class="nc">Hamiltonian</span><span class="p">(</span><span class="n">Operator</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A Hamiltonian object is the same as an Operator object, but some functions</span>
 <span class="sd">    are added.</span>
 
@@ -796,9 +804,10 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Hamiltonian.exchange_coupling"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Hamiltonian.exchange_coupling">[docs]</a>    <span class="k">def</span> <span class="nf">exchange_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spinoperator1</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">J_ex</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-                          <span class="n">spinoperator2</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Hamiltonian.exchange_coupling"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Hamiltonian.exchange_coupling">[docs]</a>    <span class="k">def</span> <span class="nf">exchange_coupling</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">spinoperator1</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">J_ex</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">spinoperator2</span><span class="p">:</span> <span class="nb">object</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate interaction hamiltonian of the exchangecoupling of two spins.</span>
 
 <span class="sd">        Parameters</span>
@@ -835,21 +844,22 @@
         <span class="k">if</span> <span class="n">spinoperator1</span><span class="o">.</span><span class="n">dimension</span> <span class="o">!=</span> <span class="n">spinoperator2</span><span class="o">.</span><span class="n">dimension</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Spinoperatordimensions must not differ.&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">J_ex</span><span class="o">*</span> <span class="p">(</span>
-            <span class="n">spinoperator1</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span><span class="nd">@spinoperator2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
-            <span class="o">+</span> <span class="n">spinoperator1</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span><span class="nd">@spinoperator2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
-            <span class="o">+</span> <span class="n">spinoperator1</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span><span class="nd">@spinoperator2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">J_ex</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="n">spinoperator1</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span> <span class="o">@</span> <span class="n">spinoperator2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">spinoperator1</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span> <span class="o">@</span> <span class="n">spinoperator2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">spinoperator1</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span> <span class="o">@</span> <span class="n">spinoperator2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">build_vector</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">build_superoperator</span><span class="p">()</span>
 
-
         <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="Hamiltonian.microwave_coupling"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Hamiltonian.microwave_coupling">[docs]</a>    <span class="k">def</span> <span class="nf">microwave_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">omega_mw</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">omega_nut</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-                           <span class="n">spinoperator</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Hamiltonian.microwave_coupling"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Hamiltonian.microwave_coupling">[docs]</a>    <span class="k">def</span> <span class="nf">microwave_coupling</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">omega_mw</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">omega_nut</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">spinoperator</span><span class="p">:</span> <span class="nb">object</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the interaction hamiltonian of a spinoperator with a magnetic</span>
 <span class="sd">        microwave-field in the rotating frame representation. Therefore, the</span>
 <span class="sd">        hamiltonian is set up as the sum of the interaction hamiltonian with</span>
@@ -888,18 +898,19 @@
 <span class="sd">               [-0.7  +0.j, -4.875+0.j]])</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="p">(</span><span class="n">spinoperator</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
-                       <span class="o">*</span> <span class="n">omega_nut</span> <span class="o">-</span> <span class="n">spinoperator</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span><span class="o">*</span><span class="n">omega_mw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">spinoperator</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">omega_nut</span> <span class="o">-</span> <span class="n">spinoperator</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">omega_mw</span>
+        <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">build_vector</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">build_superoperator</span><span class="p">()</span>
 
-
         <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="Hamiltonian.zeeman_coupling"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Hamiltonian.zeeman_coupling">[docs]</a>    <span class="k">def</span> <span class="nf">zeeman_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">B_z</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-                        <span class="n">spinoperator</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Hamiltonian.zeeman_coupling"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Hamiltonian.zeeman_coupling">[docs]</a>    <span class="k">def</span> <span class="nf">zeeman_coupling</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">:</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">,</span> <span class="n">B_z</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">spinoperator</span><span class="p">:</span> <span class="nb">object</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the hamiltonian of the Zeeman coupling of a spin</span>
 <span class="sd">        (represented by a spin vector operator) and a magnetic field along the</span>
 <span class="sd">        z-Axis.</span>
@@ -943,9 +954,10 @@
 
         <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="Hamiltonian.dipol_coupling"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Hamiltonian.dipol_coupling">[docs]</a>    <span class="k">def</span> <span class="nf">dipol_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spinoperator1</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">D_tensor</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span>
-                       <span class="n">spinoperator2</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Hamiltonian.dipol_coupling"><a class="viewcode-back" href="../../developer.html#teacups.matrix_tools.Hamiltonian.dipol_coupling">[docs]</a>    <span class="k">def</span> <span class="nf">dipol_coupling</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">spinoperator1</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">D_tensor</span><span class="p">:</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">,</span> <span class="n">spinoperator2</span><span class="p">:</span> <span class="nb">object</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the hamiltonian of a dipolar coupling of two spins.</span>
 
 <span class="sd">        Parameters</span>
@@ -987,7 +999,8 @@
             <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Spinoperatordimensions must not differ.&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">odh</span><span class="o">.</span><span class="n">create_bilinear_hamiltonian</span><span class="p">(</span>
-            <span class="n">spinoperator1</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">D_tensor</span><span class="p">,</span> <span class="n">spinoperator2</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+            <span class="n">spinoperator1</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">D_tensor</span><span class="p">,</span> <span class="n">spinoperator2</span><span class="o">.</span><span class="n">matrix</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">build_vector</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">build_superoperator</span><span class="p">()</span>
 

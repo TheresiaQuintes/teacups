@@ -86,15 +86,15 @@
 <span class="kn">import</span> <span class="nn">teacups.memory</span> <span class="k">as</span> <span class="nn">mem</span>
 
 <span class="kn">import</span> <span class="nn">scipy.constants</span> <span class="k">as</span> <span class="nn">const</span>
+
 <span class="n">MU_B</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">physical_constants</span><span class="p">[</span><span class="s2">&quot;Bohr magneton in Hz/T&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">K_B</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">physical_constants</span><span class="p">[</span><span class="s2">&quot;Boltzmann constant in Hz/K&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">COMPLEX_TYPE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">complex64</span>
 <span class="n">FLOAT_TYPE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
 
 
-<div class="viewcode-block" id="set_up_density_matrix"><a class="viewcode-back" href="../../developer.html#teacups.density_matrices.set_up_density_matrix">[docs]</a><span class="k">def</span> <span class="nf">set_up_density_matrix</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span>
-                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="set_up_density_matrix"><a class="viewcode-back" href="../../developer.html#teacups.density_matrices.set_up_density_matrix">[docs]</a><span class="k">def</span> <span class="nf">set_up_density_matrix</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the density matrix in the basis and shape of the systems</span>
 <span class="sd">    Hamiltonian.</span>
 
@@ -152,11 +152,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">precursor</span> <span class="o">==</span> <span class="s2">&quot;zf&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s2">&quot;trip&quot;</span><span class="p">:</span>
-
             <span class="n">rho</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">)</span>
 
-            <span class="n">ham_tri_hf</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_triplet_high_field_xyz_hamiltonian</span><span class="p">(</span>
-                <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
+            <span class="n">ham_tri_hf</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_triplet_high_field_xyz_hamiltonian</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
 
             <span class="c1"># diagonalize hf-Hamiltonians</span>
             <span class="n">eig_hf</span><span class="p">,</span> <span class="n">vec_hf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">ham_tri_hf</span><span class="p">)</span>
@@ -170,7 +168,6 @@
 
             <span class="c1"># kill all off-diagonal elements</span>
             <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
-
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
@@ -191,8 +188,7 @@
 
             <span class="n">eig</span><span class="p">,</span> <span class="n">vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham_sys</span><span class="p">)</span>
             <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">vec</span> <span class="o">@</span> <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+                <span class="n">vec</span> <span class="o">@</span> <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
             <span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
@@ -233,8 +229,7 @@
         <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s2">&quot;tdp&quot;</span><span class="p">:</span>
             <span class="c1"># set up the full high field hamiltonian of the coupled system</span>
             <span class="c1"># in the xyz-Basis: xxyyzz</span>
-            <span class="n">ham_xyz</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_tdp_high_field_xyz_hamiltonian</span><span class="p">(</span>
-                <span class="n">sys</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
+            <span class="n">ham_xyz</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_tdp_high_field_xyz_hamiltonian</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
 
             <span class="c1"># define rho in xyz-basis using populations for triplet-zf levels</span>
             <span class="n">rho_trip</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">population</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">))</span>
@@ -248,20 +243,13 @@
             <span class="k">if</span> <span class="n">CUPY</span><span class="p">:</span>
                 <span class="kn">import</span> <span class="nn">cupy</span> <span class="k">as</span> <span class="nn">cp</span>
 
-                <span class="n">chunk_size</span> <span class="o">=</span> <span class="n">mem</span><span class="o">.</span><span class="n">chunk_size_for_gpu</span><span class="p">(</span>
-                    <span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">),</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">)</span><span class="o">*</span><span class="mi">4</span>
+                <span class="n">chunk_size</span> <span class="o">=</span> <span class="n">mem</span><span class="o">.</span><span class="n">chunk_size_for_gpu</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">),</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">)</span> <span class="o">*</span> <span class="mi">4</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">)</span>
 
                 <span class="n">ham_xyz_split</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">ham_xyz</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">)</span>
                 <span class="n">ham_sys_split</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham_sys</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">)</span>
 
                 <span class="n">rho_split</span> <span class="o">=</span> <span class="p">[]</span>
-
-                <span class="kn">from</span> <span class="nn">pynvml</span> <span class="kn">import</span> <span class="p">(</span>
-                    <span class="n">nvmlInit</span><span class="p">,</span>
-                    <span class="n">nvmlDeviceGetHandleByIndex</span><span class="p">,</span>
-                    <span class="n">nvmlDeviceGetMemoryInfo</span><span class="p">,</span>
-                <span class="p">)</span>
 
                 <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ham_xyz_split</span><span class="p">)):</span>
                     <span class="n">ham_xyz</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ham_xyz_split</span><span class="p">[</span><span class="n">chunk</span><span class="p">])</span>
@@ -305,9 +293,7 @@
 
                 <span class="c1"># basistransformation rho: xyz-basis -&gt; TDP-eigenbasis</span>
                 <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="n">vec_hf</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
-                    <span class="o">@</span> <span class="n">rho</span><span class="o">.</span><span class="n">matrix</span>
-                    <span class="o">@</span> <span class="n">vec_hf</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="n">vec_hf</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span> <span class="o">@</span> <span class="n">rho</span><span class="o">.</span><span class="n">matrix</span> <span class="o">@</span> <span class="n">vec_hf</span>
                 <span class="p">)</span>
                 <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
 
@@ -341,7 +327,8 @@
             <span class="n">rho_tri</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span><span class="n">cal_tri</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">)</span>
 
             <span class="n">ham_tri_hf</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_triplet_high_field_pnm_hamiltonian</span><span class="p">(</span>
-                <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal_tri</span><span class="p">)</span>
+                <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal_tri</span>
+            <span class="p">)</span>
 
             <span class="c1"># diagonalize hf-Hamiltonians</span>
             <span class="n">eig_hf</span><span class="p">,</span> <span class="n">vec_hf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">ham_tri_hf</span><span class="p">)</span>
@@ -365,8 +352,7 @@
         <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s2">&quot;tdp&quot;</span><span class="p">:</span>
             <span class="c1"># set up the full high field hamiltonian of the coupled system</span>
             <span class="c1"># in the pnm-Basis(+1, 0, -1): ppnnmm</span>
-            <span class="n">ham_pnm</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_tdp_high_field_pnm_hamiltonian</span><span class="p">(</span>
-                <span class="n">sys</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
+            <span class="n">ham_pnm</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">set_up_tdp_high_field_pnm_hamiltonian</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
 
             <span class="c1"># define rho in pnm-basis using populations for triplet-zf levels</span>
             <span class="n">rho_trip</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">population</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">))</span>
@@ -385,9 +371,7 @@
 
             <span class="c1"># basistransformation rho: pnm-basis -&gt; TDP-eigenbasis</span>
             <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="n">vec_hf</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
-                <span class="o">@</span> <span class="n">rho</span><span class="o">.</span><span class="n">matrix</span>
-                <span class="o">@</span> <span class="n">vec_hf</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="n">vec_hf</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span> <span class="o">@</span> <span class="n">rho</span><span class="o">.</span><span class="n">matrix</span> <span class="o">@</span> <span class="n">vec_hf</span>
             <span class="p">)</span>
             <span class="n">rho</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
 

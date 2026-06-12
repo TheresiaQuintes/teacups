@@ -83,23 +83,19 @@
 <span class="n">COMPLEX_TYPE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">complex64</span>
 <span class="n">FLOAT_TYPE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
 
+
 <span class="k">class</span> <span class="nc">Multimatrix</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="n">grid_points</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b_points</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">):</span>
-
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="n">grid_points</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b_points</span><span class="p">:</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span> <span class="o">=</span> <span class="n">dimension</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">grid_points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">b_points</span><span class="p">,</span> <span class="n">grid_points</span><span class="p">,</span>
-                              <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">grid_points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">b_points</span><span class="p">,</span> <span class="n">grid_points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">angle_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">B_angle_shape</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">B_angle_shape</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">matrix_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Change all matrix attributes in angle_matrix attribute and in</span>
 <span class="sd">        B_angle_matrix attribute to the current value of matrix attribute. For</span>
 <span class="sd">        example this can be used for isotropic operators, whose matrices look</span>
@@ -120,15 +116,13 @@
 <span class="sd">        None.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">angle_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_shape</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_shape</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">angle_matrix_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Change all angle_matrix attributes in B_angle matrix attribute to the</span>
 <span class="sd">        current value of angle_matrix attribute. For example this can be used</span>
 <span class="sd">        for operators which are not dependent on different B-fields.</span>
@@ -145,13 +139,13 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">angle_matrix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_shape</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">angle_matrix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_shape</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="kc">None</span>
 
-
-    <span class="k">def</span> <span class="nf">scalar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factors</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">scalar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factors</span><span class="p">:</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Build the scalar product of the whole B_angle_matrix</span>
 <span class="sd">        (this means each number in the array) with the product of all factors.</span>
 
@@ -175,8 +169,8 @@
 
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">product</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scd_matrix</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">product</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scd_matrix</span><span class="p">:</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Build the matrix product of each matrix in B_angle_matrix and a second</span>
 <span class="sd">        matrix being multiplied either from right (default) or from left side.</span>
 
@@ -203,9 +197,11 @@
         <span class="k">if</span> <span class="n">scd_matrix</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">scd_matrix</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">scd_matrix</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_shape</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Multiplied matrix has to have either</span><span class="se">\</span>
+                    <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
+                        <span class="s2">&quot;Multiplied matrix has to have either</span><span class="se">\</span>
 <span class="s2">                                     the shape of the matrix, angle_matrix</span><span class="se">\</span>
-<span class="s2">                                     or B_angle_matrix attribute.&quot;</span><span class="p">)</span>
+<span class="s2">                                     or B_angle_matrix attribute.&quot;</span>
+                    <span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">left</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">@</span> <span class="n">scd_matrix</span>
@@ -214,9 +210,10 @@
 
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">basis_transformation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trans</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">inverse_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                            <span class="n">orthonormal</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">basis_transformation</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">trans</span><span class="p">:</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">,</span> <span class="n">inverse_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">orthonormal</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Change the basis of all matrices in B_angle_matrix.</span>
 <span class="sd">        trans is the transformation matrix: m = trans^-1 @ m @ trans.</span>
 
@@ -244,35 +241,41 @@
         <span class="k">if</span> <span class="n">trans</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">trans</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">trans</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_shape</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Transformation matrix has to have either</span><span class="se">\</span>
+                    <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
+                        <span class="s2">&quot;Transformation matrix has to have either</span><span class="se">\</span>
 <span class="s2">                                     the shape of the matrix, angle_matrix</span><span class="se">\</span>
-<span class="s2">                                     or B_angle_matrix attribute.&quot;</span><span class="p">)</span>
+<span class="s2">                                     or B_angle_matrix attribute.&quot;</span>
+                    <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">inverse_left</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">orthonormal</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span> <span class="o">@</span>
-                                       <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">@</span> <span class="n">trans</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">@</span> <span class="n">trans</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">trans</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="p">[:,</span> <span class="p">:]</span>\
-                    <span class="o">@</span> <span class="n">trans</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">trans</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">@</span> <span class="n">trans</span>
+                <span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">orthonormal</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="n">trans</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">@</span>\
-                    <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">trans</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">trans</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">@</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">trans</span><span class="p">))</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="n">trans</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="p">[:,</span> <span class="p">:]</span>\
-                    <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">trans</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">trans</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">trans</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+                <span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">Multioperator_</span><span class="p">(</span><span class="n">Multimatrix</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="n">grid_points</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b_points</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="n">grid_points</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b_points</span><span class="p">:</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">):</span>
         <span class="n">Multimatrix</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="n">grid_points</span><span class="p">,</span> <span class="n">b_points</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_vector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_vector</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_superop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_superoperator</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">build_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Changing the dimension of each matrix operator attribute in</span>
 <span class="sd">        B_angle_matrix to a 1D.vector using .reshape()-function for numpy</span>
 <span class="sd">        arrays. Lines are simply written in only one long line.</span>
@@ -288,13 +291,17 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_vector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-             <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+            <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
 
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">build_superoperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">swap</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Double the dimension of each matrix operator in B_angle_matrix</span>
 <span class="sd">        (in case of use in a higher dimensional space). Tensor product of</span>
 <span class="sd">        operator with unit matrix of the same dimension is built using the</span>
@@ -329,9 +336,8 @@
         <span class="k">return</span> <span class="kc">None</span>
 
 
-
 <div class="viewcode-block" id="Multioperator"><a class="viewcode-back" href="../../developer.html#teacups.multioperator_tools.Multioperator">[docs]</a><span class="k">class</span> <span class="nc">Multioperator</span><span class="p">(</span><span class="n">Multioperator_</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An object of class Multioperator contains matrix attributes of</span>
 <span class="sd">    different dimensions (see below). Furthermore it contains a tensor, a</span>
 <span class="sd">    spinoperator and a magnetic fiels vector setting the dimensions.</span>
@@ -387,13 +393,13 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spinop</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">grid_points</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spinop</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">grid_points</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">):</span>
         <span class="n">Multioperator_</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spinop</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="n">grid_points</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spinop</span> <span class="o">=</span> <span class="n">spinop</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">B</span> <span class="o">=</span> <span class="n">B</span>
 
 <div class="viewcode-block" id="Multioperator.create_linear_operator"><a class="viewcode-back" href="../../developer.html#teacups.multioperator_tools.Multioperator.create_linear_operator">[docs]</a>    <span class="k">def</span> <span class="nf">create_linear_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a linear interaction hamiltonian (e.g. Zeeman interaction)</span>
 <span class="sd">        between the spinoperator attribute spinop and the interaction matrix</span>
 <span class="sd">        tensor in case that the magnetic field vector is defined in</span>
@@ -420,13 +426,13 @@
 <span class="sd">        None.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">))</span>
-        <span class="n">sy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">))</span>
-        <span class="n">sz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">))</span>
+        <span class="n">sx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">))</span>
+        <span class="n">sy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">))</span>
+        <span class="n">sz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">))</span>
         <span class="n">tx</span> <span class="o">=</span> <span class="n">tensor</span><span class="o">.</span><span class="n">multirot</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
         <span class="n">ty</span> <span class="o">=</span> <span class="n">tensor</span><span class="o">.</span><span class="n">multirot</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
         <span class="n">tz</span> <span class="o">=</span> <span class="n">tensor</span><span class="o">.</span><span class="n">multirot</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">angle_matrix</span> <span class="o">=</span> <span class="n">sx</span><span class="o">*</span><span class="n">tx</span> <span class="o">+</span> <span class="n">sy</span><span class="o">*</span><span class="n">ty</span> <span class="o">+</span> <span class="n">sz</span><span class="o">*</span><span class="n">tz</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle_matrix</span> <span class="o">=</span> <span class="n">sx</span> <span class="o">*</span> <span class="n">tx</span> <span class="o">+</span> <span class="n">sy</span> <span class="o">*</span> <span class="n">ty</span> <span class="o">+</span> <span class="n">sz</span> <span class="o">*</span> <span class="n">tz</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">angle_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle_matrix</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">angle_matrix_changed</span><span class="p">()</span>
@@ -436,7 +442,7 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="Multioperator.create_bilinear_operator"><a class="viewcode-back" href="../../developer.html#teacups.multioperator_tools.Multioperator.create_bilinear_operator">[docs]</a>    <span class="k">def</span> <span class="nf">create_bilinear_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">spinop2</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a bilinear interaction hamiltonian (e.g. dipol interaction)</span>
 <span class="sd">        between the spinoperator attribute spinop, the interaction matrix</span>
 <span class="sd">        tensor and a second spinoperator given to the function. The interaction</span>
@@ -469,14 +475,14 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">dimension</span> <span class="o">!=</span> <span class="n">spinop2</span><span class="o">.</span><span class="n">dimension</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Spinoperator dimensions must not differ.&quot;</span><span class="p">)</span>
 
-        <span class="n">sx1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">))</span>
-        <span class="n">sy1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">))</span>
-        <span class="n">sz1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">))</span>
+        <span class="n">sx1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">))</span>
+        <span class="n">sy1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">))</span>
+        <span class="n">sz1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">))</span>
         <span class="n">S1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">sx1</span><span class="p">,</span> <span class="n">sy1</span><span class="p">,</span> <span class="n">sz1</span><span class="p">])</span>
 
-        <span class="n">sx2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">spinop2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">))</span>
-        <span class="n">sy2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">spinop2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">))</span>
-        <span class="n">sz2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">spinop2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">))</span>
+        <span class="n">sx2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">spinop2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">))</span>
+        <span class="n">sy2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">spinop2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">))</span>
+        <span class="n">sz2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">spinop2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle_shape</span><span class="p">))</span>
 
         <span class="n">S2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">sx2</span><span class="p">,</span> <span class="n">sy2</span><span class="p">,</span> <span class="n">sz2</span><span class="p">])</span>
 
@@ -492,9 +498,7 @@
         <span class="n">tzy</span> <span class="o">=</span> <span class="n">tensor</span><span class="o">.</span><span class="n">multirot</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
         <span class="n">tzz</span> <span class="o">=</span> <span class="n">tensor</span><span class="o">.</span><span class="n">multirot</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
 
-        <span class="n">tensor_ges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">txx</span><span class="p">,</span> <span class="n">txy</span><span class="p">,</span> <span class="n">txz</span><span class="p">],</span>
-                               <span class="p">[</span><span class="n">tyx</span><span class="p">,</span> <span class="n">tyy</span><span class="p">,</span> <span class="n">tyz</span><span class="p">],</span>
-                               <span class="p">[</span><span class="n">tzx</span><span class="p">,</span> <span class="n">tzy</span><span class="p">,</span> <span class="n">tzz</span><span class="p">]])</span>
+        <span class="n">tensor_ges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">txx</span><span class="p">,</span> <span class="n">txy</span><span class="p">,</span> <span class="n">txz</span><span class="p">],</span> <span class="p">[</span><span class="n">tyx</span><span class="p">,</span> <span class="n">tyy</span><span class="p">,</span> <span class="n">tyz</span><span class="p">],</span> <span class="p">[</span><span class="n">tzx</span><span class="p">,</span> <span class="n">tzy</span><span class="p">,</span> <span class="n">tzz</span><span class="p">]])</span>
 
         <span class="n">ham</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
@@ -510,7 +514,7 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="Multioperator.exchange_coupling"><a class="viewcode-back" href="../../developer.html#teacups.multioperator_tools.Multioperator.exchange_coupling">[docs]</a>    <span class="k">def</span> <span class="nf">exchange_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">J_ex</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">spinop2</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an isotropic exchange coupling hamiltonian of two spins. Matrix</span>
 <span class="sd">        attribute is changed and afterwards filled in angle_matrix and</span>
 <span class="sd">        B_angle_matrix by using the function matrix_changed().</span>
@@ -542,20 +546,21 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">dimension</span> <span class="o">!=</span> <span class="n">spinop2</span><span class="o">.</span><span class="n">dimension</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Spinoperator dimensions must not differ.&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">J_ex</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span><span class="nd">@spinop2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
-                                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span><span class="nd">@spinop2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
-                                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span><span class="nd">@spinop2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">J_ex</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span> <span class="o">@</span> <span class="n">spinop2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span> <span class="o">@</span> <span class="n">spinop2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span> <span class="o">@</span> <span class="n">spinop2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">matrix_changed</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">build_vector</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">build_superoperator</span><span class="p">()</span>
 
-
         <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="Multioperator.microwave_coupling"><a class="viewcode-back" href="../../developer.html#teacups.multioperator_tools.Multioperator.microwave_coupling">[docs]</a>    <span class="k">def</span> <span class="nf">microwave_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">omega_nut</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">omega_mw</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate an isotropic interaction hamiltonian of spinoperator with a</span>
 <span class="sd">        magnetic microwave-field in the rotating frame representation.</span>
 <span class="sd">        Therefore, the hamiltonian is set up as the sum of the interaction</span>
@@ -594,8 +599,7 @@
 <span class="sd">        None.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span> <span class="o">*</span> \
-            <span class="n">omega_nut</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span><span class="o">*</span><span class="n">omega_mw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">omega_nut</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">spinop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">omega_mw</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">matrix_changed</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">build_vector</span><span class="p">()</span>
@@ -604,7 +608,7 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="Multioperator.zeeman_coupling"><a class="viewcode-back" href="../../developer.html#teacups.multioperator_tools.Multioperator.zeeman_coupling">[docs]</a>    <span class="k">def</span> <span class="nf">zeeman_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g_tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Claculate the hamiltonian of the zeeman coupling. Therefore, the</span>
 <span class="sd">        interaction matrix is calculated by using the function</span>
 <span class="sd">        create_linear_operator() for each angle combination. Afterwards each</span>
@@ -634,8 +638,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">create_linear_operator</span><span class="p">(</span><span class="n">g_tensor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">angle_matrix_changed</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_matrix</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">B</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_shape</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">B</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">B_angle_shape</span>
+        <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">build_vector</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">build_superoperator</span><span class="p">()</span>

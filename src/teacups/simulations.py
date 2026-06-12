@@ -36,7 +36,14 @@ def teacups(Sys: object, Exp: object, SimOpt: object) -> "np.ndarray":
         dimension is the magnetic field, the other is the time.
     pop_evolution : np.ndarray
         Population_evolution is optionally given back if SimOpt.pop_evolution
-        is True and SimOpt.space is 'liouville'.
+        is True and SimOpt.space is 'liouville'. 2D Array that contains the
+        simulated populations for the first orientation and the first magnetic
+        field point for every time point in arbitrary units.
+    eigval: np.ndarray
+        2D Array optionally given back if SimOpt.eigval_mode is True.
+        Ends the calculation without continuing to intensities or time
+        evolutions. Contains the eigenvalues of the system hamiltonian in Hz.
+        One dimension is the magnetic field, then grid points.
 
     """
 

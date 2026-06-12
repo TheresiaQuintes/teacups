@@ -87,7 +87,7 @@
 
 
 <div class="viewcode-block" id="propagation"><a class="viewcode-back" href="../../developer.html#teacups.signals_and_processing.propagation">[docs]</a><span class="k">def</span> <span class="nf">propagation</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate a time propagation operator matrix for a given hamiltonian.</span>
 <span class="sd">    It can be chosen in which space (hilbert or liouville) the operator will</span>
 <span class="sd">    be set up. A relaxation operator is taken into account.</span>
@@ -121,44 +121,48 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">space</span> <span class="o">==</span> <span class="s1">&#39;hilbert&#39;</span><span class="p">:</span>
-        <span class="n">step</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">cal</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">space</span> <span class="o">==</span> <span class="s2">&quot;hilbert&quot;</span><span class="p">:</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">cal</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">propagation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
 
         <span class="n">eigval</span><span class="p">,</span> <span class="n">vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="p">)</span>
-        <span class="n">exp_arg</span> <span class="o">=</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">eigval</span>
+        <span class="n">exp_arg</span> <span class="o">=</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">eigval</span>
 
         <span class="n">n</span> <span class="o">=</span> <span class="n">propagation</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">propagation</span><span class="p">[:,</span> <span class="p">:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">exp_arg</span><span class="o">*</span><span class="n">step</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;exponential ready...&#39;</span><span class="p">)</span>
+        <span class="n">propagation</span><span class="p">[:,</span> <span class="p">:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">exp_arg</span> <span class="o">*</span> <span class="n">step</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;exponential ready...&quot;</span><span class="p">)</span>
 
-        <span class="n">propagation</span> <span class="o">=</span> <span class="n">vec</span> <span class="o">@</span> <span class="n">propagation</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;propagator ready...&#39;</span><span class="p">)</span>
+        <span class="n">propagation</span> <span class="o">=</span> <span class="n">vec</span> <span class="o">@</span> <span class="n">propagation</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;propagator ready...&quot;</span><span class="p">)</span>
 
-    <span class="k">elif</span> <span class="n">opt</span><span class="o">.</span><span class="n">space</span> <span class="o">==</span> <span class="s1">&#39;liouville&#39;</span><span class="p">:</span>
-        <span class="n">step</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">cal</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">opt</span><span class="o">.</span><span class="n">space</span> <span class="o">==</span> <span class="s2">&quot;liouville&quot;</span><span class="p">:</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">cal</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="n">cal</span><span class="o">.</span><span class="n">ham_superop</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">step</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;superoperator ready...&#39;</span><span class="p">)</span>
+        <span class="n">cal</span><span class="o">.</span><span class="n">ham_superop</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">step</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;superoperator ready...&quot;</span><span class="p">)</span>
 
         <span class="n">eigval</span><span class="p">,</span> <span class="n">vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham_superop</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;eigenvalues ready...&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;eigenvalues ready...&quot;</span><span class="p">)</span>
 
-        <span class="n">propagation</span> <span class="o">=</span> <span class="n">vec</span> <span class="o">@</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">eigval</span><span class="p">)[:,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">*</span>
-                             <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">eigval</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">))</span>\
+        <span class="n">propagation</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">vec</span>
+<div class="viewcode-block" id="make_signal"><a class="viewcode-back" href="../../developer.html#teacups.signals_and_processing.make_signal">[docs]</a>            <span class="o">@</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">eigval</span><span class="p">)[:,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">eigval</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
+            <span class="p">)</span>
             <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;propagator ready...&#39;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;propagator ready...&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;opt.space has to be either hilbert or liouville&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;opt.space has to be either hilbert or liouville&quot;</span><span class="p">)</span>
 
     <span class="n">cal</span><span class="o">.</span><span class="n">propagation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">propagation</span><span class="p">)</span>
 
     <span class="k">return</span></div>
 
 
-<div class="viewcode-block" id="make_signal"><a class="viewcode-back" href="../../developer.html#teacups.signals_and_processing.make_signal">[docs]</a><span class="k">def</span> <span class="nf">make_signal</span><span class="p">(</span><span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="k">def</span> <span class="nf">make_signal</span><span class="p">(</span><span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the signal of a transient EPR experiment. Signals will be given</span>
 <span class="sd">    back as an array containing the intensity in abitrary units for each</span>
 <span class="sd">    combination of time, magnetic field and orientation.</span>
@@ -204,30 +208,33 @@
 <span class="sd">    None.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">cal</span><span class="o">.</span><span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">t</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">),</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">),</span>
-                          <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
+    <span class="n">cal</span><span class="o">.</span><span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+        <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">t</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">),</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span>
+    <span class="p">)</span>
     <span class="n">time_evolution_multicore</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
 
     <span class="c1"># calculate population evolution</span>
-    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">pop_evolution</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">opt</span><span class="o">.</span><span class="n">space</span> <span class="o">==</span> <span class="s1">&#39;liouville&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">pop_evolution</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">opt</span><span class="o">.</span><span class="n">space</span> <span class="o">==</span> <span class="s2">&quot;liouville&quot;</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;starting population evolution...&quot;</span><span class="p">)</span>
         <span class="n">rho_prop</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">rho</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
         <span class="n">cal</span><span class="o">.</span><span class="n">pop_evolution</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">t</span><span class="p">)):</span>
-            <span class="n">pop_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">eigvec</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span> <span class="o">@</span>\
-                <span class="n">rho_prop</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">cal</span><span class="o">.</span><span class="n">s</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="n">cal</span><span class="o">.</span><span class="n">s</span><span class="o">.</span><span class="n">dimension</span><span class="p">))</span> <span class="o">@</span>\
-                <span class="n">cal</span><span class="o">.</span><span class="n">eigvec</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">pop_matrix</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">eigvec</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
+<div class="viewcode-block" id="time_evolution_hilbert"><a class="viewcode-back" href="../../developer.html#teacups.signals_and_processing.time_evolution_hilbert">[docs]</a>                <span class="o">@</span> <span class="n">rho_prop</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">cal</span><span class="o">.</span><span class="n">s</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="n">cal</span><span class="o">.</span><span class="n">s</span><span class="o">.</span><span class="n">dimension</span><span class="p">))</span>
+                <span class="o">@</span> <span class="n">cal</span><span class="o">.</span><span class="n">eigvec</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="p">)</span>
             <span class="n">pops</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">pop_matrix</span><span class="p">)</span>
             <span class="n">cal</span><span class="o">.</span><span class="n">pop_evolution</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pops</span><span class="p">)</span>
-            <span class="n">rho_prop</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">propagation</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="nd">@rho_prop</span>
+            <span class="n">rho_prop</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">propagation</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">@</span> <span class="n">rho_prop</span>
         <span class="n">cal</span><span class="o">.</span><span class="n">pop_evolution</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">pop_evolution</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;population evolution ready...&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="time_evolution_hilbert"><a class="viewcode-back" href="../../developer.html#teacups.signals_and_processing.time_evolution_hilbert">[docs]</a><span class="k">def</span> <span class="nf">time_evolution_hilbert</span><span class="p">(</span><span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="k">def</span> <span class="nf">time_evolution_hilbert</span><span class="p">(</span><span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the time evoluted signal in hilbert space.</span>
 
 <span class="sd">    Parameters</span>
@@ -249,14 +256,13 @@
     <span class="n">rho_prop</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">rho</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">propagation_invers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">propagation</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">t</span><span class="p">))):</span>
-        <span class="n">cal</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">rho_prop</span> <span class="o">@</span> <span class="n">cal</span><span class="o">.</span><span class="n">observable</span><span class="p">),</span> <span class="n">axis1</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">cal</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">((</span><span class="n">rho_prop</span> <span class="o">@</span> <span class="n">cal</span><span class="o">.</span><span class="n">observable</span><span class="p">),</span> <span class="n">axis1</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">rho_prop</span> <span class="o">=</span> <span class="n">propagation_invers</span> <span class="o">@</span> <span class="n">rho_prop</span> <span class="o">@</span> <span class="n">cal</span><span class="o">.</span><span class="n">propagation</span>
     <span class="k">return</span> <span class="n">cal</span><span class="o">.</span><span class="n">signal</span></div>
 
 
 <div class="viewcode-block" id="time_evolution_liouville"><a class="viewcode-back" href="../../developer.html#teacups.signals_and_processing.time_evolution_liouville">[docs]</a><span class="k">def</span> <span class="nf">time_evolution_liouville</span><span class="p">(</span><span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the time evoluted signal in liouville space.</span>
 
 <span class="sd">    Parameters</span>
@@ -279,12 +285,12 @@
     <span class="n">rho_prop</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">rho</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">t</span><span class="p">))):</span>
         <span class="n">cal</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">rho_prop</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">cal</span><span class="o">.</span><span class="n">observable</span><span class="p">)</span>
-        <span class="n">rho_prop</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">propagation</span><span class="nd">@rho_prop</span>
+        <span class="n">rho_prop</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">propagation</span> <span class="o">@</span> <span class="n">rho_prop</span>
     <span class="k">return</span> <span class="n">cal</span><span class="o">.</span><span class="n">signal</span></div>
 
 
 <div class="viewcode-block" id="time_evolution_multicore"><a class="viewcode-back" href="../../developer.html#teacups.signals_and_processing.time_evolution_multicore">[docs]</a><span class="k">def</span> <span class="nf">time_evolution_multicore</span><span class="p">(</span><span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the time evolution of a signal on multiple cpu-cores. It can be</span>
 <span class="sd">    chosen in the calculation is done in hilbert or in liouville space.</span>
 
@@ -311,16 +317,16 @@
 <span class="sd">    None</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">space</span> <span class="o">==</span> <span class="s1">&#39;hilbert&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">space</span> <span class="o">==</span> <span class="s2">&quot;hilbert&quot;</span><span class="p">:</span>
         <span class="n">multicore_sim</span> <span class="o">=</span> <span class="n">multicore</span><span class="p">(</span><span class="n">time_evolution_hilbert</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">opt</span><span class="o">.</span><span class="n">space</span> <span class="o">==</span> <span class="s1">&#39;liouville&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">opt</span><span class="o">.</span><span class="n">space</span> <span class="o">==</span> <span class="s2">&quot;liouville&quot;</span><span class="p">:</span>
         <span class="n">multicore_sim</span> <span class="o">=</span> <span class="n">multicore</span><span class="p">(</span><span class="n">time_evolution_liouville</span><span class="p">)</span>
     <span class="n">cal</span><span class="o">.</span><span class="n">signal</span> <span class="o">=</span> <span class="n">multicore_sim</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
     <span class="k">return</span></div>
 
 
-<div class="viewcode-block" id="multicore"><a class="viewcode-back" href="../../developer.html#teacups.signals_and_processing.multicore">[docs]</a><span class="k">def</span> <span class="nf">multicore</span><span class="p">(</span><span class="n">time_evolution_function</span><span class="p">:</span> <span class="nb">callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">callable</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="multicore"><a class="viewcode-back" href="../../developer.html#teacups.signals_and_processing.multicore">[docs]</a><span class="k">def</span> <span class="nf">multicore</span><span class="p">(</span><span class="n">time_evolution_function</span><span class="p">:</span> <span class="n">callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Using multiprocessing.Pool() with starmap() for parallel computing of</span>
 <span class="sd">    a time evolution. The spectrum is split along the orientations-axis.</span>
 
@@ -337,7 +343,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">multicore_wrapper</span><span class="p">(</span><span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Change a time_evolution_function for using multiple cpu cores.</span>
 
 <span class="sd">        Parameters</span>
@@ -367,8 +373,8 @@
         <span class="k">for</span> <span class="n">core</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">cpu_cores</span><span class="p">):</span>
             <span class="n">Calculations</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">cal</span><span class="p">)</span>
             <span class="n">start</span> <span class="o">=</span> <span class="n">core</span> <span class="o">*</span> <span class="n">points_per_core</span>
-            <span class="k">if</span> <span class="n">core</span><span class="o">+</span><span class="mi">1</span> <span class="o">&lt;</span> <span class="n">opt</span><span class="o">.</span><span class="n">cpu_cores</span><span class="p">:</span>
-                <span class="n">end</span> <span class="o">=</span> <span class="p">(</span><span class="n">core</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">points_per_core</span>
+            <span class="k">if</span> <span class="n">core</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">opt</span><span class="o">.</span><span class="n">cpu_cores</span><span class="p">:</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="p">(</span><span class="n">core</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">points_per_core</span>
                 <span class="n">Calculations</span><span class="o">.</span><span class="n">propagation</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">propagation</span><span class="p">[:,</span> <span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
                 <span class="n">Calculations</span><span class="o">.</span><span class="n">rho</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">rho</span><span class="p">[:,</span> <span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
                 <span class="n">Calculations</span><span class="o">.</span><span class="n">signal</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">signal</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
@@ -393,7 +399,7 @@
 
 
 <div class="viewcode-block" id="powder_average"><a class="viewcode-back" href="../../developer.html#teacups.signals_and_processing.powder_average">[docs]</a><span class="k">def</span> <span class="nf">powder_average</span><span class="p">(</span><span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Build the powder average of a signal. Depending on the chosen grid, points</span>
 <span class="sd">    are just summed up for all orientations (opt.grid=&#39;fibonacci&#39;,</span>
 <span class="sd">    opt.grid=&#39;single&#39;) or the signal is weightened and summed up for all</span>
@@ -430,8 +436,8 @@
 <span class="sd">    None</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid</span> <span class="o">==</span> <span class="s1">&#39;sophe&#39;</span><span class="p">:</span>
-        <span class="n">weightened_signal</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">signal</span><span class="o">*</span><span class="n">cal</span><span class="o">.</span><span class="n">weights</span>
+    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid</span> <span class="o">==</span> <span class="s2">&quot;sophe&quot;</span><span class="p">:</span>
+        <span class="n">weightened_signal</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">signal</span> <span class="o">*</span> <span class="n">cal</span><span class="o">.</span><span class="n">weights</span>
         <span class="n">signal_powder_average</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">weightened_signal</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
         <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span> <span class="o">+=</span> <span class="n">signal_powder_average</span>
 
@@ -443,7 +449,7 @@
 
 
 <div class="viewcode-block" id="signal_hilbert_decay"><a class="viewcode-back" href="../../developer.html#teacups.signals_and_processing.signal_hilbert_decay">[docs]</a><span class="k">def</span> <span class="nf">signal_hilbert_decay</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Multiply each time-spectrum with an exponential term for simulating</span>
 <span class="sd">    a decay of the system in hilbert space.</span>
 
@@ -468,8 +474,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">b_trace</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-        <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span><span class="p">[:,</span> <span class="n">b_trace</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
-            <span class="o">-</span><span class="n">cal</span><span class="o">.</span><span class="n">t</span><span class="o">/</span><span class="n">sys</span><span class="o">.</span><span class="n">decay</span><span class="p">)</span><span class="o">*</span><span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span><span class="p">[:,</span> <span class="n">b_trace</span><span class="p">]</span></div>
+        <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span><span class="p">[:,</span> <span class="n">b_trace</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">cal</span><span class="o">.</span><span class="n">t</span> <span class="o">/</span> <span class="n">sys</span><span class="o">.</span><span class="n">decay</span><span class="p">)</span> <span class="o">*</span> <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span><span class="p">[:,</span> <span class="n">b_trace</span><span class="p">]</span></div>
 </pre></div>
 
            </div>

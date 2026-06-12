@@ -86,11 +86,12 @@
 <span class="kn">import</span> <span class="nn">teacups.hamiltonians</span> <span class="k">as</span> <span class="nn">ham</span>
 
 <span class="kn">import</span> <span class="nn">scipy.constants</span> <span class="k">as</span> <span class="nn">const</span>
-<span class="n">MU_B</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">physical_constants</span><span class="p">[</span><span class="s1">&#39;Bohr magneton in Hz/T&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">MU_B</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">physical_constants</span><span class="p">[</span><span class="s2">&quot;Bohr magneton in Hz/T&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="set_up_hyperfine_tensors"><a class="viewcode-back" href="../../developer.html#teacups.hyperfine.set_up_hyperfine_tensors">[docs]</a><span class="k">def</span> <span class="nf">set_up_hyperfine_tensors</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set up a set of hyperfine tensors, optionally rotate them to an initial</span>
 <span class="sd">    frame and rotate them to a set of angles theta and phi. The function</span>
 <span class="sd">    cr.create_tensor is used.</span>
@@ -118,13 +119,16 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">cal</span><span class="o">.</span><span class="n">A_tensor</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s1">&#39;A_frame&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s2">&quot;A_frame&quot;</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">spin_count</span><span class="p">,</span> <span class="n">spin</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">A</span><span class="p">):</span>
             <span class="n">A_s</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">nuc_count</span><span class="p">,</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spin</span><span class="p">):</span>
                 <span class="n">A_tensor</span> <span class="o">=</span> <span class="n">cr</span><span class="o">.</span><span class="n">create_tensor</span><span class="p">(</span>
-                    <span class="n">sys</span><span class="o">.</span><span class="n">A</span><span class="p">[</span><span class="n">spin_count</span><span class="p">][</span><span class="n">nuc_count</span><span class="p">],</span> <span class="n">cal</span><span class="o">.</span><span class="n">phi</span><span class="p">,</span> <span class="n">cal</span><span class="o">.</span><span class="n">theta</span><span class="p">,</span>
-                    <span class="n">sys</span><span class="o">.</span><span class="n">A_frame</span><span class="p">[</span><span class="n">spin_count</span><span class="p">][</span><span class="n">nuc_count</span><span class="p">])</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">A</span><span class="p">[</span><span class="n">spin_count</span><span class="p">][</span><span class="n">nuc_count</span><span class="p">],</span>
+                    <span class="n">cal</span><span class="o">.</span><span class="n">phi</span><span class="p">,</span>
+                    <span class="n">cal</span><span class="o">.</span><span class="n">theta</span><span class="p">,</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">A_frame</span><span class="p">[</span><span class="n">spin_count</span><span class="p">][</span><span class="n">nuc_count</span><span class="p">],</span>
+                <span class="p">)</span>
                 <span class="n">A_s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">A_tensor</span><span class="p">)</span>
             <span class="n">cal</span><span class="o">.</span><span class="n">A_tensor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">A_s</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -132,16 +136,16 @@
             <span class="n">A_s</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">nuc_count</span><span class="p">,</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spin</span><span class="p">):</span>
                 <span class="n">A_tensor</span> <span class="o">=</span> <span class="n">cr</span><span class="o">.</span><span class="n">create_tensor</span><span class="p">(</span>
-                    <span class="n">sys</span><span class="o">.</span><span class="n">A</span><span class="p">[</span><span class="n">spin_count</span><span class="p">][</span><span class="n">nuc_count</span><span class="p">],</span> <span class="n">cal</span><span class="o">.</span><span class="n">phi</span><span class="p">,</span> <span class="n">cal</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">A</span><span class="p">[</span><span class="n">spin_count</span><span class="p">][</span><span class="n">nuc_count</span><span class="p">],</span> <span class="n">cal</span><span class="o">.</span><span class="n">phi</span><span class="p">,</span> <span class="n">cal</span><span class="o">.</span><span class="n">theta</span>
+                <span class="p">)</span>
                 <span class="n">A_s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">A_tensor</span><span class="p">)</span>
             <span class="n">cal</span><span class="o">.</span><span class="n">A_tensor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">A_s</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="create_hf_hamiltonian"><a class="viewcode-back" href="../../developer.html#teacups.hyperfine.create_hf_hamiltonian">[docs]</a><span class="k">def</span> <span class="nf">create_hf_hamiltonian</span><span class="p">(</span><span class="n">spins</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">coupling_nucs</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">hf_tensors</span><span class="p">:</span> <span class="nb">list</span>
-                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="create_hf_hamiltonian"><a class="viewcode-back" href="../../developer.html#teacups.hyperfine.create_hf_hamiltonian">[docs]</a><span class="k">def</span> <span class="nf">create_hf_hamiltonian</span><span class="p">(</span><span class="n">spins</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">coupling_nucs</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">hf_tensors</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the diagonal elements of a hyperfine interaction hamiltonian</span>
 <span class="sd">    of any number of spins with any number of nuclei. Input parameters are</span>
 <span class="sd">    given as lists, their dimensions are described below. The interaction</span>
@@ -202,35 +206,42 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ham_hf</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spins</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">coupling_nucs</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">coupling_nucs</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
         <span class="n">spin_matrices</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">Spinoperator</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">coupling_nucs</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
-        <span class="n">ham_hf_for_each_spin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span>
-            <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">hf_tensors</span><span class="p">)</span><span class="o">.</span><span class="n">flat</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">multirot</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-            <span class="n">spin_matrices</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="n">spin_matrices</span><span class="o">.</span><span class="n">dimension</span><span class="p">),</span>
-            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+        <span class="n">ham_hf_for_each_spin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">hf_tensors</span><span class="p">)</span><span class="o">.</span><span class="n">flat</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">multirot</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">spin_matrices</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span>
+                <span class="n">spin_matrices</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">spin_matrices</span><span class="o">.</span><span class="n">matrix_coupling_spins</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
             <span class="n">ham_hf_tmp</span> <span class="o">=</span> <span class="n">mut</span><span class="o">.</span><span class="n">Multioperator</span><span class="p">(</span>
-                <span class="n">spin_matrices</span><span class="p">,</span> <span class="n">hf_tensors</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="n">nuc</span><span class="p">]</span><span class="o">.</span><span class="n">multirot</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">spin_matrices</span><span class="p">,</span> <span class="n">hf_tensors</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="n">nuc</span><span class="p">]</span><span class="o">.</span><span class="n">multirot</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">s2</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">Spinoperator</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">coupling_nucs</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
                 <span class="n">s2</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">spin_matrices</span><span class="o">.</span><span class="n">matrix_coupling_spins</span><span class="p">[</span><span class="n">nuc</span><span class="p">]</span>
-                <span class="n">ham_hf_tmp</span><span class="o">.</span><span class="n">create_bilinear_operator</span><span class="p">(</span>
-                    <span class="n">hf_tensors</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="n">nuc</span><span class="p">],</span>
-                    <span class="n">s2</span><span class="p">)</span>
+                <span class="n">ham_hf_tmp</span><span class="o">.</span><span class="n">create_bilinear_operator</span><span class="p">(</span><span class="n">hf_tensors</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="n">nuc</span><span class="p">],</span> <span class="n">s2</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
                 <span class="k">pass</span>
             <span class="n">ham_hf_for_each_spin</span> <span class="o">+=</span> <span class="n">ham_hf_tmp</span><span class="o">.</span><span class="n">angle_matrix</span>
 
         <span class="n">ham_hf_for_each_spin</span> <span class="o">=</span> <span class="n">ham_hf_for_each_spin</span><span class="p">[</span>
-            <span class="p">:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">spin_matrices</span><span class="o">.</span><span class="n">dimension</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">spin_matrices</span><span class="o">.</span><span class="n">dimension</span><span class="p">)]</span>
+            <span class="p">:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">spin_matrices</span><span class="o">.</span><span class="n">dimension</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">spin_matrices</span><span class="o">.</span><span class="n">dimension</span><span class="p">)</span>
+        <span class="p">]</span>
         <span class="n">ham_hf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ham_hf_for_each_spin</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">ham_hf</span></div>
 
 
-<div class="viewcode-block" id="make_signal_with_hyperfine"><a class="viewcode-back" href="../../developer.html#teacups.hyperfine.make_signal_with_hyperfine">[docs]</a><span class="k">def</span> <span class="nf">make_signal_with_hyperfine</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span>
-                               <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="make_signal_with_hyperfine"><a class="viewcode-back" href="../../developer.html#teacups.hyperfine.make_signal_with_hyperfine">[docs]</a><span class="k">def</span> <span class="nf">make_signal_with_hyperfine</span><span class="p">(</span>
+    <span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the timeresolved signal of a trEPR-experiment a system consisting</span>
 <span class="sd">    of one or two spins including hyperfine interactions. The Hamiltonian</span>
 <span class="sd">    is set up for all combinations of magnetic quantum numbers of the spins</span>
@@ -268,41 +279,52 @@
 <span class="sd">    None</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">dims</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">s</span><span class="p">))</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">dims</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">s</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
 
     <span class="n">ham_total</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">ham</span>
     <span class="n">dim_total</span> <span class="o">=</span> <span class="n">ham_total</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="c1"># system consisting of 2 spins</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">dimensions</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">dim_total</span><span class="o">/</span><span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">dim_total</span><span class="o">/</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
-        <span class="n">combinations</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham_hf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
-                        <span class="nb">int</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham_hf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+        <span class="n">dimensions</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">dim_total</span> <span class="o">/</span> <span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">dim_total</span> <span class="o">/</span> <span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+        <span class="n">combinations</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham_hf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham_hf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="p">]</span>
 
-        <span class="n">ham_hf</span> <span class="o">=</span> <span class="n">hyperfine_of_coupled_system</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">ham_hf</span><span class="p">,</span> <span class="n">combinations</span><span class="p">,</span>
-                                             <span class="n">dimensions</span><span class="p">,</span> <span class="n">dim_total</span><span class="p">)</span>
+        <span class="n">ham_hf</span> <span class="o">=</span> <span class="n">hyperfine_of_coupled_system</span><span class="p">(</span>
+            <span class="n">cal</span><span class="o">.</span><span class="n">ham_hf</span><span class="p">,</span> <span class="n">combinations</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">,</span> <span class="n">dim_total</span>
+        <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">m_a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">combinations</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
             <span class="k">for</span> <span class="n">m_b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">combinations</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
                 <span class="n">cal</span><span class="o">.</span><span class="n">ham</span> <span class="o">=</span> <span class="n">ham_total</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
                 <span class="n">ham_hf_tmp</span> <span class="o">=</span> <span class="n">ham_hf</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">m_a</span><span class="p">]</span> <span class="o">+</span> <span class="n">ham_hf</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">m_b</span><span class="p">]</span>
 
-                <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s1">&#39;rp&#39;</span><span class="p">:</span>
-                    <span class="n">ham_hf_tmp</span> <span class="o">*=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+                <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s2">&quot;rp&quot;</span><span class="p">:</span>
+                    <span class="n">ham_hf_tmp</span> <span class="o">*=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
                     <span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="n">ham_hf_tmp</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
                     <span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-=</span> <span class="n">ham_hf_tmp</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
                     <span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="n">ham_hf_tmp</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
                     <span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">-=</span> <span class="o">-</span><span class="n">ham_hf_tmp</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="p">[:,</span> <span class="p">:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_total</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_total</span><span class="p">)]</span>\
-                        <span class="o">+=</span> <span class="n">ham_hf_tmp</span>
+                    <span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="p">[:,</span> <span class="p">:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_total</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_total</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">ham_hf_tmp</span>
 
                 <span class="n">ham</span><span class="o">.</span><span class="n">set_up_commutator_superoperator</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
 
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;start propagation for combination &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">m_a</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">combinations</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">m_b</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>  <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">combinations</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s2">&quot;start propagation for combination &quot;</span>
+                    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">m_a</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
+                    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">combinations</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+                    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">m_b</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
+                    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">combinations</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="p">)</span>
                 <span class="n">sap</span><span class="o">.</span><span class="n">propagation</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
 
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;start making the signal...&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;start making the signal...&quot;</span><span class="p">)</span>
                 <span class="n">sap</span><span class="o">.</span><span class="n">make_signal</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
 
                 <span class="n">sap</span><span class="o">.</span><span class="n">powder_average</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
@@ -310,18 +332,24 @@
     <span class="c1"># system consisting of 1 spin</span>
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">dim_hf</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">ham_hf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">combinations</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dim_hf</span><span class="o">/</span><span class="n">dim_total</span><span class="p">)</span>
+        <span class="n">combinations</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dim_hf</span> <span class="o">/</span> <span class="n">dim_total</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">m_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">combinations</span><span class="p">):</span>
             <span class="n">cal</span><span class="o">.</span><span class="n">ham</span> <span class="o">=</span> <span class="n">ham_total</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="p">[:,</span> <span class="p">:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_total</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_total</span><span class="p">)]</span>\
-                <span class="o">+=</span> <span class="n">cal</span><span class="o">.</span><span class="n">ham_hf</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,</span> <span class="n">m_i</span><span class="p">::</span><span class="n">combinations</span><span class="p">]</span>
+            <span class="n">cal</span><span class="o">.</span><span class="n">ham</span><span class="p">[:,</span> <span class="p">:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_total</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_total</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">cal</span><span class="o">.</span><span class="n">ham_hf</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span>
+                <span class="p">:,</span> <span class="n">m_i</span><span class="p">::</span><span class="n">combinations</span>
+            <span class="p">]</span>
 
             <span class="n">ham</span><span class="o">.</span><span class="n">set_up_commutator_superoperator</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;start propagation for combination &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">m_i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">combinations</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;start propagation for combination &quot;</span>
+                <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">m_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
+                <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">combinations</span><span class="p">)</span>
+            <span class="p">)</span>
             <span class="n">sap</span><span class="o">.</span><span class="n">propagation</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
 
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;start making the signal...&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;start making the signal...&quot;</span><span class="p">)</span>
             <span class="n">sap</span><span class="o">.</span><span class="n">make_signal</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
 
             <span class="n">sap</span><span class="o">.</span><span class="n">powder_average</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">cal</span><span class="p">)</span>
@@ -329,9 +357,10 @@
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="hyperfine_of_coupled_system"><a class="viewcode-back" href="../../developer.html#teacups.hyperfine.hyperfine_of_coupled_system">[docs]</a><span class="k">def</span> <span class="nf">hyperfine_of_coupled_system</span><span class="p">(</span><span class="n">hams_hf</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">combinations</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
-                                <span class="n">dimensions</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">dim_total</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="hyperfine_of_coupled_system"><a class="viewcode-back" href="../../developer.html#teacups.hyperfine.hyperfine_of_coupled_system">[docs]</a><span class="k">def</span> <span class="nf">hyperfine_of_coupled_system</span><span class="p">(</span>
+    <span class="n">hams_hf</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">combinations</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">dim_total</span><span class="p">:</span> <span class="nb">float</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the hyperfine hamiltonian of a spin system of two coupled spins.</span>
 <span class="sd">    For each spin M_i hamiltonians are calculated, where M_i is the the total</span>
 <span class="sd">    number of magnetic quantum numbers. E.g. if one nucleus with spin 1/2 is</span>
@@ -387,18 +416,18 @@
     <span class="n">ham_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">combinations</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">grid_points</span><span class="p">,</span> <span class="n">dim_total</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">combinations</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-        <span class="n">ham_tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
-                           <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
-        <span class="n">ham_tmp</span><span class="p">[:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">range</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">=</span>\
-            <span class="n">hams_hf</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,</span> <span class="n">a</span><span class="p">::</span><span class="n">combinations</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">ham_tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+        <span class="n">ham_tmp</span><span class="p">[:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">range</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">=</span> <span class="n">hams_hf</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span>
+            <span class="p">:,</span> <span class="n">a</span> <span class="p">::</span> <span class="n">combinations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="p">]</span>
         <span class="n">ham_tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">ham_tmp</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
         <span class="n">ham_a</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">ham_tmp</span><span class="p">[:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_total</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_total</span><span class="p">)]</span>
 
     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">combinations</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-        <span class="n">ham_tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
-                           <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
-        <span class="n">ham_tmp</span><span class="p">[:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">range</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">=</span>\
-            <span class="n">hams_hf</span><span class="p">[</span><span class="mi">1</span><span class="p">][:,</span> <span class="n">b</span><span class="p">::</span><span class="n">combinations</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">ham_tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+        <span class="n">ham_tmp</span><span class="p">[:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">range</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">=</span> <span class="n">hams_hf</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span>
+            <span class="p">:,</span> <span class="n">b</span> <span class="p">::</span> <span class="n">combinations</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">]</span>
         <span class="n">ham_tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">ham_tmp</span><span class="p">)</span>
         <span class="n">ham_b</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">ham_tmp</span><span class="p">[:,</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_total</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_total</span><span class="p">)]</span>
 
