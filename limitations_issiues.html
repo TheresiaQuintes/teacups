@@ -1,26 +1,26 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Limitations and known issiues &mdash; TEACUPS 2025 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
-    <link rel="canonical" href="https://theresiaquintes.github.io/teacups/limitations_issiues.html" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/clipboard.min.js"></script>
-        <script src="_static/copybutton.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="canonical" href="https://theresiaquintes.github.io/teacups/limitations_issiues.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=e66a8189"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -33,14 +33,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> TEACUPS
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            TEACUPS
           </a>
-              <div class="version">
-                2.0
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -84,7 +85,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Limitations and known issiues</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/limitations_issiues.rst.txt" rel="nofollow"> View page source</a>
@@ -96,34 +97,34 @@
            <div itemprop="articleBody">
              
   <section id="limitations-and-known-issiues">
-<h1>Limitations and known issiues<a class="headerlink" href="#limitations-and-known-issiues" title="Permalink to this heading"></a></h1>
+<h1>Limitations and known issiues<a class="headerlink" href="#limitations-and-known-issiues" title="Link to this heading"></a></h1>
 <section id="limitations">
-<h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this heading"></a></h2>
+<h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading"></a></h2>
 <section id="appropriate-relaxation-times-and-time-traces">
-<h3>Appropriate relaxation times and time traces<a class="headerlink" href="#appropriate-relaxation-times-and-time-traces" title="Permalink to this heading"></a></h3>
+<h3>Appropriate relaxation times and time traces<a class="headerlink" href="#appropriate-relaxation-times-and-time-traces" title="Link to this heading"></a></h3>
 <p>You should set <span class="math notranslate nohighlight">\(T_{\text{relax}} &gt; 10^{-8}\)</span> o.r. <span class="math notranslate nohighlight">\(k &lt; 10^8\)</span>. Otherwise the spectrum will get very broad. In order to see relaxation effects choose <span class="math notranslate nohighlight">\(t \approx 2\cdot T_{\text{relax}}\)</span></p>
 </section>
 <section id="relaxation-models">
-<h3>Relaxation models<a class="headerlink" href="#relaxation-models" title="Permalink to this heading"></a></h3>
+<h3>Relaxation models<a class="headerlink" href="#relaxation-models" title="Link to this heading"></a></h3>
 <p>Be aware that TEACUPS at the current state can only simulate models with transitions between the energy levels of the spin system. It is not possible to calculate changes of the system (e.g. conformational changes/ chemical reactions), which would change the energy levels. In order to do so, you would have to add a second spin system with changed parameters.</p>
 </section>
 <section id="secular-approximation">
-<h3>Secular approximation<a class="headerlink" href="#secular-approximation" title="Permalink to this heading"></a></h3>
+<h3>Secular approximation<a class="headerlink" href="#secular-approximation" title="Link to this heading"></a></h3>
 <p>Be aware that the secular approximation is used. For systems with large anisotropies the signal may become inaccurate.</p>
 </section>
 </section>
 <section id="known-issiues">
-<h2>Known issiues<a class="headerlink" href="#known-issiues" title="Permalink to this heading"></a></h2>
+<h2>Known issiues<a class="headerlink" href="#known-issiues" title="Link to this heading"></a></h2>
 <section id="runtimeerror-on-windows-system">
-<h3>RuntimeError on Windows system<a class="headerlink" href="#runtimeerror-on-windows-system" title="Permalink to this heading"></a></h3>
+<h3>RuntimeError on Windows system<a class="headerlink" href="#runtimeerror-on-windows-system" title="Link to this heading"></a></h3>
 <p>If the skript does not stop running and shows repeatedly a <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> you may have forgotten to add <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">__name__</span> <span class="pre">==</span> <span class="pre">&quot;__main__&quot;</span></code> to your skript (See section: <em>Getting started</em>)</p>
 </section>
 <section id="bends-in-the-spectrum-for-long-times">
-<h3>Bends in the spectrum for long times<a class="headerlink" href="#bends-in-the-spectrum-for-long-times" title="Permalink to this heading"></a></h3>
+<h3>Bends in the spectrum for long times<a class="headerlink" href="#bends-in-the-spectrum-for-long-times" title="Link to this heading"></a></h3>
 <p>If you see bends in the spectrum along the time axis for long times <span class="math notranslate nohighlight">\(t\)</span> you can remove the mistake by raising the number of magnetic field points in <code class="docutils literal notranslate"><span class="pre">Exp.B_z</span></code>.</p>
 </section>
 <section id="hyperfine-coupling-in-coupled-systems">
-<h3>Hyperfine coupling in coupled systems<a class="headerlink" href="#hyperfine-coupling-in-coupled-systems" title="Permalink to this heading"></a></h3>
+<h3>Hyperfine coupling in coupled systems<a class="headerlink" href="#hyperfine-coupling-in-coupled-systems" title="Link to this heading"></a></h3>
 <p>The hyperfine coupling does not work for coupled systems (i.e. radical pairs and triplet doublet pairs) until now. This issiue shall be removed in future versions.</p>
 </section>
 </section>
