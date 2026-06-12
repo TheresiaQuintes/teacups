@@ -1,8 +1,9 @@
 import numpy as np
 
 
-def tensor_rotation(tensor: 'np.ndarray', phi: float, theta: float,
-                    psi=0.0) -> 'np.ndarray':
+def tensor_rotation(
+    tensor: "np.ndarray", phi: float, theta: float, psi=0.0
+) -> "np.ndarray":
     """
     Euler transformation of a given tensor using y-convention.
 
@@ -44,25 +45,26 @@ def tensor_rotation(tensor: 'np.ndarray', phi: float, theta: float,
     eulermatrix = np.zeros((3, 3))
 
     # Set up the full 3-dimensional Euler matrix
-    eulermatrix[0][0] = cosphi*costhet*cospsi - sinphi*sinpsi
-    eulermatrix[0][1] = -cosphi*costhet*sinpsi - sinphi*cospsi
-    eulermatrix[0][2] = cosphi*sinthet
-    eulermatrix[1][0] = sinphi*costhet*cospsi + cosphi*sinpsi
-    eulermatrix[1][1] = - sinphi*costhet*sinpsi + cosphi*cospsi
-    eulermatrix[1][2] = sinphi*sinthet
-    eulermatrix[2][0] = -sinthet*cospsi
-    eulermatrix[2][1] = sinthet*sinpsi
+    eulermatrix[0][0] = cosphi * costhet * cospsi - sinphi * sinpsi
+    eulermatrix[0][1] = -cosphi * costhet * sinpsi - sinphi * cospsi
+    eulermatrix[0][2] = cosphi * sinthet
+    eulermatrix[1][0] = sinphi * costhet * cospsi + cosphi * sinpsi
+    eulermatrix[1][1] = -sinphi * costhet * sinpsi + cosphi * cospsi
+    eulermatrix[1][2] = sinphi * sinthet
+    eulermatrix[2][0] = -sinthet * cospsi
+    eulermatrix[2][1] = sinthet * sinpsi
     eulermatrix[2][2] = costhet
 
     # Final two sided matrix multiplication (similarity transformation)
     eulermatrix_transpose = eulermatrix.T
-    rotated_tensor = eulermatrix_transpose@(tensor@eulermatrix)
+    rotated_tensor = eulermatrix_transpose @ (tensor @ eulermatrix)
     rotated_tensor = rotated_tensor.astype(tensor.dtype)
     return rotated_tensor
 
 
-def create_linear_hamiltonian(tensor: 'np.ndarray', spinop: 'np.ndarray',
-                              z=True) -> 'np.ndarray':
+def create_linear_hamiltonian(
+    tensor: "np.ndarray", spinop: "np.ndarray", z=True
+) -> "np.ndarray":
     """
     Create a linear interaction Hamiltonian (e.g. Zeeman interaction) between
     a spin vector S and an interaction matrix tensor.
@@ -115,17 +117,24 @@ def create_linear_hamiltonian(tensor: 'np.ndarray', spinop: 'np.ndarray',
 
     if z is True:
         # Set up the Hamiltonian for perpendicular magnetic field
-        ham = spinop[0]*tensor[0, 2] + spinop[1]*tensor[1, 2]\
-            + spinop[2]*tensor[2, 2]
+        ham = (
+            spinop[0] * tensor[0, 2]
+            + spinop[1] * tensor[1, 2]
+            + spinop[2] * tensor[2, 2]
+        )
     else:
         # Set up the Hamiltonian for parallel magnetic field
-        ham = spinop[0]*tensor[0, 0] + spinop[1]*tensor[1, 0]\
-            + spinop[2]*tensor[2, 0]
+        ham = (
+            spinop[0] * tensor[0, 0]
+            + spinop[1] * tensor[1, 0]
+            + spinop[2] * tensor[2, 0]
+        )
     return ham
 
 
-def create_bilinear_hamiltonian(spinop1: 'np.ndarray', tensor: 'np.ndarray',
-                                spinop2: 'np.ndarray') -> 'np.ndarray':
+def create_bilinear_hamiltonian(
+    spinop1: "np.ndarray", tensor: "np.ndarray", spinop2: "np.ndarray"
+) -> "np.ndarray":
     """
     Create a bilinear interaction Hamiltonian between two spin vectors,
     spinop1 and spinop2, and an interaction matrix tensor.

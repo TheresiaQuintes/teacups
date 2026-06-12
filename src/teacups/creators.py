@@ -1,11 +1,13 @@
 import teacups.matrix_tools as mt
 import numpy as np
+
 COMPLEX_TYPE = np.complex64
 FLOAT_TYPE = np.float32
 
 
-def create_tensor(diag: list, phi: 'np.ndarray', theta: 'np.ndarray',
-                  first_rotation=list()) -> object:
+def create_tensor(
+    diag: list, phi: "np.ndarray", theta: "np.ndarray", first_rotation=list()
+) -> object:
     """
     Setup any tensor. An object of class mt.Tensor is built. Diagonal elements
     are filled into the tensor in its diagonal coordinate frame. If
@@ -47,7 +49,7 @@ def create_tensor(diag: list, phi: 'np.ndarray', theta: 'np.ndarray',
     return tensor
 
 
-def create_zfs_tensor_diagonals(D: float, E: float) -> 'np.ndarray':
+def create_zfs_tensor_diagonals(D: float, E: float) -> "np.ndarray":
     """
     Create an array with three diagonal elements of the zero-field splitting
     (ZFS) tensor. Calculate this values from the zero-field-splitting
@@ -70,11 +72,11 @@ def create_zfs_tensor_diagonals(D: float, E: float) -> 'np.ndarray':
         This is a 1D-array.
 
     """
-    diag = np.array([-1/3*D+E, -1/3*D-E, 2/3*D], dtype=FLOAT_TYPE)
+    diag = np.array([-1 / 3 * D + E, -1 / 3 * D - E, 2 / 3 * D], dtype=FLOAT_TYPE)
     return diag
 
 
-def create_dipol_tensor_diagonals(D: float, E: float) -> 'np.ndarray':
+def create_dipol_tensor_diagonals(D: float, E: float) -> "np.ndarray":
     """
     Create an array with three diagonal elements of the dipolar interaction
     tensor of two spin species. Calculate this values from the
@@ -97,7 +99,7 @@ def create_dipol_tensor_diagonals(D: float, E: float) -> 'np.ndarray':
         This is a 1D-array.
 
     """
-    diag = np.array([D+E, D-E, -2*D], dtype=FLOAT_TYPE)
+    diag = np.array([D + E, D - E, -2 * D], dtype=FLOAT_TYPE)
     return diag
 
 
@@ -147,65 +149,65 @@ def set_up_tensors(sys: object, cal: object) -> None:
     None.
 
     """
-    if not hasattr(sys, 'D'):
+    if not hasattr(sys, "D"):
         sys.D = 0
-    if not hasattr(sys, 'E'):
+    if not hasattr(sys, "E"):
         sys.E = 0
-    if not hasattr(sys, 'D_tri'):
+    if not hasattr(sys, "D_tri"):
         sys.D_tri = 0
-    if not hasattr(sys, 'E_tri'):
+    if not hasattr(sys, "E_tri"):
         sys.E_tri = 0.01
 
     for attr in vars(sys):
-        if attr == 'g':
-            if hasattr(sys, 'g_frame'):
-                cal.g_tensor = create_tensor(sys.g, cal.phi, cal.theta,
-                                             first_rotation=sys.g_frame)
+        if attr == "g":
+            if hasattr(sys, "g_frame"):
+                cal.g_tensor = create_tensor(
+                    sys.g, cal.phi, cal.theta, first_rotation=sys.g_frame
+                )
             else:
                 cal.g_tensor = create_tensor(sys.g, cal.phi, cal.theta)
-            cal.g_iso = 1/3*np.sum(sys.g)
+            cal.g_iso = 1 / 3 * np.sum(sys.g)
 
-        elif attr == 'g1':
-            if hasattr(sys, 'g1_frame'):
-                cal.g1_tensor = create_tensor(sys.g1, cal.phi, cal.theta,
-                                              sys.g1_frame)
+        elif attr == "g1":
+            if hasattr(sys, "g1_frame"):
+                cal.g1_tensor = create_tensor(sys.g1, cal.phi, cal.theta, sys.g1_frame)
             else:
                 cal.g1_tensor = create_tensor(sys.g1, cal.phi, cal.theta)
 
-        elif attr == 'g2':
-            if hasattr(sys, 'g2_frame'):
-                cal.g2_tensor = create_tensor(sys.g2, cal.phi, cal.theta,
-                                              sys.g2_frame)
+        elif attr == "g2":
+            if hasattr(sys, "g2_frame"):
+                cal.g2_tensor = create_tensor(sys.g2, cal.phi, cal.theta, sys.g2_frame)
             else:
                 cal.g2_tensor = create_tensor(sys.g2, cal.phi, cal.theta)
-            cal.g_iso = 1/2*(1/3*np.sum(sys.g1) + 1/3*np.sum(sys.g2))
+            cal.g_iso = 1 / 2 * (1 / 3 * np.sum(sys.g1) + 1 / 3 * np.sum(sys.g2))
 
-        elif attr == 'g_tri':
-            if hasattr(sys, 'g_tri_frame'):
+        elif attr == "g_tri":
+            if hasattr(sys, "g_tri_frame"):
                 cal.g_tri_tensor = create_tensor(
-                    sys.g_tri, cal.phi, cal.theta, sys.g_tri_frame)
+                    sys.g_tri, cal.phi, cal.theta, sys.g_tri_frame
+                )
             else:
                 cal.g_tri_tensor = create_tensor(sys.g_tri, cal.phi, cal.theta)
-            if hasattr(sys, 'g2'):
+            if hasattr(sys, "g2"):
                 pass
-            elif hasattr(sys, 'g'):
-                cal.g_iso = 1/2*(1/3*np.sum(sys.g_tri)+1/3*np.sum(sys.g))
+            elif hasattr(sys, "g"):
+                cal.g_iso = 1 / 2 * (1 / 3 * np.sum(sys.g_tri) + 1 / 3 * np.sum(sys.g))
             else:
-                cal.g_iso = 1/3*np.sum(sys.g_tri)
+                cal.g_iso = 1 / 3 * np.sum(sys.g_tri)
 
-        elif attr == 'D_tri':
+        elif attr == "D_tri":
             diag = create_zfs_tensor_diagonals(sys.D_tri, sys.E_tri)
-            if hasattr(sys, 'D_tri_frame'):
+            if hasattr(sys, "D_tri_frame"):
                 cal.D_tri_tensor = create_tensor(
-                    diag, cal.phi, cal.theta, sys.D_tri_frame)
+                    diag, cal.phi, cal.theta, sys.D_tri_frame
+                )
             else:
                 cal.D_tri_tensor = create_tensor(diag, cal.phi, cal.theta)
 
-        elif attr == 'D':
+        elif attr == "D":
             diag = create_dipol_tensor_diagonals(sys.D, sys.E)
-            if hasattr(sys, 'D_frame'):
-                cal.D_tensor = create_tensor(
-                    diag, cal.phi, cal.theta, sys.D_frame)
+            if hasattr(sys, "D_frame"):
+                cal.D_tensor = create_tensor(diag, cal.phi, cal.theta, sys.D_frame)
 
             else:
                 cal.D_tensor = create_tensor(diag, cal.phi, cal.theta)
@@ -285,23 +287,28 @@ def set_up_observable(sys: object, opt: object, cal: object) -> None:
     """
 
     obs = mt.Operator(cal.s.dimension)
-    obs.matrix = cal.s.get('y')
+    obs.matrix = cal.s.get("y")
 
-    if sys.spin_system == 'rp':
-        st_transformation = np.array([[1, 0, 0, 0],
-                                      [0, np.sqrt(1/2), np.sqrt(1/2), 0],
-                                      [0, -np.sqrt(1/2), np.sqrt(1/2), 0],
-                                      [0, 0, 0, 1]], dtype=FLOAT_TYPE)
-        obs.matrix = st_transformation.T@obs.matrix@st_transformation
+    if sys.spin_system == "rp":
+        st_transformation = np.array(
+            [
+                [1, 0, 0, 0],
+                [0, np.sqrt(1 / 2), np.sqrt(1 / 2), 0],
+                [0, -np.sqrt(1 / 2), np.sqrt(1 / 2), 0],
+                [0, 0, 0, 1],
+            ],
+            dtype=FLOAT_TYPE,
+        )
+        obs.matrix = st_transformation.T @ obs.matrix @ st_transformation
 
     obs.matrix = np.conjugate(obs.matrix.T)
 
-    if opt.space == 'hilbert':
+    if opt.space == "hilbert":
         cal.observable = obs.matrix
-    elif opt.space == 'liouville':
+    elif opt.space == "liouville":
         obs.build_vector()
         cal.observable = obs.vector
     else:
-        print('opt.space has to be either lioville or hilbert')
+        print("opt.space has to be either lioville or hilbert")
 
     return None

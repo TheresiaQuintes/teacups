@@ -45,7 +45,7 @@ SimOpt.CUPY = False
 
 # do the simulation
 spec_sim = sim.teacups(Sys, Exp, SimOpt)
-spec_sim = spec_sim.real[1]/max(abs(spec_sim.real[1]))
+spec_sim = spec_sim.real[1] / max(abs(spec_sim.real[1]))
 
 plt.figure()
 plt.plot(Exp.B_z, spec_sim)

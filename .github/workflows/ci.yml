@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install package
+        run: |
+          pip install -e ".[dev]"
+          pip install ruff
+          pip install pytest
+            
+
+      - name: Run linting
+        run: |
+          ruff check . --exclude ./src/teacups/epr_grid.py
+          ruff format --check .
+
+      - name: Run tests
+        run:  pytest
+
+      # Type check erst bei vollständiger Testabdeckung rein -> es sind größere Umstrukturierungen nötig
+      # - name: Type check
+      #   run: |
+      #     pip install mypy
+      #     mypy src/
+
+      - name: Build package
+        run: |
+          pip install build
+          python -m build

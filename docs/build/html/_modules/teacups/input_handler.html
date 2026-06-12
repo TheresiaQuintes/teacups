@@ -87,8 +87,9 @@
 <span class="n">COMPLEX_TYPE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">complex64</span>
 <span class="n">FLOAT_TYPE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
 
+
 <div class="viewcode-block" id="Calculations"><a class="viewcode-back" href="../../developer.html#teacups.input_handler.Calculations">[docs]</a><span class="k">class</span> <span class="nc">Calculations</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An object of class Calculations has no attributes at the beginning. The</span>
 <span class="sd">    object of the Calculations-Class is used during the simulation by several</span>
 <span class="sd">    functions to save results.</span>
@@ -98,9 +99,10 @@
         <span class="k">return</span></div>
 
 
-<div class="viewcode-block" id="input_object_handler"><a class="viewcode-back" href="../../developer.html#teacups.input_handler.input_object_handler">[docs]</a><span class="k">def</span> <span class="nf">input_object_handler</span><span class="p">(</span><span class="n">Sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">Exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">Opt</span><span class="p">:</span> <span class="nb">object</span>
-                         <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">object</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">object</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="input_object_handler"><a class="viewcode-back" href="../../developer.html#teacups.input_handler.input_object_handler">[docs]</a><span class="k">def</span> <span class="nf">input_object_handler</span><span class="p">(</span>
+    <span class="n">Sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">Exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">Opt</span><span class="p">:</span> <span class="nb">object</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">object</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">object</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Build copys of the three input objects, that contain all simulation</span>
 <span class="sd">    parameters. Create a Calculation object.</span>
 
@@ -137,7 +139,7 @@
 
 
 <div class="viewcode-block" id="scale_inputs"><a class="viewcode-back" href="../../developer.html#teacups.input_handler.scale_inputs">[docs]</a><span class="k">def</span> <span class="nf">scale_inputs</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Change the unit of the attributes of the input to Hz or T.</span>
 
 <span class="sd">    Parameters</span>
@@ -175,7 +177,7 @@
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
         <span class="k">pass</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">*</span><span class="mf">1e6</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">A</span><span class="p">]</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e6</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">A</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
         <span class="k">pass</span>
 
@@ -185,22 +187,22 @@
     <span class="n">sys</span><span class="o">.</span><span class="n">width_gauss</span> <span class="o">/=</span> <span class="mf">1e3</span>
 
     <span class="c1"># gaussian line width -&gt; standard deviation</span>
-    <span class="n">std</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">width_gauss</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span>
+    <span class="n">std</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">width_gauss</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span>
     <span class="c1"># standard deviation has to be converted to the width of the magnetic field</span>
     <span class="c1"># array</span>
     <span class="n">conversion</span> <span class="o">=</span> <span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">/</span> <span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">std</span> <span class="o">=</span> <span class="n">std</span><span class="o">/</span><span class="n">conversion</span>
+    <span class="n">std</span> <span class="o">=</span> <span class="n">std</span> <span class="o">/</span> <span class="n">conversion</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">width_gauss</span> <span class="o">=</span> <span class="n">std</span>
 
     <span class="c1"># convert sigma_time to pixels</span>
-    <span class="n">conversion_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">t_scale</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">exp</span><span class="o">.</span><span class="n">t_scale</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="n">exp</span><span class="o">.</span><span class="n">t_points</span>
+    <span class="n">conversion_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">t_scale</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">exp</span><span class="o">.</span><span class="n">t_scale</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">exp</span><span class="o">.</span><span class="n">t_points</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">sigma_time</span> <span class="o">/=</span> <span class="n">conversion_time</span>
 
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="predefinitions"><a class="viewcode-back" href="../../developer.html#teacups.input_handler.predefinitions">[docs]</a><span class="k">def</span> <span class="nf">predefinitions</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Predefine arrays needed for the calculations: A linear spaced t-axis,</span>
 <span class="sd">    and an empty signal-array.</span>
 
@@ -228,15 +230,14 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">cal</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">t_scale</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">exp</span><span class="o">.</span><span class="n">t_scale</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">exp</span><span class="o">.</span><span class="n">t_points</span><span class="p">,</span>
-                        <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
+    <span class="n">cal</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">t_scale</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">exp</span><span class="o">.</span><span class="n">t_scale</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">exp</span><span class="o">.</span><span class="n">t_points</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
     <span class="n">cal</span><span class="o">.</span><span class="n">spec_sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">exp</span><span class="o">.</span><span class="n">t_points</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="initialize_spin_system"><a class="viewcode-back" href="../../developer.html#teacups.input_handler.initialize_spin_system">[docs]</a><span class="k">def</span> <span class="nf">initialize_spin_system</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set up the spin quantum numer s for a given spinsystem.</span>
 
 <span class="sd">    Parameters</span>
@@ -256,20 +257,20 @@
 <span class="sd">    None</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s1">&#39;rp&#39;</span><span class="p">:</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s1">&#39;doub&#39;</span><span class="p">:</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s1">&#39;trip&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s2">&quot;rp&quot;</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s2">&quot;doub&quot;</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s2">&quot;trip&quot;</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s1">&#39;tdp&#39;</span><span class="p">:</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s2">&quot;tdp&quot;</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="create_grid"><a class="viewcode-back" href="../../developer.html#teacups.input_handler.create_grid">[docs]</a><span class="k">def</span> <span class="nf">create_grid</span><span class="p">(</span><span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create the orientational grid and set up pairs of theta and phi for each</span>
 <span class="sd">    angle point. The variable grid_points is changed from the input value</span>
 <span class="sd">    (Number of points between theta=0 and theta=pi/2) to the number of angle</span>
@@ -305,7 +306,7 @@
 <span class="sd">    None</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid</span> <span class="o">==</span> <span class="s1">&#39;sophe&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid</span> <span class="o">==</span> <span class="s2">&quot;sophe&quot;</span><span class="p">:</span>
         <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="n">gri</span><span class="o">.</span><span class="n">sophe_grid</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">sym</span><span class="p">)</span>
         <span class="n">cal</span><span class="o">.</span><span class="n">theta</span> <span class="o">=</span> <span class="n">theta</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
         <span class="n">cal</span><span class="o">.</span><span class="n">phi</span> <span class="o">=</span> <span class="n">phi</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
@@ -313,14 +314,15 @@
 
         <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">phi</span><span class="p">)</span>
 
-    <span class="k">elif</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid</span> <span class="o">==</span> <span class="s1">&#39;fibonacci&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid</span> <span class="o">==</span> <span class="s2">&quot;fibonacci&quot;</span><span class="p">:</span>
         <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">gri</span><span class="o">.</span><span class="n">fibonacci_grid</span><span class="p">(</span>
-            <span class="nb">int</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span> <span class="o">+</span> <span class="mi">4</span><span class="o">*</span><span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="o">*</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span> <span class="o">*</span> <span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="n">cal</span><span class="o">.</span><span class="n">theta</span> <span class="o">=</span> <span class="n">theta</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
         <span class="n">cal</span><span class="o">.</span><span class="n">phi</span> <span class="o">=</span> <span class="n">phi</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
         <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">phi</span><span class="p">)</span>
 
-    <span class="k">elif</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid</span> <span class="o">==</span> <span class="s1">&#39;single&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid</span> <span class="o">==</span> <span class="s2">&quot;single&quot;</span><span class="p">:</span>
         <span class="n">cal</span><span class="o">.</span><span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">theta</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
         <span class="n">cal</span><span class="o">.</span><span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">phi</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
         <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">phi</span><span class="p">)</span>
@@ -328,7 +330,7 @@
 
 
 <div class="viewcode-block" id="split_grid"><a class="viewcode-back" href="../../developer.html#teacups.input_handler.split_grid">[docs]</a><span class="k">def</span> <span class="nf">split_grid</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find the memory-bottleneck for a routine and split the grid into a number</span>
 <span class="sd">    of chunks defined by the available memory.</span>
 
@@ -373,19 +375,19 @@
     <span class="n">bottleneck</span> <span class="o">=</span> <span class="n">mem</span><span class="o">.</span><span class="n">define_bottleneck</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>
     <span class="n">bp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">B_z</span><span class="p">)</span>
     <span class="n">gp</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid_points</span>
-    <span class="n">chunk_size</span> <span class="o">=</span> <span class="n">mem</span><span class="o">.</span><span class="n">chunk_size</span><span class="p">(</span><span class="n">bottleneck</span><span class="p">,</span> <span class="n">bp</span><span class="p">,</span> <span class="n">gp</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span>
+    <span class="n">chunk_size</span> <span class="o">=</span> <span class="n">mem</span><span class="o">.</span><span class="n">chunk_size</span><span class="p">(</span><span class="n">bottleneck</span><span class="p">,</span> <span class="n">bp</span><span class="p">,</span> <span class="n">gp</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">)</span>
 
     <span class="n">cal</span><span class="o">.</span><span class="n">phi_split</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">phi</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">)</span>
     <span class="n">cal</span><span class="o">.</span><span class="n">theta_split</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">theta</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid</span> <span class="o">==</span> <span class="s1">&#39;sophe&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">grid</span> <span class="o">==</span> <span class="s2">&quot;sophe&quot;</span><span class="p">:</span>
         <span class="n">cal</span><span class="o">.</span><span class="n">weights_split</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">)</span>
 
     <span class="k">return</span></div>
 
 
 <div class="viewcode-block" id="hyperfine_converter"><a class="viewcode-back" href="../../developer.html#teacups.input_handler.hyperfine_converter">[docs]</a><span class="k">def</span> <span class="nf">hyperfine_converter</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Allow flexible input of hyperfine parameters. Function has the following</span>
 <span class="sd">    possibilities for handling hyperfine parameters:</span>
 
@@ -455,29 +457,30 @@
 <span class="sd">    [[[0, 0, 0]], [[7, 7, 7]]]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">all_hyperfines</span> <span class="o">=</span> <span class="p">[</span><span class="n">nucspin</span> <span class="k">for</span> <span class="n">nucspin</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-                      <span class="k">if</span> <span class="n">nucspin</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="p">)]</span>
+    <span class="n">all_hyperfines</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">nucspin</span> <span class="k">for</span> <span class="n">nucspin</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">nucspin</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="p">)</span>
+    <span class="p">]</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">all_hyperfines</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">I</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">return</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s1">&#39;I&#39;</span> <span class="ow">in</span> <span class="n">all_hyperfines</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;I&quot;</span> <span class="ow">in</span> <span class="n">all_hyperfines</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s1">&#39;rp&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span><span class="o">.</span><span class="n">spin_system</span> <span class="o">==</span> <span class="s2">&quot;rp&quot;</span><span class="p">:</span>
                 <span class="n">A</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="n">A_frame</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">I</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">I</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># noqa: E741</span>
 
                 <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">all_hyperfines</span><span class="p">:</span>
                     <span class="n">num</span> <span class="o">=</span> <span class="n">nuc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;n&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">)]):</span>
-                        <span class="n">A</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;A&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">)])</span>
-                        <span class="n">I</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;I&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">)])</span>
+                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;n&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">)]):</span>
+                        <span class="n">A</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;A&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">)])</span>
+                        <span class="n">I</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;I&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">)])</span>
                         <span class="k">try</span><span class="p">:</span>
-                            <span class="n">A_frame</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;A&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;_frame&quot;</span><span class="p">])</span>
+                            <span class="n">A_frame</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;A&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_frame&quot;</span><span class="p">])</span>
                         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                             <span class="n">A_frame</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 
@@ -494,20 +497,20 @@
                 <span class="n">I_d</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="n">I_a</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">donor_list</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;n&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)]):</span>
-                        <span class="n">A_d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;A&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)])</span>
-                        <span class="n">I_d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;I&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)])</span>
+                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;n&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)]):</span>
+                        <span class="n">A_d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;A&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)])</span>
+                        <span class="n">I_d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;I&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)])</span>
                         <span class="k">try</span><span class="p">:</span>
-                            <span class="n">A_d_frame</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;A&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;_frame&quot;</span><span class="p">])</span>
+                            <span class="n">A_d_frame</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;A&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_frame&quot;</span><span class="p">])</span>
                         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                             <span class="n">A_d_frame</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 
                 <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">acceptor_list</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;n&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)]):</span>
-                        <span class="n">A_a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;A&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)])</span>
-                        <span class="n">I_a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;I&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)])</span>
+                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;n&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)]):</span>
+                        <span class="n">A_a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;A&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)])</span>
+                        <span class="n">I_a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;I&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)])</span>
                         <span class="k">try</span><span class="p">:</span>
-                            <span class="n">A_a_frame</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;A&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;_frame&quot;</span><span class="p">])</span>
+                            <span class="n">A_a_frame</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="p">)[</span><span class="s2">&quot;A&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_frame&quot;</span><span class="p">])</span>
                         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                             <span class="n">A_a_frame</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 

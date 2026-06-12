@@ -6,14 +6,14 @@ import teacups.hamiltonians as ham
 import teacups.memory as mem
 
 import scipy.constants as const
+
 MU_B = const.physical_constants["Bohr magneton in Hz/T"][0]
 K_B = const.physical_constants["Boltzmann constant in Hz/K"][0]
 COMPLEX_TYPE = np.complex64
 FLOAT_TYPE = np.float32
 
 
-def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
-                          ) -> None:
+def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object) -> None:
     """
     Calculate the density matrix in the basis and shape of the systems
     Hamiltonian.
@@ -72,11 +72,9 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
     """
     if sys.precursor == "zf":
         if sys.spin_system == "trip":
-
             rho = mut.Multioperator(cal.s, opt.grid_points, exp.B_z)
 
-            ham_tri_hf = ham.set_up_triplet_high_field_xyz_hamiltonian(
-                exp, opt, cal)
+            ham_tri_hf = ham.set_up_triplet_high_field_xyz_hamiltonian(exp, opt, cal)
 
             # diagonalize hf-Hamiltonians
             eig_hf, vec_hf = np.linalg.eigh(ham_tri_hf)
@@ -90,7 +88,6 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
 
             # kill all off-diagonal elements
             rho.B_angle_matrix *= np.eye(3, dtype=FLOAT_TYPE)
-
 
         else:
             raise AttributeError(
@@ -111,8 +108,7 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
 
             eig, vec = np.linalg.eigh(cal.ham_sys)
             rho.B_angle_matrix = (
-                vec @ rho.B_angle_matrix @ np.conj(
-                    np.transpose(vec, (0, 1, 3, 2)))
+                vec @ rho.B_angle_matrix @ np.conj(np.transpose(vec, (0, 1, 3, 2)))
             )
 
         else:
@@ -153,8 +149,7 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
         elif sys.spin_system == "tdp":
             # set up the full high field hamiltonian of the coupled system
             # in the xyz-Basis: xxyyzz
-            ham_xyz = ham.set_up_tdp_high_field_xyz_hamiltonian(
-                sys, exp, opt, cal)
+            ham_xyz = ham.set_up_tdp_high_field_xyz_hamiltonian(sys, exp, opt, cal)
 
             # define rho in xyz-basis using populations for triplet-zf levels
             rho_trip = np.diag(np.array(sys.population[2:], dtype=FLOAT_TYPE))
@@ -168,20 +163,13 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
             if CUPY:
                 import cupy as cp
 
-                chunk_size = mem.chunk_size_for_gpu(
-                    len(exp.B_z), opt.grid_points)*4
+                chunk_size = mem.chunk_size_for_gpu(len(exp.B_z), opt.grid_points) * 4
                 print(chunk_size)
 
                 ham_xyz_split = np.array_split(ham_xyz, chunk_size)
                 ham_sys_split = np.array_split(cal.ham_sys, chunk_size)
 
                 rho_split = []
-
-                from pynvml import (
-                    nvmlInit,
-                    nvmlDeviceGetHandleByIndex,
-                    nvmlDeviceGetMemoryInfo,
-                )
 
                 for chunk in range(len(ham_xyz_split)):
                     ham_xyz = cp.asarray(ham_xyz_split[chunk])
@@ -225,9 +213,7 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
 
                 # basistransformation rho: xyz-basis -> TDP-eigenbasis
                 rho.B_angle_matrix = (
-                    np.conj(np.transpose((vec_hf), (0, 1, 3, 2)))
-                    @ rho.matrix
-                    @ vec_hf
+                    np.conj(np.transpose((vec_hf), (0, 1, 3, 2))) @ rho.matrix @ vec_hf
                 )
                 rho.B_angle_matrix *= np.eye(6, dtype=FLOAT_TYPE)
 
@@ -261,7 +247,8 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
             rho_tri = mut.Multioperator(cal_tri.s, opt.grid_points, exp.B_z)
 
             ham_tri_hf = ham.set_up_triplet_high_field_pnm_hamiltonian(
-                exp, opt, cal_tri)
+                exp, opt, cal_tri
+            )
 
             # diagonalize hf-Hamiltonians
             eig_hf, vec_hf = np.linalg.eigh(ham_tri_hf)
@@ -285,8 +272,7 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
         elif sys.spin_system == "tdp":
             # set up the full high field hamiltonian of the coupled system
             # in the pnm-Basis(+1, 0, -1): ppnnmm
-            ham_pnm = ham.set_up_tdp_high_field_pnm_hamiltonian(
-                sys, exp, opt, cal)
+            ham_pnm = ham.set_up_tdp_high_field_pnm_hamiltonian(sys, exp, opt, cal)
 
             # define rho in pnm-basis using populations for triplet-zf levels
             rho_trip = np.diag(np.array(sys.population[2:], dtype=FLOAT_TYPE))
@@ -305,9 +291,7 @@ def set_up_density_matrix(sys: object, exp: object, opt: object, cal: object
 
             # basistransformation rho: pnm-basis -> TDP-eigenbasis
             rho.B_angle_matrix = (
-                np.conj(np.transpose((vec_hf), (0, 1, 3, 2)))
-                @ rho.matrix
-                @ vec_hf
+                np.conj(np.transpose((vec_hf), (0, 1, 3, 2))) @ rho.matrix @ vec_hf
             )
             rho.B_angle_matrix *= np.eye(6, dtype=FLOAT_TYPE)
 

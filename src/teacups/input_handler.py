@@ -7,6 +7,7 @@ import teacups.memory as mem
 COMPLEX_TYPE = np.complex64
 FLOAT_TYPE = np.float32
 
+
 class Calculations:
     """
     An object of class Calculations has no attributes at the beginning. The
@@ -18,8 +19,9 @@ class Calculations:
         return
 
 
-def input_object_handler(Sys: object, Exp: object, Opt: object
-                         ) -> tuple[object, object, object, object]:
+def input_object_handler(
+    Sys: object, Exp: object, Opt: object
+) -> tuple[object, object, object, object]:
     """
     Build copys of the three input objects, that contain all simulation
     parameters. Create a Calculation object.
@@ -95,7 +97,7 @@ def scale_inputs(sys: object, exp: object, opt: object) -> None:
     except AttributeError:
         pass
     try:
-        sys.A = [np.array(a)*1e6 for a in sys.A]
+        sys.A = [np.array(a) * 1e6 for a in sys.A]
     except AttributeError:
         pass
 
@@ -105,15 +107,15 @@ def scale_inputs(sys: object, exp: object, opt: object) -> None:
     sys.width_gauss /= 1e3
 
     # gaussian line width -> standard deviation
-    std = sys.width_gauss/(2*np.sqrt(2*np.log(2)))
+    std = sys.width_gauss / (2 * np.sqrt(2 * np.log(2)))
     # standard deviation has to be converted to the width of the magnetic field
     # array
     conversion = (exp.B_z.max() - exp.B_z.min()) / exp.B_z.shape[0]
-    std = std/conversion
+    std = std / conversion
     sys.width_gauss = std
 
     # convert sigma_time to pixels
-    conversion_time = (exp.t_scale[1]-exp.t_scale[0])/exp.t_points
+    conversion_time = (exp.t_scale[1] - exp.t_scale[0]) / exp.t_points
     sys.sigma_time /= conversion_time
 
     return None
@@ -148,8 +150,7 @@ def predefinitions(sys, exp: object, cal: object) -> None:
 
     """
 
-    cal.t = np.linspace(exp.t_scale[0], exp.t_scale[1], exp.t_points,
-                        dtype=FLOAT_TYPE)
+    cal.t = np.linspace(exp.t_scale[0], exp.t_scale[1], exp.t_points, dtype=FLOAT_TYPE)
     cal.spec_sim = np.zeros((exp.t_points, len(exp.B_z)), dtype=COMPLEX_TYPE)
 
     return None
@@ -176,14 +177,14 @@ def initialize_spin_system(sys: object) -> None:
     None
 
     """
-    if sys.spin_system == 'rp':
-        sys.s = [1/2, 1/2]
-    elif sys.spin_system == 'doub':
-        sys.s = [1/2]
-    elif sys.spin_system == 'trip':
+    if sys.spin_system == "rp":
+        sys.s = [1 / 2, 1 / 2]
+    elif sys.spin_system == "doub":
+        sys.s = [1 / 2]
+    elif sys.spin_system == "trip":
         sys.s = [1]
-    elif sys.spin_system == 'tdp':
-        sys.s = [1/2, 1]
+    elif sys.spin_system == "tdp":
+        sys.s = [1 / 2, 1]
 
     return None
 
@@ -225,7 +226,7 @@ def create_grid(opt: object, cal: object) -> None:
     None
 
     """
-    if opt.grid == 'sophe':
+    if opt.grid == "sophe":
         theta, phi, weights = gri.sophe_grid(opt.grid_points, opt.sym)
         cal.theta = theta.astype(FLOAT_TYPE)
         cal.phi = phi.astype(FLOAT_TYPE)
@@ -233,14 +234,15 @@ def create_grid(opt: object, cal: object) -> None:
 
         opt.grid_points = len(cal.phi)
 
-    elif opt.grid == 'fibonacci':
+    elif opt.grid == "fibonacci":
         theta, phi = gri.fibonacci_grid(
-            int(opt.grid_points + 4*opt.grid_points*(opt.grid_points-1)/2))
+            int(opt.grid_points + 4 * opt.grid_points * (opt.grid_points - 1) / 2)
+        )
         cal.theta = theta.astype(FLOAT_TYPE)
         cal.phi = phi.astype(FLOAT_TYPE)
         opt.grid_points = len(cal.phi)
 
-    elif opt.grid == 'single':
+    elif opt.grid == "single":
         cal.theta = np.array(opt.theta, dtype=FLOAT_TYPE)
         cal.phi = np.array(opt.phi, dtype=FLOAT_TYPE)
         opt.grid_points = len(cal.phi)
@@ -293,12 +295,12 @@ def split_grid(sys: object, exp: object, opt: object, cal: object) -> None:
     bottleneck = mem.define_bottleneck(sys)
     bp = len(exp.B_z)
     gp = opt.grid_points
-    chunk_size = mem.chunk_size(bottleneck, bp, gp)*10
+    chunk_size = mem.chunk_size(bottleneck, bp, gp) * 10
     print(chunk_size)
 
     cal.phi_split = np.array_split(cal.phi, chunk_size)
     cal.theta_split = np.array_split(cal.theta, chunk_size)
-    if opt.grid == 'sophe':
+    if opt.grid == "sophe":
         cal.weights_split = np.array_split(cal.weights, chunk_size)
 
     return
@@ -375,29 +377,30 @@ def hyperfine_converter(sys: object) -> None:
     [[[0, 0, 0]], [[7, 7, 7]]]
 
     """
-    all_hyperfines = [nucspin for nucspin in vars(sys).keys()
-                      if nucspin.startswith("I")]
+    all_hyperfines = [
+        nucspin for nucspin in vars(sys).keys() if nucspin.startswith("I")
+    ]
 
     if not all_hyperfines:
         sys.I = []
         return
 
     else:
-        if 'I' in all_hyperfines:
+        if "I" in all_hyperfines:
             return
         else:
-            if not sys.spin_system == 'rp':
+            if not sys.spin_system == "rp":
                 A = []
                 A_frame = []
-                I = []
+                I = []  # noqa: E741
 
                 for nuc in all_hyperfines:
                     num = nuc[-1]
-                    for n in range(vars(sys)["n"+str(num)]):
-                        A.append(vars(sys)["A"+str(num)])
-                        I.append(vars(sys)["I"+str(num)])
+                    for n in range(vars(sys)["n" + str(num)]):
+                        A.append(vars(sys)["A" + str(num)])
+                        I.append(vars(sys)["I" + str(num)])
                         try:
-                            A_frame.append(vars(sys)["A"+str(num)+"_frame"])
+                            A_frame.append(vars(sys)["A" + str(num) + "_frame"])
                         except KeyError:
                             A_frame.append([0, 0, 0])
 
@@ -414,20 +417,20 @@ def hyperfine_converter(sys: object) -> None:
                 I_d = []
                 I_a = []
                 for d in sys.donor_list:
-                    for n in range(vars(sys)["n"+str(d)]):
-                        A_d.append(vars(sys)["A"+str(d)])
-                        I_d.append(vars(sys)["I"+str(d)])
+                    for n in range(vars(sys)["n" + str(d)]):
+                        A_d.append(vars(sys)["A" + str(d)])
+                        I_d.append(vars(sys)["I" + str(d)])
                         try:
-                            A_d_frame.append(vars(sys)["A"+str(d)+"_frame"])
+                            A_d_frame.append(vars(sys)["A" + str(d) + "_frame"])
                         except KeyError:
                             A_d_frame.append([0, 0, 0])
 
                 for a in sys.acceptor_list:
-                    for n in range(vars(sys)["n"+str(a)]):
-                        A_a.append(vars(sys)["A"+str(a)])
-                        I_a.append(vars(sys)["I"+str(a)])
+                    for n in range(vars(sys)["n" + str(a)]):
+                        A_a.append(vars(sys)["A" + str(a)])
+                        I_a.append(vars(sys)["I" + str(a)])
                         try:
-                            A_a_frame.append(vars(sys)["A"+str(a)+"_frame"])
+                            A_a_frame.append(vars(sys)["A" + str(a) + "_frame"])
                         except KeyError:
                             A_a_frame.append([0, 0, 0])
 

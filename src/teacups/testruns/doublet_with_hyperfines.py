@@ -23,8 +23,8 @@ sys.A1_frame = [0, 1, 0]
 # sys.A = [[[250, 250, 250], [250, 250, 250]]]
 # sys.I = [[1/2, 1/2]]
 
-sys.spin_system = 'doub'
-sys.precursor = 'eigen'
+sys.spin_system = "doub"
+sys.precursor = "eigen"
 sys.population = [1, 0]
 
 # set up experimental parameters
@@ -37,7 +37,7 @@ opt.grid_points = 20
 
 # do simulation
 spec = sim.teacups(sys, exp, opt)
-spec = spec[1].real/max(abs(spec[1].real))
+spec = spec[1].real / max(abs(spec[1].real))
 
 # %%
 # plot result

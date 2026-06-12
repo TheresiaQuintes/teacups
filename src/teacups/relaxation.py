@@ -63,15 +63,16 @@ def superoperator_population_relaxation(k_matrix):
 
     for n in range(dimension):
         for m in range(dimension):
-            R[n+n*dimension, m+m*dimension] = k_matrix[n, m]
+            R[n + n * dimension, m + m * dimension] = k_matrix[n, m]
 
         for n, el in enumerate(R):
             R_diag[n, n] = -np.sum(el)
 
         R += R_diag
 
-    R[range(0, dimension_sqr, dimension+1),
-      range(0, dimension_sqr, dimension+1)] += np.diag(k_matrix)
+    R[
+        range(0, dimension_sqr, dimension + 1), range(0, dimension_sqr, dimension + 1)
+    ] += np.diag(k_matrix)
 
     return R
 
@@ -108,15 +109,14 @@ def superoperator_coherence_relaxation(k, dimension):
     R = np.eye(dimension**2, dtype=FLOAT_TYPE)
     R *= -k
 
-    R[range(0, dimension**2, dimension+1),
-      range(0, dimension**2, dimension+1)] = 0
+    R[range(0, dimension**2, dimension + 1), range(0, dimension**2, dimension + 1)] = 0
 
     return R
 
 
-def phenomenological_relaxation_superoperator(T_relax_1: float, T_relax_2:
-                                              float, dimension: float
-                                              ) -> 'np.ndarray':
+def phenomenological_relaxation_superoperator(
+    T_relax_1: float, T_relax_2: float, dimension: float
+) -> "np.ndarray":
     """
     Create the phenomenological relaxation superoperator for a spin system
     using the relaxation times T1 (longitudinal) and T2 (transversal).
@@ -140,10 +140,10 @@ def phenomenological_relaxation_superoperator(T_relax_1: float, T_relax_2:
         Its shape is dimension**2 x dimension**2.
 
     """
-    T_relax_1 = T_relax_1**(-1)
-    T_relax_2 = T_relax_2**(-1)
+    T_relax_1 = T_relax_1 ** (-1)
+    T_relax_2 = T_relax_2 ** (-1)
 
-    T1_matrix = T_relax_1 * (np.ones((dimension, dimension))-np.eye(dimension))
+    T1_matrix = T_relax_1 * (np.ones((dimension, dimension)) - np.eye(dimension))
 
     R_pop = superoperator_population_relaxation(T1_matrix)
     R_coh = superoperator_coherence_relaxation(T_relax_2, dimension)
@@ -152,9 +152,9 @@ def phenomenological_relaxation_superoperator(T_relax_1: float, T_relax_2:
     return R
 
 
-def relaxation_operator_to_hamiltonian_basis(relaxation_superoperator:
-                                             'np.ndarray', eigvec: 'np.ndarray'
-                                             ) -> 'np.ndarray':
+def relaxation_operator_to_hamiltonian_basis(
+    relaxation_superoperator: "np.ndarray", eigvec: "np.ndarray"
+) -> "np.ndarray":
     """
     Transform the relaxation superoperator from the eigenbasis of the
     Hamiltonian to the basis of the Hamiltonian that is used during all
@@ -197,20 +197,18 @@ def relaxation_operator_to_hamiltonian_basis(relaxation_superoperator:
         It has the shape of a B-angle-matrix now.
 
     """
-    dim = (eigvec.shape[0], eigvec.shape[1], eigvec.shape[2]**2,
-           eigvec.shape[3]**2)
+    dim = (eigvec.shape[0], eigvec.shape[1], eigvec.shape[2] ** 2, eigvec.shape[3] ** 2)
     R = np.zeros(dim, dtype=COMPLEX_TYPE)
     for b in range(dim[0]):
         for a in range(dim[1]):
             R[b, a] = np.kron(eigvec[b, a], eigvec[b, a])
 
-    relaxation = R\
-        @ relaxation_superoperator @ np.conj(np.transpose(R, (0, 1, 3, 2)))
+    relaxation = R @ relaxation_superoperator @ np.conj(np.transpose(R, (0, 1, 3, 2)))
 
     return relaxation
 
 
-def create_relaxation_superoperator(sys: object, cal: object) -> 'np.ndarray':
+def create_relaxation_superoperator(sys: object, cal: object) -> "np.ndarray":
     """
     Calculate a relaxation superoperator matrix dependend on the user input.
     If a relaxation time is given the phenomenological relaxation superoperator
@@ -248,15 +246,17 @@ def create_relaxation_superoperator(sys: object, cal: object) -> 'np.ndarray':
     """
     if sys.dynamics is not None:
         relax = superoperator_population_relaxation(sys.dynamics)
-    elif hasattr(sys, 'T_relax_1'):
-        relax = phenomenological_relaxation_superoperator(sys.T_relax_1,
-                                                          sys.T_relax_2,
-                                                          cal.s.dimension)
+    elif hasattr(sys, "T_relax_1"):
+        relax = phenomenological_relaxation_superoperator(
+            sys.T_relax_1, sys.T_relax_2, cal.s.dimension
+        )
     else:
-        raise AttributeError('The dynamics of the spin system have do be \
+        raise AttributeError(
+            "The dynamics of the spin system have do be \
                              either defined by the matrix sys.dynamics or \
                                  by the phenomenological relaxation times \
-                                     sys.T_relax_1 and sys.T_relax_2.')
+                                     sys.T_relax_1 and sys.T_relax_2."
+        )
 
     relax = relaxation_operator_to_hamiltonian_basis(relax, cal.eigvec)
 

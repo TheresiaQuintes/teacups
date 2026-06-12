@@ -48,22 +48,21 @@ def propagation(sys: object, opt: object, cal: object) -> None:
 
     """
 
-    if opt.space == 'hilbert':
-        step = cal.t[1]-cal.t[0]
+    if opt.space == "hilbert":
+        step = cal.t[1] - cal.t[0]
         propagation = np.zeros(cal.ham.shape, dtype=COMPLEX_TYPE)
 
         eigval, vec = np.linalg.eigh(cal.ham)
-        exp_arg = 1j*eigval
+        exp_arg = 1j * eigval
 
         n = propagation.shape[-1]
-        propagation[:, :, range(n), range(n)] = np.exp(exp_arg*step)
-        propagation = vec @ propagation @ np.conj(
-            np.transpose(vec, (0, 1, 3, 2)))
+        propagation[:, :, range(n), range(n)] = np.exp(exp_arg * step)
+        propagation = vec @ propagation @ np.conj(np.transpose(vec, (0, 1, 3, 2)))
 
-    elif opt.space == 'liouville':
-        step = cal.t[1]-cal.t[0]
+    elif opt.space == "liouville":
+        step = cal.t[1] - cal.t[0]
 
-        cal.ham_superop *= -1j*step
+        cal.ham_superop *= -1j * step
 
         x = jc.convert(jl.Array[jl.ComplexF64, 4], cal.ham_superop)
         jl.include("propagation_julia.jl")
@@ -79,7 +78,7 @@ def propagation(sys: object, opt: object, cal: object) -> None:
         #     cal.r.append(rho_prop)
 
     else:
-        print('opt.space has to be either hilbert or liouville')
+        print("opt.space has to be either hilbert or liouville")
 
     cal.propagation = np.array(propagation)
 

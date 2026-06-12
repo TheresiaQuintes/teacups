@@ -85,7 +85,7 @@
 
 
 <div class="viewcode-block" id="superoperator_population_relaxation"><a class="viewcode-back" href="../../developer.html#teacups.relaxation.superoperator_population_relaxation">[docs]</a><span class="k">def</span> <span class="nf">superoperator_population_relaxation</span><span class="p">(</span><span class="n">k_matrix</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate a relaxation superoperator for transitions between the states.</span>
 <span class="sd">    A matrix k_matrix can be given containing the relaxation rates for</span>
 <span class="sd">    the transitions between the populations. The decay of the populations</span>
@@ -143,21 +143,22 @@
 
     <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dimension</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dimension</span><span class="p">):</span>
-            <span class="n">R</span><span class="p">[</span><span class="n">n</span><span class="o">+</span><span class="n">n</span><span class="o">*</span><span class="n">dimension</span><span class="p">,</span> <span class="n">m</span><span class="o">+</span><span class="n">m</span><span class="o">*</span><span class="n">dimension</span><span class="p">]</span> <span class="o">=</span> <span class="n">k_matrix</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span>
+            <span class="n">R</span><span class="p">[</span><span class="n">n</span> <span class="o">+</span> <span class="n">n</span> <span class="o">*</span> <span class="n">dimension</span><span class="p">,</span> <span class="n">m</span> <span class="o">+</span> <span class="n">m</span> <span class="o">*</span> <span class="n">dimension</span><span class="p">]</span> <span class="o">=</span> <span class="n">k_matrix</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">el</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
             <span class="n">R_diag</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
 
         <span class="n">R</span> <span class="o">+=</span> <span class="n">R_diag</span>
 
-    <span class="n">R</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dimension_sqr</span><span class="p">,</span> <span class="n">dimension</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span>
-      <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dimension_sqr</span><span class="p">,</span> <span class="n">dimension</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">k_matrix</span><span class="p">)</span>
+    <span class="n">R</span><span class="p">[</span>
+        <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dimension_sqr</span><span class="p">,</span> <span class="n">dimension</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dimension_sqr</span><span class="p">,</span> <span class="n">dimension</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">k_matrix</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">R</span></div>
 
 
 <div class="viewcode-block" id="superoperator_coherence_relaxation"><a class="viewcode-back" href="../../developer.html#teacups.relaxation.superoperator_coherence_relaxation">[docs]</a><span class="k">def</span> <span class="nf">superoperator_coherence_relaxation</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dimension</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate a superoperator for the decay of the coherences of a matrix.</span>
 <span class="sd">    The coherences will decay with the rate constant k.</span>
 
@@ -188,16 +189,15 @@
     <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dimension</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_TYPE</span><span class="p">)</span>
     <span class="n">R</span> <span class="o">*=</span> <span class="o">-</span><span class="n">k</span>
 
-    <span class="n">R</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dimension</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">dimension</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span>
-      <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dimension</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">dimension</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">R</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dimension</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">dimension</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dimension</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">dimension</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">return</span> <span class="n">R</span></div>
 
 
-<div class="viewcode-block" id="phenomenological_relaxation_superoperator"><a class="viewcode-back" href="../../developer.html#teacups.relaxation.phenomenological_relaxation_superoperator">[docs]</a><span class="k">def</span> <span class="nf">phenomenological_relaxation_superoperator</span><span class="p">(</span><span class="n">T_relax_1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">T_relax_2</span><span class="p">:</span>
-                                              <span class="nb">float</span><span class="p">,</span> <span class="n">dimension</span><span class="p">:</span> <span class="nb">float</span>
-                                              <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="phenomenological_relaxation_superoperator"><a class="viewcode-back" href="../../developer.html#teacups.relaxation.phenomenological_relaxation_superoperator">[docs]</a><span class="k">def</span> <span class="nf">phenomenological_relaxation_superoperator</span><span class="p">(</span>
+    <span class="n">T_relax_1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">T_relax_2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dimension</span><span class="p">:</span> <span class="nb">float</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create the phenomenological relaxation superoperator for a spin system</span>
 <span class="sd">    using the relaxation times T1 (longitudinal) and T2 (transversal).</span>
 <span class="sd">    The superoperator matrix is set up in the eigenbasis of the system with</span>
@@ -220,10 +220,10 @@
 <span class="sd">        Its shape is dimension**2 x dimension**2.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">T_relax_1</span> <span class="o">=</span> <span class="n">T_relax_1</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">T_relax_2</span> <span class="o">=</span> <span class="n">T_relax_2</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">T_relax_1</span> <span class="o">=</span> <span class="n">T_relax_1</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">T_relax_2</span> <span class="o">=</span> <span class="n">T_relax_2</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="n">T1_matrix</span> <span class="o">=</span> <span class="n">T_relax_1</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">dimension</span><span class="p">,</span> <span class="n">dimension</span><span class="p">))</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dimension</span><span class="p">))</span>
+    <span class="n">T1_matrix</span> <span class="o">=</span> <span class="n">T_relax_1</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">dimension</span><span class="p">,</span> <span class="n">dimension</span><span class="p">))</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dimension</span><span class="p">))</span>
 
     <span class="n">R_pop</span> <span class="o">=</span> <span class="n">superoperator_population_relaxation</span><span class="p">(</span><span class="n">T1_matrix</span><span class="p">)</span>
     <span class="n">R_coh</span> <span class="o">=</span> <span class="n">superoperator_coherence_relaxation</span><span class="p">(</span><span class="n">T_relax_2</span><span class="p">,</span> <span class="n">dimension</span><span class="p">)</span>
@@ -232,10 +232,10 @@
     <span class="k">return</span> <span class="n">R</span></div>
 
 
-<div class="viewcode-block" id="relaxation_operator_to_hamiltonian_basis"><a class="viewcode-back" href="../../developer.html#teacups.relaxation.relaxation_operator_to_hamiltonian_basis">[docs]</a><span class="k">def</span> <span class="nf">relaxation_operator_to_hamiltonian_basis</span><span class="p">(</span><span class="n">relaxation_superoperator</span><span class="p">:</span>
-                                             <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">eigvec</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span>
-                                             <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="relaxation_operator_to_hamiltonian_basis"><a class="viewcode-back" href="../../developer.html#teacups.relaxation.relaxation_operator_to_hamiltonian_basis">[docs]</a><span class="k">def</span> <span class="nf">relaxation_operator_to_hamiltonian_basis</span><span class="p">(</span>
+    <span class="n">relaxation_superoperator</span><span class="p">:</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">,</span> <span class="n">eigvec</span><span class="p">:</span> <span class="s2">&quot;np.ndarray&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Transform the relaxation superoperator from the eigenbasis of the</span>
 <span class="sd">    Hamiltonian to the basis of the Hamiltonian that is used during all</span>
 <span class="sd">    calculations. The Hamiltonian is B-angle-matrix-style. After transformation</span>
@@ -277,21 +277,19 @@
 <span class="sd">        It has the shape of a B-angle-matrix now.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">dim</span> <span class="o">=</span> <span class="p">(</span><span class="n">eigvec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">eigvec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">eigvec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
-           <span class="n">eigvec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="p">(</span><span class="n">eigvec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">eigvec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">eigvec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">eigvec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">COMPLEX_TYPE</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
             <span class="n">R</span><span class="p">[</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">eigvec</span><span class="p">[</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">],</span> <span class="n">eigvec</span><span class="p">[</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">])</span>
 
-    <span class="n">relaxation</span> <span class="o">=</span> <span class="n">R</span>\
-        <span class="o">@</span> <span class="n">relaxation_superoperator</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+    <span class="n">relaxation</span> <span class="o">=</span> <span class="n">R</span> <span class="o">@</span> <span class="n">relaxation_superoperator</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
 
     <span class="k">return</span> <span class="n">relaxation</span></div>
 
 
-<div class="viewcode-block" id="create_relaxation_superoperator"><a class="viewcode-back" href="../../developer.html#teacups.relaxation.create_relaxation_superoperator">[docs]</a><span class="k">def</span> <span class="nf">create_relaxation_superoperator</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="create_relaxation_superoperator"><a class="viewcode-back" href="../../developer.html#teacups.relaxation.create_relaxation_superoperator">[docs]</a><span class="k">def</span> <span class="nf">create_relaxation_superoperator</span><span class="p">(</span><span class="n">sys</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">cal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;np.ndarray&quot;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate a relaxation superoperator matrix dependend on the user input.</span>
 <span class="sd">    If a relaxation time is given the phenomenological relaxation superoperator</span>
 <span class="sd">    is returned. If a matrix is given in the attribute sys.dynamics this matrix</span>
@@ -328,15 +326,17 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">dynamics</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">relax</span> <span class="o">=</span> <span class="n">superoperator_population_relaxation</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">dynamics</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s1">&#39;T_relax_1&#39;</span><span class="p">):</span>
-        <span class="n">relax</span> <span class="o">=</span> <span class="n">phenomenological_relaxation_superoperator</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">T_relax_1</span><span class="p">,</span>
-                                                          <span class="n">sys</span><span class="o">.</span><span class="n">T_relax_2</span><span class="p">,</span>
-                                                          <span class="n">cal</span><span class="o">.</span><span class="n">s</span><span class="o">.</span><span class="n">dimension</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s2">&quot;T_relax_1&quot;</span><span class="p">):</span>
+        <span class="n">relax</span> <span class="o">=</span> <span class="n">phenomenological_relaxation_superoperator</span><span class="p">(</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">T_relax_1</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">T_relax_2</span><span class="p">,</span> <span class="n">cal</span><span class="o">.</span><span class="n">s</span><span class="o">.</span><span class="n">dimension</span>
+        <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;The dynamics of the spin system have do be </span><span class="se">\</span>
-<span class="s1">                             either defined by the matrix sys.dynamics or </span><span class="se">\</span>
-<span class="s1">                                 by the phenomenological relaxation times </span><span class="se">\</span>
-<span class="s1">                                     sys.T_relax_1 and sys.T_relax_2.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+            <span class="s2">&quot;The dynamics of the spin system have do be </span><span class="se">\</span>
+<span class="s2">                             either defined by the matrix sys.dynamics or </span><span class="se">\</span>
+<span class="s2">                                 by the phenomenological relaxation times </span><span class="se">\</span>
+<span class="s2">                                     sys.T_relax_1 and sys.T_relax_2.&quot;</span>
+        <span class="p">)</span>
 
     <span class="n">relax</span> <span class="o">=</span> <span class="n">relaxation_operator_to_hamiltonian_basis</span><span class="p">(</span><span class="n">relax</span><span class="p">,</span> <span class="n">cal</span><span class="o">.</span><span class="n">eigvec</span><span class="p">)</span>
 

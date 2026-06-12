@@ -46,7 +46,7 @@ class Matrix:
             self.matrix = np.zeros((dimension, dimension), dtype=COMPLEX_TYPE)
             self.dimension = dimension
 
-    def scalar(self, multipliers: 'np.ndarray') -> None:
+    def scalar(self, multipliers: "np.ndarray") -> None:
         """
         Build scalar product of the matrix attribute with the product of all
         multipliers.
@@ -86,7 +86,7 @@ class Matrix:
 
         return None
 
-    def product(self, scd_matrix: 'np.ndarray', left=False) -> None:
+    def product(self, scd_matrix: "np.ndarray", left=False) -> None:
         """
         Build matrix product of the matrix attribute and a second matrix
         being multiplied either from right (default) or from left side.
@@ -132,8 +132,9 @@ class Matrix:
 
         """
         if scd_matrix.shape != self.matrix.shape:
-            raise IndexError("Multiplied matrix must have same shape as" +
-                             "matrix attribute.")
+            raise IndexError(
+                "Multiplied matrix must have same shape as" + "matrix attribute."
+            )
         elif not left:
             self.matrix = self.matrix @ scd_matrix
         else:
@@ -141,8 +142,9 @@ class Matrix:
 
         return None
 
-    def basis_transformation(self, trans: 'np.ndarray',
-                             inverse_left=True, orthonormal=False) -> None:
+    def basis_transformation(
+        self, trans: "np.ndarray", inverse_left=True, orthonormal=False
+    ) -> None:
         """
         Change the basis of matrix. trans is the transformation matrix:
 
@@ -188,8 +190,9 @@ class Matrix:
 
         """
         if trans.shape != self.matrix.shape:
-            raise IndexError("Transformationmatrix must have same shape as" +
-                             "matrix attribute.")
+            raise IndexError(
+                "Transformationmatrix must have same shape as" + "matrix attribute."
+            )
 
         if inverse_left is True:
             if orthonormal is True:
@@ -292,7 +295,7 @@ class Tensor(Matrix):
 
         return None
 
-    def multirotation(self, phi: 'np.ndarray', theta: 'np.ndarray') -> None:
+    def multirotation(self, phi: "np.ndarray", theta: "np.ndarray") -> None:
         """
         Rotate the tensor attribute to all combinations of theta and
         phi. The  two arrays contain angles for each point that shall be
@@ -518,10 +521,10 @@ class Spinoperator(Operator):
     [ 0. +0.j  -0. +0.j   0. +0.j  -0.5+0.j ]]]]
     """
 
-    def __init__(self, spin=1/2, coupling_spins=None):
+    def __init__(self, spin=1 / 2, coupling_spins=None):
         """©Stephan Rein, modified by Theresia Quintes"""
 
-        dim_spin = int(2*spin+1)
+        dim_spin = int(2 * spin + 1)
 
         # Pauli matrices for spin without further coupling spins
         if coupling_spins is None:
@@ -537,37 +540,40 @@ class Spinoperator(Operator):
         else:
             # Find number of couplings
             # TODO in try except
-            if isinstance(coupling_spins, float) or isinstance(
-                    coupling_spins, int):
+            if isinstance(coupling_spins, float) or isinstance(coupling_spins, int):
                 number_of_couplings = 1
             else:
                 number_of_couplings = len(coupling_spins)
-                coupling_spins = np.array(coupling_spins)
+                if number_of_couplings == 1:
+                    coupling_spins = coupling_spins[0]
+                else:
+                    coupling_spins = np.array(coupling_spins)
 
             # Calculate dimensions
             # TODO  np.array(, dtype=np.int64)?
-            dim_couplings = 2*coupling_spins+1
+            dim_couplings = 2 * coupling_spins + 1
             dim_couplings_total = int(np.prod(dim_couplings))
-            dim_total = int(dim_spin*dim_couplings_total)
+            dim_total = int(dim_spin * dim_couplings_total)
 
             # Allocate empty arrays
-            pauli_coupling_spins = np.zeros((number_of_couplings,
-                                             3, dim_total, dim_total),
-                                            dtype=COMPLEX_TYPE)
-            pauli_spin = np.zeros((3, dim_total, dim_total),
-                                  dtype=COMPLEX_TYPE)
+            pauli_coupling_spins = np.zeros(
+                (number_of_couplings, 3, dim_total, dim_total), dtype=COMPLEX_TYPE
+            )
+            pauli_spin = np.zeros((3, dim_total, dim_total), dtype=COMPLEX_TYPE)
 
             # Pauli matrix for spin
             pauli_uncoupled = self.pauli_matrices(spin)
-            pauli_spin = np.kron(pauli_uncoupled, np.eye(dim_couplings_total,
-                                                         dtype=FLOAT_TYPE))
+            pauli_spin = np.kron(
+                pauli_uncoupled, np.eye(dim_couplings_total, dtype=FLOAT_TYPE)
+            )
 
             # Pauli matrices for coupling spins
             for n in range(0, number_of_couplings):
                 if number_of_couplings == 1:
                     pauli_uncoupled = self.pauli_matrices(coupling_spins)
                     pauli_coupling_spins[n] = np.kron(
-                        np.eye(dim_spin, dtype=FLOAT_TYPE),  pauli_uncoupled)
+                        np.eye(dim_spin, dtype=FLOAT_TYPE), pauli_uncoupled
+                    )
                 else:
                     pauli_uncoupled = self.pauli_matrices(coupling_spins[n])
                     pauli_tmp = pauli_uncoupled
@@ -576,11 +582,13 @@ class Spinoperator(Operator):
                         if n_coup != n:
                             if n_coup < n:
                                 pauli_tmp = np.kron(
-                                    np.eye(dim, dtype=FLOAT_TYPE), pauli_tmp)
+                                    np.eye(dim, dtype=FLOAT_TYPE), pauli_tmp
+                                )
                             else:
                                 pauli_tmp = np.kron(pauli_tmp, np.eye(dim))
                     pauli_coupling_spins[n] = np.kron(
-                        np.eye(dim_spin, dtype=FLOAT_TYPE), pauli_tmp)
+                        np.eye(dim_spin, dtype=FLOAT_TYPE), pauli_tmp
+                    )
 
             self.matrix = pauli_spin
             self.matrix_coupling_spins = pauli_coupling_spins
@@ -625,33 +633,33 @@ class Spinoperator(Operator):
         -----
         ©Stephan Rein, modified by Theresia Quintes
         """
-        dimension = int(2*spin+1)
+        dimension = int(2 * spin + 1)
         dimension = np.array(dimension).astype(int)
 
         # Preallocate empty arrays
-        off_diagonal_elements = np.zeros(dimension-1, dtype=COMPLEX_TYPE)
+        off_diagonal_elements = np.zeros(dimension - 1, dtype=COMPLEX_TYPE)
         sigma_x = np.zeros((dimension, dimension), dtype=COMPLEX_TYPE)
         sigma_y = np.zeros((dimension, dimension), dtype=COMPLEX_TYPE)
         sigma_z = np.zeros((dimension, dimension), dtype=COMPLEX_TYPE)
 
         # Calculate off-diagonal elements for sigma_x & sigma_y matrices
-        for i in range(0, dimension-1):
-            off_diagonal_elements[i] = np.sqrt((i+1)*(dimension-1-i))
+        for i in range(0, dimension - 1):
+            off_diagonal_elements[i] = np.sqrt((i + 1) * (dimension - 1 - i))
 
         # Fill Pauli-matrices
         for i in range(0, dimension):
-            sigma_z[i, i] = dimension/2.0-i-0.5
-            if i+1 <= dimension-1:
-                sigma_x[i, i+1] = 0.5*off_diagonal_elements[i]
-                sigma_y[i, i+1] = 0.5*1j*off_diagonal_elements[i]
+            sigma_z[i, i] = dimension / 2.0 - i - 0.5
+            if i + 1 <= dimension - 1:
+                sigma_x[i, i + 1] = 0.5 * off_diagonal_elements[i]
+                sigma_y[i, i + 1] = 0.5 * 1j * off_diagonal_elements[i]
 
-        sigma_x = sigma_x+np.transpose(np.conjugate(sigma_x))
-        sigma_y = sigma_y+np.transpose(np.conjugate(sigma_y))
+        sigma_x = sigma_x + np.transpose(np.conjugate(sigma_x))
+        sigma_y = sigma_y + np.transpose(np.conjugate(sigma_y))
         sigma_y = np.conjugate(sigma_y)
 
         return sigma_x, sigma_y, sigma_z
 
-    def get(self, coordinate: str) -> 'np.ndarray':
+    def get(self, coordinate: str) -> "np.ndarray":
         """
         Get the spin operator matrices for each cartesian direction out of the
         matrix attribute.
@@ -682,11 +690,11 @@ class Spinoperator(Operator):
         """
         # TODO dictionary?
         # BUG coordinate.lower() verwenden
-        if coordinate == 'x':
+        if coordinate == "x":
             return self.matrix[0]
-        elif coordinate == 'y':
+        elif coordinate == "y":
             return self.matrix[1]
-        elif coordinate == 'z':
+        elif coordinate == "z":
             return self.matrix[2]
         else:
             raise ValueError("Only 'x', 'y' and 'z' are allowed coordinates.")
@@ -716,8 +724,9 @@ class Hamiltonian(Operator):
 
     """
 
-    def exchange_coupling(self, spinoperator1: object, J_ex: float,
-                          spinoperator2: object) -> None:
+    def exchange_coupling(
+        self, spinoperator1: object, J_ex: float, spinoperator2: object
+    ) -> None:
         """
         Calculate interaction hamiltonian of the exchangecoupling of two spins.
 
@@ -755,20 +764,21 @@ class Hamiltonian(Operator):
         if spinoperator1.dimension != spinoperator2.dimension:
             raise IndexError("Spinoperatordimensions must not differ.")
 
-        self.matrix = J_ex* (
-            spinoperator1.get('x')@spinoperator2.get('x')
-            + spinoperator1.get('y')@spinoperator2.get('y')
-            + spinoperator1.get('z')@spinoperator2.get('z'))
+        self.matrix = J_ex * (
+            spinoperator1.get("x") @ spinoperator2.get("x")
+            + spinoperator1.get("y") @ spinoperator2.get("y")
+            + spinoperator1.get("z") @ spinoperator2.get("z")
+        )
         self.matrix = self.matrix.astype(COMPLEX_TYPE)
 
         self.build_vector()
         self.build_superoperator()
 
-
         return None
 
-    def microwave_coupling(self, omega_mw: float, omega_nut: float,
-                           spinoperator: object) -> None:
+    def microwave_coupling(
+        self, omega_mw: float, omega_nut: float, spinoperator: object
+    ) -> None:
         """
         Calculate the interaction hamiltonian of a spinoperator with a magnetic
         microwave-field in the rotating frame representation. Therefore, the
@@ -808,17 +818,18 @@ class Hamiltonian(Operator):
                [-0.7  +0.j, -4.875+0.j]])
 
         """
-        self.matrix = (spinoperator.get('x')
-                       * omega_nut - spinoperator.get('z')*omega_mw)
+        self.matrix = (
+            spinoperator.get("x") * omega_nut - spinoperator.get("z") * omega_mw
+        )
 
         self.build_vector()
         self.build_superoperator()
 
-
         return None
 
-    def zeeman_coupling(self, g: 'np.ndarray', B_z: float,
-                        spinoperator: object) -> None:
+    def zeeman_coupling(
+        self, g: "np.ndarray", B_z: float, spinoperator: object
+    ) -> None:
         """
         Calculate the hamiltonian of the Zeeman coupling of a spin
         (represented by a spin vector operator) and a magnetic field along the
@@ -863,8 +874,9 @@ class Hamiltonian(Operator):
 
         return None
 
-    def dipol_coupling(self, spinoperator1: object, D_tensor: 'np.ndarray',
-                       spinoperator2: object) -> None:
+    def dipol_coupling(
+        self, spinoperator1: object, D_tensor: "np.ndarray", spinoperator2: object
+    ) -> None:
         """
         Calculate the hamiltonian of a dipolar coupling of two spins.
 
@@ -907,7 +919,8 @@ class Hamiltonian(Operator):
             raise IndexError("Spinoperatordimensions must not differ.")
 
         self.matrix = odh.create_bilinear_hamiltonian(
-            spinoperator1.matrix, D_tensor, spinoperator2.matrix)
+            spinoperator1.matrix, D_tensor, spinoperator2.matrix
+        )
         self.build_vector()
         self.build_superoperator()
 

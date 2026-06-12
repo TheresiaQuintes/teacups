@@ -50,19 +50,19 @@ eigval = sim.teacups(Sys, Exp, SimOpt)
 e = np.mean(eigval[350], axis=0)
 
 # build delta E between trip-doublet and trip-quartet states
-de_53 = e[5]-e[3]
-de_51 = e[5]-e[1]
-de_50 = e[5]-e[0]
-de_43 = e[4]-e[3]
-de_42 = e[4]-e[2]
-de_40 = e[4]-e[0]
+de_53 = e[5] - e[3]
+de_51 = e[5] - e[1]
+de_50 = e[5] - e[0]
+de_43 = e[4] - e[3]
+de_42 = e[4] - e[2]
+de_40 = e[4] - e[0]
 
 # Dipolar coupling squared
-D = (Sys.D_tri*1e6)**2
+D = (Sys.D_tri * 1e6) ** 2
 
 # set isc and doublet decay rates
-k_isc = 0.3/1e-11
-k_d = 0.25/1e-6
+k_isc = 0.3 / 1e-11
+k_d = 0.25 / 1e-6
 k_e = 0
 
 # set up dynamics matrix
@@ -74,19 +74,19 @@ R[2, 2] = -k_e
 R[1, 1] = -k_e
 R[0, 0] = -k_e
 
-R[5, 3] = k_isc/45*(D/(de_53)**2)
-R[5, 1] = k_isc/135*(D/(de_51)**2)
-R[5, 0] = k_isc/45*(D/(de_50)**2)
-R[3, 5] = k_isc/45*(D/(de_53)**2)
-R[1, 5] = k_isc/135*(D/(de_51)**2)
-R[0, 5] = k_isc/45*(D/(de_50)**2)
+R[5, 3] = k_isc / 45 * (D / (de_53) ** 2)
+R[5, 1] = k_isc / 135 * (D / (de_51) ** 2)
+R[5, 0] = k_isc / 45 * (D / (de_50) ** 2)
+R[3, 5] = k_isc / 45 * (D / (de_53) ** 2)
+R[1, 5] = k_isc / 135 * (D / (de_51) ** 2)
+R[0, 5] = k_isc / 45 * (D / (de_50) ** 2)
 
-R[4, 3] = k_isc/45*(D/(de_42)**2)
-R[4, 2] = k_isc/135*(D/(de_42)**2)
-R[4, 0] = k_isc/45*(D/(de_40)**2)
-R[3, 4] = k_isc/45*(D/(de_43)**2)
-R[2, 4] = k_isc/135*(D/(de_42)**2)
-R[0, 4] = k_isc/45*(D/(de_40)**2)
+R[4, 3] = k_isc / 45 * (D / (de_42) ** 2)
+R[4, 2] = k_isc / 135 * (D / (de_42) ** 2)
+R[4, 0] = k_isc / 45 * (D / (de_40) ** 2)
+R[3, 4] = k_isc / 45 * (D / (de_43) ** 2)
+R[2, 4] = k_isc / 135 * (D / (de_42) ** 2)
+R[0, 4] = k_isc / 45 * (D / (de_40) ** 2)
 
 Sys.dynamics = R
 
@@ -95,7 +95,7 @@ SimOpt.eigval_mode = False
 
 # do simulation
 spec, pop_evolution = sim.teacups(Sys, Exp, SimOpt)
-spec = spec/abs(spec).real.max()
+spec = spec / abs(spec).real.max()
 
 # %%
 plt.figure()
@@ -111,13 +111,22 @@ plt.figure()
 plt.ylabel("population")
 plt.xlabel("$t$ / $\mu$s")
 a = [0, 1, 2, 3, 4, 5]
-labels = ["Q$_{-3/2}$", "Q$_{-1/2}$", "Q$_{+1/2}$",
-          "Q$_{+3/2}$", "D$_{-1/2}$", "D$_{+1/2}$"]
+labels = [
+    "Q$_{-3/2}$",
+    "Q$_{-1/2}$",
+    "Q$_{+1/2}$",
+    "Q$_{+3/2}$",
+    "D$_{-1/2}$",
+    "D$_{+1/2}$",
+]
 
-time = np.linspace(Exp.t_scale[0], Exp.t_scale[1], Exp.t_points)*1e6
+time = np.linspace(Exp.t_scale[0], Exp.t_scale[1], Exp.t_points) * 1e6
 for val in a:
-    plt.plot(time, pop_evolution[:, val].real /
-             pop_evolution.real.max()*1/6, label=labels[val])
+    plt.plot(
+        time,
+        pop_evolution[:, val].real / pop_evolution.real.max() * 1 / 6,
+        label=labels[val],
+    )
 plt.legend(ncol=2)
 # plt.savefig("tdp_rqm_pop.pdf")
 
