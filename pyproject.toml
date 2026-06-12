@@ -1,6 +1,6 @@
 [project]
 name = "teacups"
-version = "2.2.1"
+version = "2.3.0"
 description = "Simulation of timeresolved transient EPR spectra of spinpolarised spin species. "
 authors = [
   { name = "Theresia Quintes", email = "theresia.quintes@physchem.uni-freiburg.de" }

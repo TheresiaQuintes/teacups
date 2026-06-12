@@ -24,7 +24,7 @@ Installation
 
 #. Setup a new conda environment::
 
-      conda create -n teacups
+      conda create -n teacups python=3.12
    
    .. note::
    
@@ -35,18 +35,14 @@ Installation
 
       conda activate teacups
 
-#. Install necessary packages::
+#. Install from your cloned directory::
 
-      conda install numpy scipy matplotlib tqdm psutil
+      pip install .
 
-#. Add the cloned directory to your pythonpath::
-    
-      import sys
-      sys.path.append("<your local path>/teacups/src")
-	
-   .. note::     
-      #. You add the path in each skript that you are going to run by adding the ``sys.path.append`` command to the very beginning of the skript.
-      #. You can add the path e.g. in an IDE like Spyder in which you want to run the code.
+Or install via pip::
+
+      pip install teacups
+
       
 	
 	
@@ -56,11 +52,6 @@ Test your installation
 
 Run the following script in an IDE (e.g. Thonny, Spyder...) of your choice::
 
-	# Adding the python path (optional)
-	import sys
-        sys.path.append("<your local path>/teacups/src")
-        
-        # Start of the simulation
 	import teacups.classes as cl
 	import teacups.simulations as sim
 	import matplotlib.pyplot as plt
@@ -77,12 +68,7 @@ Run the following script in an IDE (e.g. Thonny, Spyder...) of your choice::
 	plt.plot(spec[:, 300].real)
 	
 On **Windows** you have to run the following Skript::
-	
-	# Adding the python path (optional)
-	import sys
-        sys.path.append("<your local path>/teacups/src")
-        
-        # Start of the simulation
+
 	import teacups.classes as cl
 	import teacups.simulations as sim
 	import matplotlib.pyplot as plt
