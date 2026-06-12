@@ -1,0 +1,41 @@
+name: Deploy Documentation
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - run: |
+          pip install -e ".[dev]"
+          pip install sphinx
+          pip install sphinx-markdown-builder
+          pip install sphinx-rtd-theme
+          pip install sphinx-copybutton
+          pip install sphinx-autodoc-typehints
+
+      - name: Build docs
+        run: |
+          cd docs
+          make clean
+          make html
+
+      - name: Deploy to gh-pages
+        if: ${{ !env.ACT && github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/build/html
